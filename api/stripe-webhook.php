@@ -33,6 +33,7 @@ if ($job) {
     $finish();
     km_email_paid($cfg, $job, 90);
     km_retry_unsent($cfg, km_storage($cfg));
+    km_purge($cfg, km_storage($cfg));
     exit;
   }
   @set_time_limit(90);

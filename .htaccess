@@ -5,10 +5,21 @@ RewriteRule (^|/)\.git - [F,L]
 # No folder listings anywhere
 Options -Indexes
 
-# Pages are always re-checked, so visitors get updates straight away.
-# (CSS and JS are linked with ?v=… version tags, so they can be kept.)
+# A friendly page for addresses that don't exist
+ErrorDocument 404 /404.html
+
 <IfModule mod_headers.c>
+  # Pages are always re-checked, so visitors get updates straight away.
+  # (CSS and JS are linked with ?v=… version tags, so they can be kept.)
   <FilesMatch "\.html?$">
     Header set Cache-Control "no-cache"
   </FilesMatch>
+
+  # Security basics: HTTPS only, no framing by other sites, no guessing file types,
+  # only the site's address (not the full page) shared when people click away.
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Frame-Options "DENY"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 </IfModule>

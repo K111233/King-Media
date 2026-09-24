@@ -22,6 +22,7 @@ $back = function (string $state) use ($site, $id, $key, &$keyOk): void {
 if (!km_stripe_on($cfg)) $back('unavailable');
 if ($id === '' || !hash_equals(km_pay_key($cfg, $id), $key)) $back('error');
 $keyOk = true;
+km_purge($cfg, km_storage($cfg)); // clears out requests left unpaid for 2 days
 $dir = km_find_request(km_storage($cfg), $id);
 if ($dir === '') $back('expired');
 if (is_file($dir . '/paid.json')) $back('already');

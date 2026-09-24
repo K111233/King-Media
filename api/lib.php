@@ -864,6 +864,10 @@ function km_handle_question(array $cfg): void {
     km_fail(502, 'send', 'Sorry, your question didn’t send.');
   }
   km_respond(200, ['ok' => true]);
+  // Tidy up old saved requests too, so the clean-up doesn't depend on demo requests alone
+  $finish = km_finish_fn();
+  if ($finish !== '') $finish();
+  km_purge($cfg, km_storage($cfg));
 }
 
 /** How many saved requests are still waiting for payment. */
@@ -1046,7 +1050,10 @@ function km_checkout_session(array $cfg, array $brief): array {
   [$status, $res] = km_stripe($cfg, 'POST', '/v1/checkout/sessions', $params);
   if ($status === 200 && is_string($res['url'] ?? null)) {
     $dir = km_find_request(km_storage($cfg), (string) $brief['id']);
-    if ($dir !== '') km_save_json($dir . '/checkout.json', ['session' => (string) ($res['id'] ?? ''), 'url' => $res['url'], 'created' => time()]);
+    if ($dir !== '') {
+      km_save_json($dir . '/checkout.json', ['session' => (string) ($res['id'] ?? ''), 'url' => $res['url'], 'created' => time()]);
+      @touch($dir); // a payment page is open for up to 24 hours, so restart the 2-day unpaid clock
+    }
     return [$res['url'], ''];
   }
   return ['', 'HTTP ' . $status . ': ' . substr((string) ($res['error']['message'] ?? 'no Checkout URL returned'), 0, 300)];

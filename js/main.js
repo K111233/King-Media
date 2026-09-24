@@ -138,7 +138,7 @@
       let seen = false;
       try { seen = sessionStorage.getItem('km-seen') === '1'; sessionStorage.setItem('km-seen', '1'); } catch (e) { /* storage blocked */ }
       if (seen) loader.classList.add('is-quick');
-      const duration = seen ? 450 : 1650;
+      const duration = seen ? 450 : 1000;
       let skipped = false;
       const skip = () => { skipped = true; };
       addEventListener('pointerdown', skip, { once: true });
@@ -229,6 +229,15 @@
   }, { rootMargin: '-45% 0px -50% 0px' });
   $$('main > section[id]').forEach(s => sectionObserver.observe(s));
 
+  // Moves focus to a container for screen readers and keyboards, without leaving it clickable-focusable
+  function focusSpot(el) {
+    if (!el.hasAttribute('tabindex')) {
+      el.setAttribute('tabindex', '-1');
+      el.addEventListener('blur', () => el.removeAttribute('tabindex'), { once: true });
+    }
+    el.focus({ preventScroll: true });
+  }
+
   /* ---------------------------------------------------------------------
      MENU (modal dialog)
      --------------------------------------------------------------------- */
@@ -246,6 +255,7 @@
     clearTimeout(menuTimer);
     menuToggle.setAttribute('aria-expanded', String(open));
     header.classList.toggle('menu-open', open);
+    root.classList.toggle('is-menu-open', open);
     [main, footer, dock].forEach(el => { if (el) el.inert = open; });
     if (open) {
       menu.hidden = false;
@@ -295,9 +305,11 @@
   let pastHero = false;
   let nearEnd = false;
   let inBuild = false;
+  let typing = false; // the phone keyboard is up, so the dock would sit on top of it
+  let quietFocus = false; // set while the page itself moves focus (no keyboard appears for that)
   function updateDock() {
     if (!dock) return;
-    const on = pastHero && !nearEnd && !menuOpen && !inBuild;
+    const on = pastHero && !nearEnd && !menuOpen && !inBuild && !typing;
     dock.classList.toggle('is-on', on);
     dock.inert = !on;
   }
@@ -314,7 +326,10 @@
       nearEnd = endZones.size > 0;
       updateDock();
     });
-    [$('#contact'), footer].forEach(el => { if (el) endObserver.observe(el); });
+    [$('#askForm'), $('#contact'), footer].forEach(el => { if (el) endObserver.observe(el); });
+    const isTyping = el => el && el.matches && el.matches('textarea, select, input:not([type="radio"]):not([type="checkbox"]):not([type="file"]):not([type="button"]):not([type="submit"])');
+    document.addEventListener('focusin', e => { if (!quietFocus && isTyping(e.target) !== typing) { typing = !typing; updateDock(); } });
+    document.addEventListener('focusout', e => { if (typing && !isTyping(e.relatedTarget)) { typing = false; updateDock(); } });
   }
 
   /* ---------------------------------------------------------------------
@@ -675,28 +690,6 @@
       input.addEventListener('input', () => { if (input.closest('.field').classList.contains('has-error')) check(input); });
     });
 
-    /* Any "Get a quote" link pre-selects the right option and lands the visitor in the form */
-    document.addEventListener('click', e => {
-      const a = e.target.closest('[data-need]');
-      if (!a) return;
-      const need = a.dataset.need;
-      if (need === 'shop') needShop.checked = true;
-      else { const r = $(`input[name="booking"][value="${need}"]`, form); if (r) r.checked = true; }
-      if (form.hidden) { formDone.hidden = true; form.hidden = false; }
-      syncQuote();
-      const label = { booking: 'Online booking', 'booking-payments': 'Online booking + payments', shop: 'Online shop' }[need] || 'Your request';
-      needStatus.textContent = `${label} added to your request. Tell us what you need below.`;
-      if (!quotePanel.hidden) {
-        e.preventDefault(); // the #contact heading sits far above the panel on phones
-        quotePanel.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
-        history.replaceState(null, '', '#contact');
-      }
-      setTimeout(() => {
-        const t = $('fieldset:not([hidden]) input', quotePanel) || fQuote;
-        t.focus({ preventScroll: true });
-      }, reduced ? 60 : 900);
-    });
-
     const status = $('#formStatus');
     const submitBtn = $('#demoSubmit');
     // Back from Stripe with the browser's Back button: Safari restores the page as it was, so un-stick the button
@@ -775,7 +768,7 @@
       const sent = mode === 'sent';
       $('#doneTitle').textContent = sent ? `Thanks, ${first}. We’ve got your request.` : `Thanks, ${first}. Here’s what you asked for.`;
       $('#doneNote').textContent = sent
-        ? `We’ll be in touch soon to arrange a quick chat. If you need us sooner, email ${CONTACT_EMAIL}.`
+        ? `We’ll be in touch within 24 hours to arrange a quick chat, and your demo will be ready within 2 working days. If you need us sooner, email ${CONTACT_EMAIL}.`
         : 'This is a preview, so nothing has been sent and no payment has been taken.';
       $('#donePay').hidden = !payUrl;
       if (payUrl) $('#donePayBtn').href = payUrl;
@@ -837,6 +830,18 @@
     history.replaceState(null, '', '#contact');
     needStatus.textContent = `${TIERS[a.dataset.pages].label} (${TIERS[a.dataset.pages].build}) selected. Now tell us about your business.`;
     setTimeout(() => { if (r) r.focus({ preventScroll: true }); }, reduced ? 60 : 900);
+  });
+
+  /* On phones the contact intro is a long scroll above the form, so "Get your demo" goes straight to the form */
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href="#contact"]');
+    if (!a || !form || vw > 720 || a.dataset.pages || a.id === 'donePayBtn' || e.defaultPrevented) return;
+    e.preventDefault();
+    lockNav();
+    const target = form.hidden ? formDone : form;
+    target.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+    history.replaceState(null, '', '#contact');
+    focusSpot(form.hidden ? $('#doneTitle') : form); // so screen readers and keyboards land there too
   });
 
   /* ---------------------------------------------------------------------
@@ -968,6 +973,29 @@
       el.addEventListener('blur', () => askCheck(el));
       el.addEventListener('input', () => { if (el.closest('.field').classList.contains('has-error')) askCheck(el); });
     });
+    /* "Get a free quote" links land in this box with a starter line already typed */
+    const QUOTE_STARTS = {
+      booking: 'I’d like a quote for online booking. Customers would book: ',
+      'booking-payments': 'I’d like a quote for online booking with payments. Customers would book and pay for: ',
+      shop: 'I’d like a quote for an online shop. Roughly how many products: ',
+      any: 'I’d like a quote for: ',
+    };
+    const qText = $('#qText');
+    document.addEventListener('click', e => {
+      const a = e.target.closest('[data-quote]');
+      if (!a) return;
+      const start = QUOTE_STARTS[a.dataset.quote] || QUOTE_STARTS.any;
+      const typed = qText.value.trim();
+      if (!typed || Object.values(QUOTE_STARTS).some(t => t.trim() === typed)) qText.value = start;
+      setError(qText, '');
+      setTimeout(() => {
+        const next = askFields.find(el => !el.value.trim()) || qText;
+        quietFocus = true;
+        next.focus({ preventScroll: true });
+        quietFocus = false;
+        if (next === qText) qText.setSelectionRange(qText.value.length, qText.value.length);
+      }, reduced ? 60 : 900);
+    });
     const askBtn = $('button[type="submit"]', askForm);
     askForm.addEventListener('submit', async e => {
       e.preventDefault();
@@ -987,7 +1015,7 @@
         const sent = !!(res.data && res.data.ok);
         askForm.reset();
         st.className = 'ask__status is-ok';
-        st.textContent = sent ? `Thanks, ${first}. We’ve got your question and we’ll reply by email.` : `Thanks, ${first}. This is a preview, so your question hasn’t been sent.`;
+        st.textContent = sent ? `Thanks, ${first}. We’ve got your question and we’ll reply by email within 24 hours.` : `Thanks, ${first}. This is a preview, so your question hasn’t been sent.`;
         return;
       }
       let firstBad = null;
@@ -1006,9 +1034,9 @@
      --------------------------------------------------------------------- */
   const payNote = $('#payNote');
   const PAY_NOTES = {
-    success: ['Payment received. Thank you!', 'Your request and the £4.99 demo fee are with us. We’ll be in touch soon to arrange a quick chat about your demo.', 'is-ok'],
-    already: ['You’ve already paid.', 'Your £4.99 demo fee is paid and your request is with us, so there’s nothing more to do. We’ll be in touch soon.', 'is-ok'],
-    cancelled: ['Payment cancelled.', 'No money has been taken, and your request hasn’t been sent to us yet. Pay the £4.99 whenever you’re ready to send it.', ''],
+    success: ['Payment received. Thank you!', 'Your request and the £4.99 demo fee are with us. We’ll be in touch within 24 hours for a quick chat, and your demo will be ready within 2 working days.', 'is-ok'],
+    already: ['You’ve already paid.', 'Your £4.99 demo fee is paid and your request is with us, so there’s nothing more to do. We’ll be in touch within 24 hours.', 'is-ok'],
+    cancelled: ['Payment cancelled.', 'No money has been taken, and your request hasn’t been sent to us yet. Pay the £4.99 within 2 days to send it.', ''],
     expired: ['That payment link has expired.', 'Please fill in the form again to send a new request.', 'is-err'],
     error: ['We couldn’t open the payment page.', `Please try again, or email us at ${CONTACT_EMAIL}.`, 'is-err'],
     unavailable: ['Online payment isn’t switched on yet.', `Please email us at ${CONTACT_EMAIL} and we’ll help you straight away.`, ''],
@@ -1039,18 +1067,41 @@
   const cookieBanner = $('#cookieBanner');
   function showCookieBanner() {
     cookieBanner.hidden = false;
-    body.classList.add('has-cookie');
+    root.classList.add('has-cookie');
+    root.style.setProperty('--cookie-h', `${cookieBanner.offsetHeight}px`); // so in-page jumps don't land under it
+  }
+  let cookieOpener = null;
+  function chooseCookies(choice) {
+    try { localStorage.setItem('km-consent', choice); } catch (e) { consentMemory = choice; }
+    if (choice !== 'all') { try { sessionStorage.removeItem('km-star'); } catch (e) { /* storage blocked */ } }
+    const hadFocus = cookieBanner.contains(document.activeElement);
+    cookieBanner.hidden = true;
+    root.classList.remove('has-cookie');
+    if (hadFocus) { if (cookieOpener && cookieOpener.isConnected) cookieOpener.focus({ preventScroll: true }); else focusSpot(main); }
+    cookieOpener = null;
   }
   if (cookieBanner) {
     if (!consent()) setTimeout(showCookieBanner, reduced ? 0 : 1600);
-    $$('[data-consent]', cookieBanner).forEach(b => b.addEventListener('click', () => {
-      const choice = b.dataset.consent;
-      try { localStorage.setItem('km-consent', choice); } catch (e) { consentMemory = choice; }
-      if (choice !== 'all') { try { sessionStorage.removeItem('km-star'); } catch (e) { /* storage blocked */ } }
-      cookieBanner.hidden = true;
-      body.classList.remove('has-cookie');
-    }));
-    $$('[data-cookie-settings]').forEach(b => b.addEventListener('click', () => { showCookieBanner(); $('[data-consent="all"]', cookieBanner).focus(); }));
+    $$('[data-consent]', cookieBanner).forEach(b => b.addEventListener('click', () => chooseCookies(b.dataset.consent)));
+    // Escape closes it the private way, unless it's closing the menu (checked first, before the menu reacts)
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape' || cookieBanner.hidden || menuOpen) return;
+      chooseCookies('essential');
+    }, true);
+    // While it's open, don't let keyboard focus hide underneath it. A few frames, because the hero drifts as it scrolls.
+    document.addEventListener('focusin', e => {
+      const el = e.target;
+      if (cookieBanner.hidden || menuOpen || cookieBanner.contains(el) || !el.getBoundingClientRect) return;
+      let tries = 0;
+      const lift = () => {
+        const over = el.getBoundingClientRect().bottom - (cookieBanner.getBoundingClientRect().top - 16);
+        if (over <= 0 || tries++ > 5) return;
+        scrollBy({ top: over, behavior: 'instant' });
+        requestAnimationFrame(lift);
+      };
+      lift();
+    });
+    $$('[data-cookie-settings]').forEach(b => b.addEventListener('click', () => { cookieOpener = b; showCookieBanner(); $('[data-consent="all"]', cookieBanner).focus(); }));
   }
 
   $$('[data-email]').forEach(a => { a.href = `mailto:${CONTACT_EMAIL}`; a.textContent = CONTACT_EMAIL; });
@@ -1199,7 +1250,7 @@
   const rail = $('#processRail');
   const steps = $$('.step:not(.step--end)', track);
 
-  const DEFAULT_LIVE = { name: 'Live', url: 'hearthcoffee.co.uk' };
+  const DEFAULT_LIVE = { name: 'Live', url: 'hearthcoffee.kingmedia.uk' };
   const STAGES = [
     { name: 'Blueprint', url: 'draft — blueprint' },
     { name: 'Words', url: 'draft — copy' },
@@ -1244,6 +1295,30 @@
     if (vw < 1024) mock.style.zoom = String(Math.min(1, buildStage.clientWidth / 760));
     else if (!reduced) mock.style.zoom = String(Math.min(1, Math.max(.55, (vh - 154) / 791)));
     else mock.style.zoom = '';
+    reserveStage();
+  }
+  // Below desktop the preview sits in the page flow, and the phone step is taller than the rest.
+  // Hold the tallest step's height so the page underneath never jumps while it plays.
+  function reserveStage() {
+    buildStage.style.minHeight = '';
+    if (vw >= 1024) return;
+    const kept = mock.className;
+    const keptCaption = buildCaption.textContent;
+    mock.classList.add('is-measuring');
+    let tallest = 0;
+    STAGES.forEach((stage, n) => {
+      mock.classList.toggle('s-brand', n >= 2);
+      mock.classList.toggle('s-image', n >= 3);
+      mock.classList.toggle('s-mobile', n === 4);
+      mock.classList.toggle('s-live', n >= 5);
+      buildCaption.textContent = `Step 0${n + 1} — ${stage.name}`;
+      tallest = Math.max(tallest, buildStage.offsetHeight);
+    });
+    mock.className = `${kept} is-measuring`;
+    buildCaption.textContent = keptCaption;
+    void mock.offsetHeight;
+    mock.classList.remove('is-measuring');
+    buildStage.style.minHeight = `${Math.ceil(tallest)}px`;
   }
   // If the pinned scene can't fit the screen (landscape phones, big zoom, short windows), show it as a normal section
   const buildSticky = $('.build__sticky');
@@ -1330,7 +1405,7 @@
       if (!buildAuto) { build.classList.remove('build--static'); buildAuto = true; resetBuildStage(); }
       buildAuto = true;
       buildStatic = true; // no scroll-driven stages
-      build.classList.add('build--auto');
+      if (!build.classList.contains('build--auto')) { build.classList.add('build--auto'); reserveStage(); }
       buildPlay.hidden = false;
       return;
     }
@@ -1531,6 +1606,9 @@
     if (fBiz && !fBiz.value.trim()) fBiz.value = name;
     if (consent() === 'all') { try { sessionStorage.setItem('km-star', JSON.stringify({ name, trade })); } catch (e) { /* storage blocked */ } }
     $('#starReset').hidden = false;
+    const tag = $('#buildStarName'); // the name is tiny inside the phone-sized mock, so say it underneath too
+    if (tag) { tag.textContent = `Built for ${name}`; tag.hidden = false; }
+    reserveStage();
   }
   function resetStar() {
     Object.values(starSlots).forEach(s => { s.el.textContent = s.original; });
@@ -1540,6 +1618,8 @@
     resetBuildStage();
     try { sessionStorage.removeItem('km-star'); } catch (e) { /* storage blocked */ }
     $('#starReset').hidden = true;
+    if ($('#buildStarName')) $('#buildStarName').hidden = true;
+    reserveStage();
     $('#starStatus').replaceChildren();
     $('#starName').value = '';
     setError($('#starName'), '');
@@ -1563,9 +1643,9 @@
         note.className = 'starring__note';
         note.append('Want customers to book or pay online? That’s quoted separately. ');
         const a = document.createElement('a');
-        a.href = '#contact';
-        a.dataset.need = 'booking';
-        a.textContent = 'Tell us what you need';
+        a.href = '#askForm';
+        a.dataset.quote = trade === 'clinic' ? 'booking-payments' : 'booking';
+        a.textContent = 'Get a free quote';
         note.append(a);
         parts.push(note);
       }

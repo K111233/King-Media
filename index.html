@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>King Media | Websites That Win You Work — UK Web Design, Hosting &amp; Care</title>
-<meta name="description" content="Websites that win you work. King Media designs, builds, hosts and looks after websites for UK businesses. See your demo for £4.99, then from £494.99 to build and from £39.99 a month.">
+<title>King Media | Websites that win you work</title>
+<meta name="description" content="King Media designs, builds, hosts and looks after websites for UK businesses. See a real demo for £4.99, then from £494.99 to build and £49.99 a month.">
 <meta name="theme-color" content="#080806">
 <meta name="format-detection" content="telephone=no">
 <meta property="og:type" content="website">
@@ -20,12 +20,28 @@
 <meta name="twitter:title" content="King Media">
 <meta name="twitter:image" content="https://kingmedia.uk/assets/share/og-image.png">
 <link rel="canonical" href="https://kingmedia.uk/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "King Media",
+  "url": "https://kingmedia.uk/",
+  "logo": "https://kingmedia.uk/apple-touch-icon.png",
+  "image": "https://kingmedia.uk/assets/share/og-image.png",
+  "slogan": "Websites that win you work.",
+  "description": "Website design, build, hosting and management for UK businesses.",
+  "email": "enquiries@kingmedia.uk",
+  "address": { "@type": "PostalAddress", "streetAddress": "124 City Road", "addressLocality": "London", "postalCode": "EC1V 2NX", "addressCountry": "GB" },
+  "areaServed": { "@type": "Country", "name": "United Kingdom" },
+  "currenciesAccepted": "GBP"
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='11' fill='%23080806'/%3E%3Cpath d='M8 9.5h5.2v29H8Z' fill='%23D4AF37'/%3E%3Cpath d='M30.9 9.5H39L25.4 24 39 38.5h-8.1L17.3 24Z' fill='%23F3EEE4'/%3E%3C/svg%3E">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/syne-normal-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/manrope-normal-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/style.css?v=20260924d">
+<link rel="stylesheet" href="css/style.css?v=20260924e">
 <script>
   document.documentElement.classList.replace('no-js', 'js');
   try { if (localStorage.getItem('km-motion') === 'off') document.documentElement.classList.add('motion-off'); } catch (e) {}
@@ -34,6 +50,16 @@
 <body class="is-loading">
 
 <a class="skip-link" href="#main">Skip to main content</a>
+
+<!-- ============ COOKIE CHOICES ============ -->
+<div class="cookie" id="cookieBanner" role="region" aria-labelledby="cookieTitle" hidden>
+  <p class="cookie__title" id="cookieTitle">Cookies</p>
+  <p class="cookie__text">No tracking or advertising cookies. We only store what this site needs to work and, with your OK, the name you try in “See it with your name” while you browse. <a href="privacy.html#cookies" class="link-underline">Cookie policy</a></p>
+  <div class="cookie__actions">
+    <button type="button" class="btn btn--primary btn--sm" data-consent="all"><span class="btn__label">Accept all</span></button>
+    <button type="button" class="btn btn--ghost btn--sm" data-consent="essential"><span class="btn__label">Essential only</span></button>
+  </div>
+</div>
 
 <!-- ============ PRELOADER: caret blinks, K completes, "King Media" types, screen splits ============ -->
 <div class="loader" id="loader" aria-hidden="true">
@@ -93,7 +119,7 @@
   </div>
 </header>
 
-<div class="menu-overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Site menu" hidden>
+<div class="menu-overlay" id="menuOverlay" role="dialog" aria-label="Site menu" hidden>
   <nav class="menu-overlay__nav" aria-label="Menu">
     <ol>
       <li><a href="#build"><span class="menu-overlay__num" aria-hidden="true">02</span>How we build</a></li>
@@ -106,7 +132,7 @@
   </nav>
   <div class="menu-overlay__foot">
     <a href="#contact" class="btn btn--ink btn--lg btn--block"><span class="btn__label">Get your £4.99 demo</span></a>
-    <a href="#contact" class="menu-overlay__quote" data-need="booking">Bookings, payments or a shop? Get a quote</a>
+    <a href="#askForm" class="menu-overlay__quote" data-quote="any">Bookings, payments or a shop? Get a free quote</a>
     <p class="menu-overlay__email"><span data-email-text>enquiries@kingmedia.uk</span></p>
     <button type="button" class="motion-toggle motion-toggle--ink" aria-pressed="false" data-motion-toggle>Pause motion</button>
   </div>
@@ -131,7 +157,7 @@
       </h1>
 
       <div class="hero__foot">
-        <p class="hero__lede" data-hero-fade>
+        <p class="hero__lede">
           King Media designs, builds, hosts and looks after websites for UK businesses.
           See a real demo of yours for <strong>just £4.99</strong> before you commit to anything.
         </p>
@@ -150,7 +176,7 @@
         <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>£4.99 demo, no obligation</li>
         <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Live the next day</li>
         <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Up to 5 changes a month included</li>
-        <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><a href="#pricing" class="link-underline">From £494.99, then from £39.99 a month</a></li>
+        <li><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><a href="#pricing" class="link-underline">From £494.99, then £49.99 a month (or £39.99 on a 5-year plan)</a></li>
       </ul>
     </div>
 
@@ -183,14 +209,14 @@
   <section class="manifesto" id="manifesto" aria-labelledby="manifestoLabel">
     <div class="container">
       <p class="section-tag" id="manifestoLabel"><span aria-hidden="true">(01)</span> The idea</p>
-      <p class="manifesto__text" data-words>Most businesses don’t need a tech department. They need one team that picks up the phone, builds something <em>beautiful</em>, and keeps it running, so they can get back to running the business. That’s the whole idea behind <strong>King&nbsp;Media.</strong></p>
+      <p class="manifesto__text" data-words>Most businesses don’t need a tech department. They need one team that answers, builds something <em>beautiful</em>, and keeps it running, so they can get back to running the business. That’s the whole idea behind <strong>King&nbsp;Media.</strong></p>
 
       <form class="starring" id="star" aria-labelledby="starTitle" novalidate>
         <p class="starring__title" id="starTitle">Want to see it with <em>your</em> name on it?</p>
         <div class="starring__row">
           <div class="field">
             <label for="starName">Business name</label>
-            <input id="starName" name="starName" type="text" maxlength="32" autocomplete="organization" aria-describedby="starHelp starErr">
+            <input id="starName" autocapitalize="words" name="starName" type="text" maxlength="32" autocomplete="organization" aria-describedby="starHelp starErr">
           </div>
           <div class="field">
             <label for="starTrade">Type of business</label>
@@ -303,6 +329,7 @@
             </svg>
           </div>
           <p class="build__caption"><span id="buildCaption">Step 01 — Blueprint</span></p>
+          <p class="build__starname" id="buildStarName" hidden></p>
         </div>
       </div>
     </div>
@@ -323,7 +350,7 @@
         <!-- Featured concept: landscaping, with a live before/after slider -->
         <article class="concept concept--feature reveal">
           <div class="concept__frame concept__frame--live">
-            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">evergreengardens.co.uk</span><span class="concept__hint concept__hint--show">Drag the photo</span></div>
+            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">evergreengardens.kingmedia.uk</span><span class="concept__hint concept__hint--show">Drag the photo</span></div>
             <div class="eg">
               <div class="eg-nav" aria-hidden="true"><b>Evergreen <em>Gardens</em></b><span>Lawns</span><span>Landscaping</span><span>Our work</span><span class="eg-pill">Free quote</span></div>
               <div class="eg-hero">
@@ -354,7 +381,7 @@
 
         <article class="concept reveal">
           <div class="concept__frame">
-            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">crumbandco.co.uk</span><span class="concept__hint">Tap to preview</span></div>
+            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">crumbandco.kingmedia.uk</span><span class="concept__hint">Tap to preview</span></div>
             <div class="concept__screen" aria-hidden="true">
               <div class="cs cs--bakery">
                 <div class="cs-nav"><b>Crumb&nbsp;&amp;&nbsp;Co.</b><span>Bakes</span><span>Visit</span><span class="cs-pill">Call us</span></div>
@@ -379,7 +406,7 @@
 
         <article class="concept reveal">
           <div class="concept__frame">
-            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">northsidebarbers.co.uk</span><span class="concept__hint">Tap to preview</span></div>
+            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">northsidebarbers.kingmedia.uk</span><span class="concept__hint">Tap to preview</span></div>
             <div class="concept__screen" aria-hidden="true">
               <div class="cs cs--barber">
                 <div class="cs-nav"><b>NORTHSIDE</b><span>Cuts</span><span>Team</span><span class="cs-pill">Book</span></div>
@@ -404,7 +431,7 @@
 
         <article class="concept reveal">
           <div class="concept__frame">
-            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">halcyonphysio.co.uk</span><span class="concept__hint">Tap to preview</span></div>
+            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">halcyonphysio.kingmedia.uk</span><span class="concept__hint">Tap to preview</span></div>
             <div class="concept__screen" aria-hidden="true">
               <div class="cs cs--physio">
                 <div class="cs-nav"><b>halcyon</b><span>Treatments</span><span>Clinic</span><span class="cs-pill">Book online</span></div>
@@ -428,7 +455,7 @@
 
         <article class="concept reveal">
           <div class="concept__frame">
-            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">ironcladroofing.co.uk</span><span class="concept__hint">Tap to preview</span></div>
+            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">ironcladroofing.kingmedia.uk</span><span class="concept__hint">Tap to preview</span></div>
             <div class="concept__screen" aria-hidden="true">
               <div class="cs cs--roof">
                 <div class="cs-nav"><b>IRONCLAD</b><span>Services</span><span>Projects</span><span class="cs-pill">Free quote</span></div>
@@ -448,7 +475,7 @@
         <!-- Featured concept: online shop, with a working demo basket -->
         <article class="concept concept--feature reveal">
           <div class="concept__frame concept__frame--live">
-            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">wickandwild.co.uk</span><span class="concept__hint concept__hint--show">Try the basket</span></div>
+            <div class="concept__chrome" aria-hidden="true"><i></i><i></i><i></i><span class="concept__url">wickandwild.kingmedia.uk</span><span class="concept__hint concept__hint--show">Try the basket</span></div>
             <div class="ww" data-shop>
               <p class="ww-bar" aria-hidden="true">Free UK delivery over £40 · Hand-poured in small batches</p>
               <div class="ww-nav">
@@ -543,12 +570,12 @@
               <div class="gauge"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="gauge__fill" cx="60" cy="60" r="50" pathLength="100"/></svg><span class="gauge__num" data-count="100">100</span><small>Access</small></div>
               <div class="gauge"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="gauge__fill" cx="60" cy="60" r="50" pathLength="100"/></svg><span class="gauge__num" data-count="100">100</span><small>SEO</small></div>
             </div>
-            <p class="gauges__caption">The scores we build every site to hit.</p>
+            <p class="gauges__caption">The Google Lighthouse scores we aim for on every site.</p>
           </div>
           <div class="card__body">
             <span class="card__kicker">Bespoke design &amp; build</span>
             <h3 class="card__title">Hand-built. No templates. Seriously fast.</h3>
-            <p>Every site is designed around your brand and your customers, then hand-coded to load in a blink. Green scores across the board are the standard we build to.</p>
+            <p>Every site is designed around your brand and your customers, then hand-coded to load in a blink. Top scores across the board are the standard we build to.</p>
           </div>
         </article>
 
@@ -564,8 +591,8 @@
           </div>
           <div class="card__body">
             <span class="card__kicker">5 changes a month</span>
-            <h3 class="card__title">New prices? Fresh photos? Just text&nbsp;us.</h3>
-            <p>Up to 5 changes every month, big or small. New prices, fresh photos, seasonal offers, a new page. Send a message and we’ll handle it.</p>
+            <h3 class="card__title">New prices? Fresh photos? Just message&nbsp;us.</h3>
+            <p>Up to 5 changes every month, big or small. New prices, fresh photos, seasonal offers, a new section. Send a message and we’ll handle it.</p>
           </div>
         </article>
 
@@ -640,16 +667,16 @@
           <li class="step">
             <span class="step__num" aria-hidden="true">01</span>
             <div class="step__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M12 9h9l3 9-5 3a24 24 0 0 0 8 8l3-5 9 3v9a3 3 0 0 1-3 3A31 31 0 0 1 9 12a3 3 0 0 1 3-3Z"/></svg></div>
-            <h3>A quick chat</h3>
-            <p>Tell us about your business, your customers and what you want your website to do. Ten minutes is plenty.</p>
-            <span class="step__meta">≈10 minutes</span>
+            <h3>Tell us about you</h3>
+            <p>Send us your details, logo and photos, and pay the £4.99 demo fee. We then have a quick chat about your business and what you want your website to do.</p>
+            <span class="step__meta">£4.99 · no obligation</span>
           </li>
           <li class="step">
             <span class="step__num" aria-hidden="true">02</span>
             <div class="step__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="6" y="9" width="36" height="26" rx="3"/><path d="M6 16h36M18 41h12M24 35v6"/></svg></div>
-            <h3>Your £4.99 demo</h3>
-            <p>We design a real, working demo of your new website and show it to you. It’s just £4.99, with no obligation to go ahead.</p>
-            <span class="step__meta">£4.99 · no obligation</span>
+            <h3>Your demo</h3>
+            <p>We design a real, working demo of your new website and show it to you, within 2 working days.</p>
+            <span class="step__meta">Within 2 working days</span>
           </li>
           <li class="step">
             <span class="step__num" aria-hidden="true">03</span>
@@ -670,7 +697,7 @@
             <div class="step__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 6 40 12v11c0 10-7 16-16 20C15 39 8 33 8 23V12Z"/><path d="m17 24 5 5 9-10"/></svg></div>
             <h3>Looked after, for good</h3>
             <p>One monthly fee covers hosting, security, backups and up to 5 website changes a month, for as long as you’re with us.</p>
-            <span class="step__meta">From £39.99 a month</span>
+            <span class="step__meta">From £49.99 a month</span>
           </li>
           <li class="step step--end">
             <p>Your turn.</p>
@@ -698,7 +725,7 @@
           <p>Approve your demo, pay the build fee, and you’re live the next day.</p>
         </li>
         <li class="promise__item reveal">
-          <span class="promise__num"><span class="visually-hidden">From £494.99</span><span aria-hidden="true">£<span data-count="494">494</span><span class="promise__pence">.99</span></span></span>
+          <span class="promise__num"><span class="visually-hidden">From £494.99</span><span aria-hidden="true">£494<span class="promise__pence">.99</span></span></span>
           <strong class="promise__label">Websites from</strong>
           <p>Priced by the page, with no surprise invoices.</p>
         </li>
@@ -760,7 +787,7 @@
             <li>Mobile-first, hand-coded build</li>
             <li>Search-ready foundations</li>
             <li>Changes until you love it</li>
-            <li>Live the day after you approve it</li>
+            <li>Live the day after you approve and pay</li>
           </ul>
         </div>
         <div class="plan__col">
@@ -769,41 +796,41 @@
             <li>Hosting, domain &amp; SSL padlock</li>
             <li>Security updates &amp; daily backups</li>
             <li>Up to 5 website changes a month<sup>*</sup></li>
-            <li>A real person at the end of the phone</li>
+            <li>A direct line to us once you’re on a plan</li>
           </ul>
         </div>
         <div class="plan__demo">
           <p class="plan__demo-price"><span>£4.99</span> demo</p>
-          <p>See a real, working demo of your new website before you commit, with no obligation to go ahead.</p>
+          <p>See a real, working demo of your new website before you commit. The £4.99 covers our time designing it. It’s a separate fee, and there’s no obligation to go ahead.</p>
           <a href="#contact" class="btn btn--primary btn--block" data-magnetic><span class="btn__label">Start with a £4.99 demo</span><span class="btn__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
         </div>
-        <p class="price-card__fine plan__fine"><sup>*</sup>Up to 5 changes every month, big or small: prices, photos, opening hours, offers, new sections. Online booking systems, taking payments and online shops aren’t included in the build or monthly price. Tell us what you need and we’ll quote for it. Prices are in pounds sterling. Full details are in our <a href="terms.html" class="link-underline">terms</a>.</p>
+        <p class="price-card__fine plan__fine"><sup>*</sup>Up to 5 changes every month, big or small: prices, photos, opening hours, offers, new sections. New pages, online booking systems, taking payments and online shops aren’t included in the build or monthly price. Tell us what you need and we’ll quote for it, free. All prices are in pounds sterling and include VAT. Full details are in our <a href="terms.html" class="link-underline">terms</a>.</p>
       </div>
 
       <aside class="addons reveal" id="extras" aria-labelledby="addonsTitle">
         <div class="addons__intro">
           <p class="addons__tag">Quoted to your spec</p>
           <h3 id="addonsTitle">Need bookings, payments or a shop?</h3>
-          <p>These aren’t in the standard price because every business needs them a little differently. Tell us exactly what you need and we’ll send you a clear quote before any work starts.</p>
+          <p>These aren’t in the standard price because every business needs them a little differently. Tell us exactly what you need and we’ll send you a clear quote, free, within 24 hours.</p>
         </div>
         <ul class="addons__list" role="list">
           <li>
             <span class="addons__pill">Quoted separately</span>
             <strong>Online booking system</strong>
             <small>Customers book appointments, tables, classes or visits from your website, day or night.</small>
-            <a href="#contact" data-need="booking" class="link-underline">Get a quote <span class="visually-hidden">for an online booking system</span></a>
+            <a href="#askForm" data-quote="booking" class="link-underline">Get a free quote <span class="visually-hidden">for an online booking system</span></a>
           </li>
           <li>
             <span class="addons__pill">Quoted separately</span>
             <strong>Online booking + taking payments</strong>
             <small>Take a deposit or the full amount when customers book, which helps cut down no-shows.</small>
-            <a href="#contact" data-need="booking-payments" class="link-underline">Get a quote <span class="visually-hidden">for online booking with payments</span></a>
+            <a href="#askForm" data-quote="booking-payments" class="link-underline">Get a free quote <span class="visually-hidden">for online booking with payments</span></a>
           </li>
           <li>
             <span class="addons__pill">Quoted separately</span>
             <strong>Online shop</strong>
             <small>Sell your products online with secure card payments.</small>
-            <a href="#contact" data-need="shop" class="link-underline">Get a quote <span class="visually-hidden">for an online shop</span></a>
+            <a href="#askForm" data-quote="shop" class="link-underline">Get a free quote <span class="visually-hidden">for an online shop</span></a>
           </li>
         </ul>
       </aside>
@@ -821,11 +848,15 @@
       <div class="accordion">
         <div class="acc reveal">
           <h3><button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc1" id="accb1">Do I see my website before I commit?<span class="acc__icon" aria-hidden="true"></span></button></h3>
-          <div class="acc__panel" id="acc1"><div><p>Yes. For £4.99 we build a real, working demo of your new website and show it to you. If you love it, you can go ahead with the build. If you don’t, you don’t pay anything more.</p></div></div>
+          <div class="acc__panel" id="acc1"><div><p>Yes. For £4.99 we build a real, working demo of your new website and show it to you within 2 working days. If you love it, you can go ahead with the build. If you don’t, you don’t pay anything more.</p></div></div>
+        </div>
+        <div class="acc reveal">
+          <h3><button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc9" id="accb9">Why does the demo cost £4.99?<span class="acc__icon" aria-hidden="true"></span></button></h3>
+          <div class="acc__panel" id="acc9"><div><p>The £4.99 covers our time designing a real, working demo for your business, rather than a template with your logo on it. It’s a separate fee, so it isn’t taken off your build price, and there’s no obligation to go ahead. It also means we can give every demo our full attention.</p></div></div>
         </div>
         <div class="acc reveal">
           <h3><button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc8" id="accb8">How much does a website cost?<span class="acc__icon" aria-hidden="true"></span></button></h3>
-          <div class="acc__panel" id="acc8"><div><p>It depends on how many pages you need: £494.99 for one page, £899.99 for two, £1,199.99 for three, or £1,449.99 for four or more. Then it’s from £49.99 a month (or from £39.99 on a 5-year plan) to keep it hosted, secure and up to date, with up to 5 changes a month included. Start with a £4.99 demo, with no obligation to go ahead.</p></div></div>
+          <div class="acc__panel" id="acc8"><div><p>It depends on how many pages you need: £494.99 for one page, £899.99 for two, £1,199.99 for three, or £1,449.99 for four or more. Then it’s from £49.99 a month (or from £39.99 on a 5-year plan) to keep it hosted, secure and up to date, with up to 5 changes a month included. All prices include VAT. Start with a £4.99 demo, with no obligation to go ahead.</p></div></div>
         </div>
         <div class="acc reveal">
           <h3><button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc2" id="accb2">How quickly can my website go live?<span class="acc__icon" aria-hidden="true"></span></button></h3>
@@ -833,11 +864,11 @@
         </div>
         <div class="acc reveal">
           <h3><button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc3" id="accb3">What does the monthly fee cover?<span class="acc__icon" aria-hidden="true"></span></button></h3>
-          <div class="acc__panel" id="acc3"><div><p>Hosting, your domain name, the SSL padlock, security and software updates, daily backups, and up to 5 website changes every month, big or small. That covers things like new prices, photos, opening hours, seasonal offers or a new section. Adding new features later, such as online bookings, taking payments or an online shop, needs a separate quote. Tell us what you need and we’ll price it up.</p></div></div>
+          <div class="acc__panel" id="acc3"><div><p>Hosting, your domain name, the SSL padlock, security and software updates, daily backups, and up to 5 website changes every month, big or small. That covers things like new prices, photos, opening hours, seasonal offers or a new section. Adding new pages or new features later, such as online bookings, taking payments or an online shop, needs a separate quote. Tell us what you need and we’ll price it up.</p></div></div>
         </div>
         <div class="acc reveal">
           <h3><button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc4" id="accb4">Is there a contract?<span class="acc__icon" aria-hidden="true"></span></button></h3>
-          <div class="acc__panel" id="acc4"><div><p>For one or two pages, it’s £49.99 a month with a 12-month minimum, or £39.99 a month if you sign up for 5 years. For three pages or more, it’s £59.99 a month with a 12-month minimum, or £49.99 a month if you sign up for 5 years. After your minimum term, it carries on month by month until you decide to leave.</p></div></div>
+          <div class="acc__panel" id="acc4"><div><p>For one or two pages, it’s £49.99 a month with a 12-month minimum, or £39.99 a month if you sign up for 5 years. For three pages or more, it’s £59.99 a month with a 12-month minimum, or £49.99 a month if you sign up for 5 years. After your minimum term, it carries on month by month, and you can leave with 30 days’ notice. We go through the full agreement with you before anything starts.</p></div></div>
         </div>
         <div class="acc reveal">
           <h3><button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc5" id="accb5">I’m not technical. Is that a problem?<span class="acc__icon" aria-hidden="true"></span></button></h3>
@@ -845,21 +876,21 @@
         </div>
         <div class="acc reveal">
           <h3><button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc6" id="accb6">Can customers book online, or pay when they book?<span class="acc__icon" aria-hidden="true"></span></button></h3>
-          <div class="acc__panel" id="acc6"><div><p>Yes. We can add an online booking system for appointments, tables, classes or call-outs, and it can take a deposit or the full amount when people book. It isn’t included in the build or monthly price, because every business books a little differently. Tell us what customers book and how you’d like them to pay (there’s a section for it on the <a href="#contact" data-need="booking" class="link-underline">demo form</a>) and we’ll send you a clear quote before any work starts.</p></div></div>
+          <div class="acc__panel" id="acc6"><div><p>Yes. We can add an online booking system for appointments, tables, classes or call-outs, and it can take a deposit or the full amount when people book. It isn’t included in the build or monthly price, because every business books a little differently. <a href="#askForm" data-quote="booking" class="link-underline">Ask for a free quote</a>: tell us what customers book and how you’d like them to pay, and we’ll send you a clear quote within 24 hours, before any work starts.</p></div></div>
         </div>
         <div class="acc reveal">
           <h3><button type="button" class="acc__btn" aria-expanded="false" aria-controls="acc7" id="accb7">Do you build online shops?<span class="acc__icon" aria-hidden="true"></span></button></h3>
-          <div class="acc__panel" id="acc7"><div><p>Yes, quoted separately, based on what you sell and how you deliver it. Choose ‘Online shop’ on the <a href="#contact" data-need="shop" class="link-underline">demo form</a>, tell us roughly how many products you have, and we’ll quote for it.</p></div></div>
+          <div class="acc__panel" id="acc7"><div><p>Yes, quoted separately, based on what you sell and how you deliver it. <a href="#askForm" data-quote="shop" class="link-underline">Ask for a free quote</a>, tell us roughly how many products you have, and we’ll reply within 24 hours.</p></div></div>
         </div>
 
         <form class="ask reveal" id="askForm" aria-labelledby="askTitle" novalidate>
           <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="km_extra" tabindex="-1" autocomplete="off"></label></div>
-          <h3 class="ask__title" id="askTitle">Still got a <em>question?</em></h3>
-          <p class="ask__lede">Ask us anything: prices, timings, what’s possible. You don’t need to request a demo first.</p>
+          <h3 class="ask__title" id="askTitle">A question, or a <em>free quote?</em></h3>
+          <p class="ask__lede">Ask us anything, or tell us what you need quoting for, such as bookings, payments or a shop. It’s free, you don’t need a demo first, and we reply within 24 hours.</p>
           <div class="form__row">
             <div class="field">
               <label for="qName">Your name <span class="req" aria-hidden="true">*</span></label>
-              <input id="qName" name="qName" type="text" autocomplete="name" required aria-describedby="qNameErr">
+              <input id="qName" autocapitalize="words" name="qName" type="text" autocomplete="name" required aria-describedby="qNameErr">
               <p class="field__error" id="qNameErr"></p>
             </div>
             <div class="field">
@@ -869,7 +900,7 @@
             </div>
           </div>
           <div class="field">
-            <label for="qText">Your question <span class="req" aria-hidden="true">*</span></label>
+            <label for="qText">Your question or what you need quoting <span class="req" aria-hidden="true">*</span></label>
             <textarea id="qText" name="qText" rows="3" required aria-describedby="qTextErr"></textarea>
             <p class="field__error" id="qTextErr"></p>
           </div>
@@ -887,31 +918,32 @@
       <div class="contact__copy">
         <p class="section-tag reveal"><span aria-hidden="true">(08)</span> Get started</p>
         <h2 class="contact__title" id="contactTitle" data-split-lines>Ready to win more work? <em>Let’s build it.</em></h2>
-        <p class="section-lede reveal">Tell us a little about your business and send over anything that helps: your logo, colours, photos of your work. We’ll have a quick chat, then build your £4.99 demo, with no obligation to go ahead.</p>
+        <p class="section-lede reveal">Tell us a little about your business and send over anything that helps: your logo, colours, photos of your work. Pay the £4.99 demo fee, we’ll have a quick chat, and your demo is ready within 2 working days, with no obligation to go ahead.</p>
         <p class="contact__direct reveal">Prefer email? <a href="mailto:enquiries@kingmedia.uk" class="link-underline" data-email>enquiries@kingmedia.uk</a></p>
 
         <ol class="next-steps reveal" aria-label="What happens next">
           <li><strong>Send your details and pay £4.99</strong><span>Secure payment with Stripe. It takes a minute.</span></li>
-          <li><strong>We get back to you</strong><span>A quick chat. Ten minutes is plenty.</span></li>
-          <li><strong>Your demo</strong><span>Tweaks are included until you love it.</span></li>
+          <li><strong>We get back to you</strong><span>Within 24 hours, for a quick chat. Ten minutes is plenty.</span></li>
+          <li><strong>Your demo</strong><span>Ready within 2 working days, with tweaks until you love it.</span></li>
           <li><strong>Approve and pay for your build</strong><span>Your website goes live the next day.</span></li>
-          <li><strong>Asked about bookings, payments or a shop?</strong><span>We send a separate quote first, so you know the full cost before you commit.</span></li>
+          <li><strong>Need bookings, payments or a shop?</strong><span>We send a free, separate quote first, so you know the full cost before you commit.</span></li>
         </ol>
       </div>
 
       <div class="contact__form-wrap reveal">
         <div class="pay-note" id="payNote" role="status" tabindex="-1" hidden><p class="pay-note__title" id="payNoteTitle"></p><p id="payNoteText"></p><a class="btn btn--primary btn--sm" id="payRetry" href="#contact" hidden><span class="btn__label">Pay £4.99 to send it</span></a></div>
-        <form class="form" id="demoForm" novalidate>
+        <form class="form" id="demoForm" aria-label="Demo request form" novalidate>
           <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="km_extra" tabindex="-1" autocomplete="off"></label></div>
+          <p class="form__req">Fields marked <span class="req">*</span> are required.</p>
           <div class="form__row">
             <div class="field">
               <label for="fName">Your name <span class="req" aria-hidden="true">*</span></label>
-              <input id="fName" name="name" type="text" autocomplete="name" required aria-describedby="fNameErr">
+              <input id="fName" autocapitalize="words" name="name" type="text" autocomplete="name" required aria-describedby="fNameErr">
               <p class="field__error" id="fNameErr"></p>
             </div>
             <div class="field">
               <label for="fBiz">Business name <span class="req" aria-hidden="true">*</span></label>
-              <input id="fBiz" name="business" type="text" autocomplete="organization" required aria-describedby="fBizErr">
+              <input id="fBiz" autocapitalize="words" name="business" type="text" autocomplete="organization" required aria-describedby="fBizErr">
               <p class="field__error" id="fBizErr"></p>
             </div>
           </div>
@@ -1022,7 +1054,7 @@
             <span class="btn__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </button>
           <p class="form__paynote"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Next, you’ll pay the £4.99 securely with Stripe: card, Apple Pay or Google Pay. We start as soon as it’s paid.</p>
-          <p class="form__privacy">We’ll only use your details and files to reply about your website, and we never sell them. See our <a href="privacy.html" class="link-underline">privacy notice</a> and <a href="terms.html" class="link-underline">terms</a>.</p>
+          <p class="form__privacy">Our services are for businesses, so please send this on behalf of yours. We’ll only use your details and files to reply about your website, and we never sell them. See our <a href="privacy.html" class="link-underline">privacy notice</a> and <a href="terms.html" class="link-underline">terms</a>.</p>
           <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
           <p class="visually-hidden" id="needStatus" role="status" aria-live="polite"></p>
         </form>
@@ -1125,16 +1157,6 @@
   </div>
 </footer>
 
-<!-- ============ COOKIE CHOICES ============ -->
-<div class="cookie" id="cookieBanner" role="region" aria-labelledby="cookieTitle" hidden>
-  <p class="cookie__title" id="cookieTitle">Cookies</p>
-  <p class="cookie__text">We don’t use tracking or advertising cookies. We only store what this site needs to work, like your cookie choice. With your OK, we’ll also remember the name you try in “See it with your name” while you browse. <a href="privacy.html#cookies" class="link-underline">Cookie policy</a></p>
-  <div class="cookie__actions">
-    <button type="button" class="btn btn--primary btn--sm" data-consent="all"><span class="btn__label">Accept all</span></button>
-    <button type="button" class="btn btn--ghost btn--sm" data-consent="essential"><span class="btn__label">Essential only</span></button>
-  </div>
-</div>
-
-<script src="js/main.js?v=20260924d" defer></script>
+<script src="js/main.js?v=20260924e" defer></script>
 </body>
 </html>
