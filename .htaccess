@@ -1,0 +1,6 @@
+# Hide git's files: Hostinger's Git deploy puts the .git folder inside public_html.
+RewriteEngine On
+RewriteRule (^|/)\.git - [F,L]
+
+# No folder listings anywhere
+Options -Indexes
