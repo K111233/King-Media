@@ -1478,6 +1478,23 @@ function km_contract_retry(array $cfg, string $storage): void {
   }
 }
 
+/** The signed agreement, styled to read well inside an email (email apps ignore style sheets). */
+function km_email_agreement(array $offer, array $signed): string {
+  $cell = 'text-align:left;vertical-align:top;padding:7px 9px;border:1px solid #E3DCCB';
+  return strtr(km_agreement_body($offer, $signed, 2), [
+    '<table>' => '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin:6px 0 12px;font-size:13px">',
+    '<th scope="row">' => '<th scope="row" style="' . $cell . ';width:34%;background:#FAF7EF;font-weight:600">',
+    '<td>' => '<td style="' . $cell . '">',
+    '<h2>' => '<h2 style="font-size:16px;margin:22px 0 6px;color:#1A1A1A">',
+    '<h2 id="order-form">' => '<h2 id="order-form" style="font-size:16px;margin:26px 0 6px;color:#1A1A1A">',
+    '<h3>' => '<h3 style="font-size:14px;margin:16px 0 6px;color:#1A1A1A">',
+    '<p>' => '<p style="margin:6px 0">',
+    '<ul>' => '<ul style="margin:6px 0;padding-left:20px">',
+    '<div class="agreement__table">' => '<div>',
+    '<p class="agreement__ref">' => '<p style="margin-top:14px;font-size:12px;color:#6E675C">',
+  ]);
+}
+
 /** The emails: 'client' (their signed copy), 'signed', 'paid' and 'paid-twice' (to you). */
 function km_contract_email(array $offer, array $signed, string $kind, array $paid = [], string $link = ''): array {
   $plan = km_contract_plans($offer)[$signed['plan'] ?? ''] ?? ['name' => '', 'monthly_pence' => 0, 'term' => ''];
@@ -1523,8 +1540,13 @@ function km_contract_email(array $offer, array $signed, string $kind, array $pai
     . '<h1 style="margin:0;font-size:22px;color:#F3EEE4">' . km_h($head) . '</h1></td></tr>'
     . '<tr><td style="padding:22px 28px 0;font-size:15px;line-height:1.55">' . km_h($intro) . '</td></tr>' . $button
     . km_section('Summary', km_rows($rows))
+    . ($kind === 'signed' ? km_section('The signed agreement', '<div style="font-size:14px;line-height:1.55;color:#1A1A1A">' . km_email_agreement($offer, $signed) . '</div>') : '')
     . '<tr><td style="padding:22px 28px 26px;font-size:13px;color:#6E675C">' . km_h($foot) . '</td></tr></table></td></tr></table></body></html>';
   $text = $head . "\n\n" . $intro . "\n" . ($kind === 'client' && $link !== '' ? "\nPay here: " . $link . "\n" : '') . "\n" . implode("\n", array_map(fn($r) => $r[0] . ': ' . html_entity_decode(strip_tags(str_replace('<br>', ' ', $r[1])), ENT_QUOTES, 'UTF-8'), $rows)) . "\n\n" . $foot . "\n";
+  if ($kind === 'signed') { // the whole agreement as plain text too
+    $plain = preg_replace(['/<\/(p|h2|h3|li|tr)>/', '/<\/t[hd]>/', '/<li>/'], ["\n", ' | ', '- '], km_agreement_body($offer, $signed, 2));
+    $text .= "\nTHE SIGNED AGREEMENT\n\n" . trim((string) preg_replace("/\n{3,}/", "\n\n", html_entity_decode(strip_tags($plain), ENT_QUOTES, 'UTF-8'))) . "\n";
+  }
   return [$subject, $html, $text];
 }
 
