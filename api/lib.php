@@ -1347,7 +1347,8 @@ function km_contract_sign(array $cfg, array $c, array $in): array {
   $role = km_clean((string) ($in['sign_role'] ?? ''), 80);
   $e = [];
   if (!isset($plans[$plan])) $e['plan'] = 'Please choose the 12-Month Plan or the 5-Year Plan.';
-  if (mb_strlen($name) < 3 || !preg_match('/\p{L}/u', $name)) $e['sign_name'] = 'Please type your full name to sign.';
+  $words = array_filter(preg_split('/\s+/u', $name), fn($w) => preg_match('/\p{L}/u', $w));
+  if (count($words) < 2 || mb_strlen($name) < 4) $e['sign_name'] = 'Please type your full name (first and last name) to sign.';
   if ($role === '') $e['sign_role'] = 'Please add your position, for example Owner or Director.';
   if (empty($in['agree'])) $e['agree'] = 'Please tick to confirm you agree and can sign for the business.';
   if ($e) return [false, $e];

@@ -124,6 +124,10 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
   .sign-form .small { font-size: .875rem; color: var(--bone-300); }
   .sign-form .btn { justify-self: start; }
   .field__error:empty { display: none; }
+  .sign__sig { display: grid; gap: .1rem; margin-top: .6rem; padding: .4rem .2rem .5rem; border-bottom: 1px solid var(--bone-500); min-height: 4.2rem; }
+  .sign__sig-label { font-family: var(--f-mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .sign__sig-name { font-family: var(--f-serif); font-style: italic; font-size: clamp(1.8rem, 6vw, 2.4rem); line-height: 1.1; color: var(--acc-300); overflow-wrap: anywhere; }
+  .no-js .sign__sig, .sign__sig:not(.is-on) { display: none; }
   [data-plan-show][hidden] { display: none !important; }
 </style>
 </head>
@@ -224,8 +228,10 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
 <?php endif; ?>
         <div class="sign-form">
           <div class="field">
-            <label for="signName">Your full name <span class="req" aria-hidden="true">*</span></label>
-            <input id="signName" name="sign_name" type="text" autocomplete="name" autocapitalize="words" required value="<?= $posted('sign_name') ?>" aria-describedby="sign_nameErr"<?= $bad('sign_name') ?>>
+            <label for="signName">Type your full name to sign <span class="req" aria-hidden="true">*</span></label>
+            <input id="signName" name="sign_name" type="text" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="words" data-lpignore="true" data-1p-ignore required value="<?= $posted('sign_name') ?>" aria-describedby="signHelp sign_nameErr"<?= $bad('sign_name') ?>>
+            <p class="small" id="signHelp">First and last name. Typing it counts as your signature.</p>
+            <p class="sign__sig" aria-hidden="true"><span class="sign__sig-label">Your signature</span><span class="sign__sig-name" data-sig></span></p>
             <?= $err('sign_name') ?>
           </div>
           <div class="field">
@@ -251,6 +257,12 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
   </div>
 </footer>
 <script>
+  // Their typed name, shown as a signature
+  var sigIn = document.getElementById('signName'), sig = document.querySelector('.sign__sig'), sigName = document.querySelector('[data-sig]');
+  if (sigIn && sig) {
+    var drawSig = function () { sigName.textContent = sigIn.value.trim(); sig.classList.toggle('is-on', sigIn.value.trim() !== ''); };
+    sigIn.addEventListener('input', drawSig); drawSig();
+  }
   // Show the chosen plan's price and term in the summary
   document.querySelectorAll('input[name="plan"]').forEach(function (r) {
     r.addEventListener('change', function () {
