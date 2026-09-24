@@ -1,0 +1,9 @@
+# Secrets: config.php holds the Stripe and AI keys. Never commit it.
+api/config.php
+
+# Private copies of demo requests, if they ever end up inside the site folder
+api/storage/
+km-private/
+
+# macOS clutter
+.DS_Store
