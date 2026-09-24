@@ -1037,6 +1037,9 @@ function km_checkout_session(array $cfg, array $brief): array {
       'metadata' => ['request_id' => $brief['id']],
     ],
     'locale' => 'en-GB',
+    // Normal Stripe payments. Stripe Managed Payments (Stripe as seller of record) only
+    // allows automated digital products, not design services, so it's switched off here.
+    'managed_payments' => ['enabled' => 'false'],
     'success_url' => $back('success'),
     'cancel_url' => $site . '/?payment=cancelled&r=' . rawurlencode($brief['id']) . '&k=' . km_pay_key($cfg, $brief['id']) . '#contact',
   ];
