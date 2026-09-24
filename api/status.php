@@ -33,4 +33,5 @@ echo json_encode([
   'paid_waiting_to_send'=> $waiting,
   'last_payment_page_ok'      => ($pay = json_decode((string) @file_get_contents($storage . '/payment-status.json'), true)) ? (bool) $pay['ok'] : null,
   'last_payment_page_problem' => $pay && !$pay['ok'] ? (string) $pay['problem'] : '',
+  'contract_links'      => km_contracts_problem($cfg) === '' ? 'on' : 'off: ' . km_contracts_problem($cfg),
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

@@ -51,6 +51,13 @@ return [
     'model' => 'claude-sonnet-5',
   ],
 
+  // Your password for the private contracts page (https://kingmedia.uk/api/contracts.php),
+  // where you make "sign and pay" links for clients. 12 characters or more.
+  'admin_password' => '',
+
+  // Your company, as named in the online agreement. Links can't be made until both are filled in.
+  'company' => ['number' => '', 'office' => ''],
+
   // Stripe, for the £4.99 demo fee. With a secret key here, demo requests must be
   // paid before they're emailed to you. Leave it empty to switch payments off.
   'stripe' => [

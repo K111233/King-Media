@@ -2,6 +2,7 @@
 /*
  * King Media: Stripe calls this when a demo fee has been paid. That's when the
  * full demo request (with files and AI brief) is emailed to you.
+ * Signed contracts (api/sign.php) are recorded here too, and you're emailed when they're paid.
  * Add it in Stripe (Developers > Webhooks) with the events checkout.session.completed
  * and checkout.session.async_payment_succeeded, then put its signing secret in config.php.
  */
@@ -20,6 +21,15 @@ if ($secret === '' || !km_stripe_signature_ok($payload, (string) ($_SERVER['HTTP
 $event = json_decode($payload, true) ?: [];
 $session = $event['data']['object'] ?? [];
 $paidEvent = in_array($event['type'] ?? '', ['checkout.session.completed', 'checkout.session.async_payment_succeeded'], true);
+
+// A signed contract's build fee and monthly plan (from api/sign.php)
+if (($session['metadata']['kind'] ?? '') === 'contract') {
+  $ok = !($paidEvent && ($session['payment_status'] ?? '') === 'paid') || km_contract_paid($cfg, $session);
+  km_contract_retry($cfg, km_storage($cfg));
+  http_response_code($ok ? 200 : 500); // 500: your email didn't go, so Stripe tries again later
+  echo $ok ? 'ok' : 'Could not send the email';
+  exit;
+}
 $job = ($paidEvent && ($session['payment_status'] ?? '') === 'paid') ? km_record_payment($cfg, $session) : [];
 
 if ($job) {

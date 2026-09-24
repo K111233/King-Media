@@ -1,8 +1,8 @@
-# Only the three endpoints can be opened from a browser. Everything else here is private.
+# Only these pages can be opened from a browser. Everything else here is private.
 Options -Indexes
 <FilesMatch "\.(php|json|txt|md)$">
   Require all denied
 </FilesMatch>
-<FilesMatch "^(submit|pay|stripe-webhook|status)\.php$">
+<FilesMatch "^(submit|pay|stripe-webhook|status|sign|contracts)\.php$">
   Require all granted
 </FilesMatch>
