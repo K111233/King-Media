@@ -23,8 +23,11 @@ function km_agreement_body(array $offer, array $signed = [], int $level = 2): st
   $p = fn(string $s) => '<p>' . $s . '</p>';
   $c = fn(string $n, string $s) => '<p><strong>' . $n . '</strong>&nbsp; ' . $s . '</p>';
   $li = fn(array $items) => '<ul>' . implode('', array_map(fn($i) => '<li>' . $i . '</li>', $items)) . '</ul>';
-  $provider = $h($co['name']) . ', trading as ' . $h($co['trading_as']) . ', a company registered in ' . $h($co['registered_in'])
-    . ' under company number ' . $h($co['number']) . ', whose registered office is at ' . $h($co['office']);
+  $isCompany = ($co['type'] ?? 'company') === 'company';
+  $provider = $isCompany
+    ? $h($co['name']) . ', trading as ' . $h($co['trading_as']) . ', a company registered in ' . $h($co['registered_in']) . ' under company number ' . $h($co['number']) . ', whose registered office is at ' . $h($co['office'])
+    : (($co['owner'] ?? '') !== '' ? $h($co['owner']) . ', trading as ' . $h($co['trading_as']) : $h($co['trading_as'])) . ', a sole trader of ' . $h($co['address']);
+  $providerName = $isCompany ? $h($co['name']) . ' (' . $h($co['trading_as']) . ')' : (($co['owner'] ?? '') !== '' ? $h($co['owner']) . ', trading as ' . $h($co['trading_as']) : $h($co['trading_as']));
 
   $o = '<' . $h2 . '>1. Parties</' . $h2 . '>'
     . $p('This Agreement is made between:')
@@ -140,7 +143,7 @@ function km_agreement_body(array $offer, array $signed = [], int $level = 2): st
     . '</table></div>';
 
   $o .= '<' . $h3 . '>Signatures</' . $h3 . '><div class="agreement__table"><table>'
-    . $row('For the Provider', $h($co['name']) . ' (' . $h($co['trading_as']) . '). Agreed by sending this Order Form to the Client on ' . $h(date('j F Y', (int) $offer['created'])) . '.')
+    . $row('For the Provider', $providerName . '. Agreed by sending this Order Form to the Client on ' . $h(date('j F Y', (int) $offer['created'])) . '.')
     . ($signed
       ? $row('For the Client', 'Signed electronically by <strong>' . $h($signed['name']) . '</strong>, ' . $h($signed['role']) . ', for ' . $h($offer['business']) . ', on ' . $h($signed['at_text']) . ', from IP address ' . $h($signed['ip']) . '.')
       : $row('For the Client', 'Sign below by typing your name.'))

@@ -1199,9 +1199,10 @@ function km_send_paid_notice(array $cfg, array $job, bool $second = false): bool
    On Stripe that's two lines: the build (fee minus one month) + the monthly plan.
    Links are made on the password-protected page api/contracts.php.
    --------------------------------------------------------------------------- */
-// The company named in the agreement. Links can't be made until the number and office are filled in,
-// here or in config.php as 'company' => ['number' => '…', 'office' => '…'].
-const KM_COMPANY = ['name' => 'KING WEB MEDIA LTD', 'trading_as' => 'King Media', 'number' => '', 'registered_in' => 'England and Wales', 'office' => ''];
+// Who the agreement is with. For now King Media trades as a sole trader. Once the limited company is
+// ready, set in config.php: 'company' => ['type' => 'company', 'name' => 'KING WEB MEDIA LTD', 'number' => '…', 'office' => '…'],
+const KM_COMPANY = ['type' => 'sole_trader', 'name' => 'King Media', 'trading_as' => 'King Media', 'owner' => '', 'address' => '124 City Road, London, EC1V 2NX',
+  'number' => '', 'registered_in' => 'England and Wales', 'office' => ''];
 const KM_BUILD_PENCE = ['1' => 49499, '2' => 89999, '3' => 119999, '4+' => 144999];
 const KM_PAGE_LABELS = ['1' => '1 page', '2' => '2 pages', '3' => '3 pages', '4+' => '4 or more pages'];
 const KM_PLANS = [
@@ -1215,10 +1216,11 @@ function km_company(array $cfg): array {
   return array_merge(KM_COMPANY, array_filter((array) ($cfg['company'] ?? []), fn($v) => is_string($v) && $v !== ''));
 }
 
-/** Ready to make links: a company number and office to name in the agreement, payments on, and an admin password. */
+/** Ready to make links: who the agreement is with, payments on, and an admin password. */
 function km_contracts_problem(array $cfg): string {
   $co = km_company($cfg);
-  if ($co['number'] === '' || $co['office'] === '') return 'The company number and registered office aren’t set up yet, so the agreement can’t name the company. Add them to config.php as \'company\' => [\'number\' => \'…\', \'office\' => \'…\'], (or ask Claude to).';
+  if ($co['type'] === 'company' && ($co['number'] === '' || $co['office'] === '')) return 'The company number and registered office aren’t set up yet, so the agreement can’t name the company. Add them to config.php as \'company\' => [\'type\' => \'company\', \'name\' => \'…\', \'number\' => \'…\', \'office\' => \'…\'], (or ask Claude to).';
+  if ($co['type'] !== 'company' && $co['address'] === '') return 'The business address for the agreement isn’t set up.';
   if (!km_stripe_on($cfg)) return 'Stripe payments aren’t switched on in config.php.';
   if (strlen((string) ($cfg['admin_password'] ?? '')) < 12) return 'Add an admin_password (12 characters or more) to config.php.';
   return '';
