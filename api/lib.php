@@ -579,11 +579,11 @@ function km_demo_email(array $cfg, array $b, ?array $ai, string $aiError, array 
 
   $h .= km_section('Package', km_rows([
     ['Pages', $p ? '<strong>' . km_h($p['label']) . '</strong>' : '<strong>Not sure yet</strong> (they want help deciding)'],
-    ['Build', $p ? km_h($p['build'] . ' one-off, less the ' . KM_DEMO_FEE . ' demo fee') : 'From £494.99, depending on pages'],
+    ['Build', $p ? km_h($p['build'] . ' one-off') : 'From £494.99, depending on pages'],
     ['Monthly', $p ? km_h($p['monthly']) : 'From £39.99 a month, depending on pages and plan'],
     ['Demo fee', $paid
-      ? '<strong style="color:#1E7A45">Paid ' . km_h($paid['amount']) . '</strong> by card, ' . km_h($paid['paid_at']) . ($test ? ' <span style="color:#B3261E">(TEST payment, no real money)</span>' : '') . '<br><span style="font-size:13px;color:#6E675C">Take it off their build invoice with the “Demo fee already paid” coupon in Stripe.</span>'
-      : km_h(KM_DEMO_FEE . ', taken off the build price if they go ahead')],
+      ? '<strong style="color:#1E7A45">Paid ' . km_h($paid['amount']) . '</strong> by card, ' . km_h($paid['paid_at']) . ($test ? ' <span style="color:#B3261E">(TEST payment, no real money)</span>' : '')
+      : km_h(KM_DEMO_FEE . ' demo fee, separate from the build price')],
     ['They need', km_h($b['needs'] ? implode(', ', $b['needs']) : 'Not stated')],
   ]));
 
@@ -1026,7 +1026,7 @@ function km_checkout_session(array $cfg, array $brief): array {
       'price_data' => [
         'currency' => 'gbp',
         'unit_amount' => KM_DEMO_FEE_PENCE,
-        'product_data' => ['name' => 'Demo website', 'description' => 'Your King Media demo website. The £4.99 is taken off your build price if you go ahead.'],
+        'product_data' => ['name' => 'Demo website', 'description' => 'A working demo of your new website, designed for your business by King Media.'],
       ],
     ]],
     'client_reference_id' => $brief['id'],
@@ -1178,7 +1178,7 @@ function km_send_paid_notice(array $cfg, array $job, bool $second = false): bool
     . '<tr><td style="background:#080806;padding:22px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">King Media · Demo fee paid</p>'
     . '<h1 style="margin:0;font-size:22px;color:#F3EEE4">' . km_h($business) . '</h1><p style="margin:6px 0 0;font-size:13px;color:#A9A294">' . km_h($paid['paid_at']) . '</p></td></tr>'
     . km_section('Payment', km_rows($rows))
-    . '<tr><td style="padding:22px 28px 26px;font-size:13px;color:#6E675C">Take this ' . km_h($paid['amount']) . ' off their build invoice with the “Demo fee already paid” coupon in Stripe.</td></tr></table></td></tr></table></body></html>';
+    . '<tr><td style="padding:22px 28px 26px;font-size:13px;color:#6E675C">' . ($second ? 'Refund one of the two payments in Stripe.' : 'Check the payment in Stripe, then reply to them to arrange their demo.') . '</td></tr></table></td></tr></table></body></html>';
   $text = "DEMO FEE PAID: {$business}\n{$paid['paid_at']}\n\nAmount: {$paid['amount']}" . ($paid['livemode'] ? '' : ' (TEST payment)') . "\nPaid by: {$paid['name']} {$paid['email']}\nRequest: {$job['id']} (details no longer on the server)\nStripe: {$paid['session']}\n";
   return km_send($cfg, $subject, $html, $text, [], $paid['email'] ?: (string) $cfg['to_email'], $paid['name'], ($job['id'] ?: 'payment') . ' notice');
 }

@@ -1,8 +1,8 @@
 <?php
 /*
- * One-off Stripe setup for King Media. Creates the products, prices and the
- * £4.99 "Demo fee already paid" coupon, so build invoices (Stripe Invoicing)
- * and monthly plans (Stripe Billing) can be made from the Dashboard in a few clicks.
+ * One-off Stripe setup for King Media. Creates the products and prices, so build
+ * invoices (Stripe Invoicing) and monthly plans (Stripe Billing) can be made from
+ * the Dashboard in a few clicks.
  * Safe to run again: anything that already exists is left alone.
  *
  *   php tools/stripe-setup.php sk_test_...    (then again with sk_live_... when you go live)
@@ -60,12 +60,4 @@ foreach ($prices as $lookup => [$product, $pence, $nick, $monthly]) {
   echo "+ Created price: {$label}\n";
 }
 
-[$st] = km_stripe($cfg, 'GET', '/v1/coupons/KM_DEMO_CREDIT');
-if ($st === 200) {
-  echo "✓ Coupon already there: Demo fee already paid (£4.99 off)\n";
-} else {
-  [$st, $res] = km_stripe($cfg, 'POST', '/v1/coupons', ['id' => 'KM_DEMO_CREDIT', 'name' => 'Demo fee already paid', 'amount_off' => 499, 'currency' => 'gbp', 'duration' => 'once']);
-  if ($st !== 200) $stop('create the coupon', $st, $res);
-  echo "+ Created coupon: Demo fee already paid (£4.99 off)\n";
-}
 echo "\nAll set.\n";

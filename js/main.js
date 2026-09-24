@@ -783,7 +783,7 @@
       $('.btn__label', $('#doneReset')).textContent = sent ? 'Send another request' : 'Start again';
       const tier = TIERS[data.get('pages')];
       $('#doneIncluded').replaceChildren(
-        li(`Your demo: ${DEMO_FEE}, taken off your build price if you go ahead`),
+        li(`Your demo: ${DEMO_FEE}, with no obligation to go ahead`),
         li(tier ? `Design & build (${tier.label}): ${tier.build} one-off, paid after you approve your demo` : 'Design & build: from £494.99, depending on how many pages you need (we’ll help you decide)'),
         li(tier ? `Management: ${tier.monthly}` : 'Management: from £39.99 a month, depending on pages and plan'),
         li('Up to 5 website changes a month, big or small'),
