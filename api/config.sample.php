@@ -1,7 +1,12 @@
 <?php
 /*
  * King Media form + payments settings.
- * Copy this file to config.php (same folder) and fill it in. Never share config.php.
+ * Copy this file to config.php and fill it in. Never share config.php.
+ *
+ * WHERE TO PUT config.php: in the km-private folder, one level ABOVE public_html
+ * (…/domains/kingmedia.uk/km-private/config.php). Hostinger's Git deploys replace the
+ * files inside public_html, so a config.php kept there could be wiped. api/config.php
+ * also still works.
  */
 if (!defined('KM_API')) { http_response_code(404); exit; }
 
@@ -10,25 +15,33 @@ return [
   'site_url' => 'https://kingmedia.uk',
   'site_origins' => ['https://kingmedia.uk', 'https://www.kingmedia.uk'],
 
-  // Where requests go, and who they come from. The "from" address should be a
-  // mailbox on your own domain (in Hostinger: Emails), or mail may go to spam.
+  // Where requests go (your inbox), and the address they're sent from. Use a mailbox
+  // created in Hostinger (hPanel > Emails) as the "from" address, and make it different
+  // from to_email: Hostinger won't send from an address that isn't one of its mailboxes.
   'to_email' => 'enquiries@kingmedia.uk',
-  'from_email' => 'enquiries@kingmedia.uk',
+  'from_email' => 'website@kingmedia.uk',
   'from_name' => 'King Media website',
 
-  // A long random string (at least 32 characters) used to protect payment links.
-  // Make one at https://www.random.org/strings/ or by mashing the keyboard.
+  // How emails are sent. 'smtp' logs in to the mailbox below (most reliable).
+  // 'mail' uses PHP mail(). 'file' saves .eml files in storage_dir/outbox (testing only).
+  'mail_transport' => 'smtp',
+  'smtp' => [
+    'host' => 'smtp.hostinger.com',
+    'port' => 465,
+    'secure' => 'ssl',               // 'ssl' for port 465, or 'tls' for port 587
+    'username' => 'website@kingmedia.uk', // the full mailbox address (same as from_email)
+    'password' => '',                // that mailbox's password
+  ],
+
+  // A long random string (at least 32 characters) that protects payment links.
+  // Make one in Terminal with:  openssl rand -hex 32
   'secret' => 'CHANGE-ME',
 
   // Private copies of each request and its files. Keep this OUTSIDE public_html:
-  // the default is the folder above it. Copies are deleted after retention_days.
+  // the default is the km-private folder above it. Copies are deleted after retention_days.
   'storage_dir' => dirname(__DIR__, 2) . '/km-private',
   'retention_days' => 90,
   'rate_limit_per_hour' => 8,
-
-  // 'mail' sends with Hostinger's PHP mail(). 'file' saves .eml files in
-  // storage_dir/outbox instead (for testing without sending anything).
-  'mail_transport' => 'mail',
 
   // Optional AI brief at the top of each demo request email.
   // Needs an Anthropic API key (console.anthropic.com), which is pay as you go.
@@ -38,10 +51,10 @@ return [
     'model' => 'claude-sonnet-5',
   ],
 
-  // Stripe, for the £4.99 demo fee. Leave secret_key empty to switch payments off.
-  // Use a restricted key with "Checkout Sessions: Write" permission (Developers > API keys).
+  // Stripe, for the £4.99 demo fee. With a secret key here, demo requests must be
+  // paid before they're emailed to you. Leave it empty to switch payments off.
   'stripe' => [
-    'secret_key' => '',
-    'webhook_secret' => '',
+    'secret_key' => '',     // Developers > API keys > Secret key (sk_test_… first, then sk_live_…)
+    'webhook_secret' => '', // Developers > Webhooks > your endpoint > Signing secret (whsec_…)
   ],
 ];

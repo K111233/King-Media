@@ -11,14 +11,17 @@ $cfg = km_config();
 $site = rtrim((string) ($cfg['site_url'] ?? ''), '/');
 $id = is_string($_GET['r'] ?? null) ? $_GET['r'] : '';
 $key = is_string($_GET['k'] ?? null) ? $_GET['k'] : '';
-$back = function (string $state) use ($site, $id): void {
+$keyOk = false;
+$back = function (string $state) use ($site, $id, $key, &$keyOk): void {
+  $again = $keyOk ? '&r=' . $id . '&k=' . $key : ''; // lets the site offer "try again"
   header('Cache-Control: no-store');
-  header('Location: ' . $site . '/?payment=' . $state . (preg_match('/^KM-\d{6}-[0-9A-F]{4}$/', $id) ? '&r=' . $id : '') . '#contact', true, 303);
+  header('Location: ' . $site . '/?payment=' . $state . $again . '#contact', true, 303);
   exit;
 };
 
 if (!km_stripe_on($cfg)) $back('unavailable');
 if ($id === '' || !hash_equals(km_pay_key($cfg, $id), $key)) $back('error');
+$keyOk = true;
 $dir = km_find_request(km_storage($cfg), $id);
 if ($dir === '') $back('expired');
 if (is_file($dir . '/paid.json')) $back('already');

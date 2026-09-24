@@ -438,6 +438,16 @@
     const hint = $('.concept__hint', frame);
     if (hint) hint.textContent = on ? 'Tap to stop' : 'Tap to preview';
   }));
+  // Each preview scrolls exactly to the bottom of its mini-site, whatever the screen size
+  const csShift = () => $$('.concept__screen').forEach(scr => {
+    const cs = scr.firstElementChild;
+    if (cs) cs.style.setProperty('--cs-shift', `${-Math.max(0, cs.offsetHeight - scr.clientHeight)}px`);
+  });
+  csShift();
+  if ('ResizeObserver' in window) {
+    const csRo = new ResizeObserver(csShift);
+    $$('.concept__screen').forEach(scr => { csRo.observe(scr); if (scr.firstElementChild) csRo.observe(scr.firstElementChild); });
+  } else addEventListener('resize', csShift);
 
   /* ---------------------------------------------------------------------
      BEFORE / AFTER SLIDER (drag, tap, arrow keys; vertical swipes still scroll)
@@ -540,10 +550,10 @@
   const MONTHLY_1_2 = '£49.99 a month (12-month minimum), or £39.99 a month on the 5-year plan';
   const MONTHLY_3PLUS = '£59.99 a month (12-month minimum), or £49.99 a month on the 5-year plan';
   const TIERS = {
-    '1': { label: '1 page', build: '£495', monthly: MONTHLY_1_2 },
-    '2': { label: '2 pages', build: '£899', monthly: MONTHLY_1_2 },
-    '3': { label: '3 pages', build: '£1,199', monthly: MONTHLY_3PLUS },
-    '4+': { label: '4+ pages', build: '£1,449', monthly: MONTHLY_3PLUS },
+    '1': { label: '1 page', build: '£494.99', monthly: MONTHLY_1_2 },
+    '2': { label: '2 pages', build: '£899.99', monthly: MONTHLY_1_2 },
+    '3': { label: '3 pages', build: '£1,199.99', monthly: MONTHLY_3PLUS },
+    '4+': { label: '4+ pages', build: '£1,449.99', monthly: MONTHLY_3PLUS },
   };
 
   /* ---------------------------------------------------------------------
@@ -689,10 +699,29 @@
 
     const status = $('#formStatus');
     const submitBtn = $('#demoSubmit');
+    // Back from Stripe with the browser's Back button: Safari restores the page as it was, so un-stick the button
+    let lastPayUrl = '';
+    addEventListener('pageshow', e => {
+      if (!e.persisted || !submitBtn.disabled) return;
+      setBusy(submitBtn, false);
+      if (!lastPayUrl) return;
+      submitBtn.dataset.payUrl = lastPayUrl;
+      $('.btn__label', submitBtn).textContent = 'Pay £4.99 to send it';
+      status.className = 'form__status';
+      status.textContent = 'Your details are saved but not paid for yet. Press the button to pay the £4.99 and send them to us.';
+    });
+    // Changing anything means sending the request again, rather than paying for the saved one
+    form.addEventListener('input', () => {
+      if (!submitBtn.dataset.payUrl) return;
+      delete submitBtn.dataset.payUrl;
+      $('.btn__label', submitBtn).textContent = submitBtn.dataset.label || 'Request my £4.99 demo';
+      status.textContent = '';
+    });
     const serverFields = { name: '#fName', business: '#fBiz', email: '#fEmail', quoteNeeds: '#fQuote' };
     form.addEventListener('submit', async e => {
       e.preventDefault();
       if (submitBtn.disabled) return;
+      if (submitBtn.dataset.payUrl) { setBusy(submitBtn, true, 'Opening secure payment…'); location.assign(submitBtn.dataset.payUrl); return; }
       const inputs = [...$$('input[required]', form), fQuote];
       const invalid = inputs.filter(i => !check(i));
       if (invalid.length) {
@@ -712,6 +741,14 @@
       fd.set('form', 'demo');
       const label = $('.btn__label', submitBtn);
       const res = await postForm(fd, dzFiles.length ? p => { label.textContent = p < 1 ? `Uploading ${Math.round(p * 100)}%` : 'Sending…'; } : null);
+      if (res.data && res.data.ok && res.data.pay_required && res.data.pay_url) {
+        // Saved on our side: now the £4.99 at Stripe. We're only emailed once it's paid.
+        label.textContent = 'Opening secure payment…';
+        status.textContent = 'Taking you to Stripe to pay the £4.99…';
+        lastPayUrl = res.data.pay_url;
+        location.assign(res.data.pay_url);
+        return;
+      }
       setBusy(submitBtn, false);
       if ((res.data && res.data.ok) || previewOnly(res)) {
         status.textContent = '';
@@ -747,7 +784,7 @@
       const tier = TIERS[data.get('pages')];
       $('#doneIncluded').replaceChildren(
         li(`Your demo: ${DEMO_FEE}, taken off your build price if you go ahead`),
-        li(tier ? `Design & build (${tier.label}): ${tier.build} one-off, paid after you approve your demo` : 'Design & build: from £495, depending on how many pages you need (we’ll help you decide)'),
+        li(tier ? `Design & build (${tier.label}): ${tier.build} one-off, paid after you approve your demo` : 'Design & build: from £494.99, depending on how many pages you need (we’ll help you decide)'),
         li(tier ? `Management: ${tier.monthly}` : 'Management: from £39.99 a month, depending on pages and plan'),
         li('Up to 5 website changes a month, big or small'),
       );
@@ -969,19 +1006,28 @@
      --------------------------------------------------------------------- */
   const payNote = $('#payNote');
   const PAY_NOTES = {
-    success: ['Payment received. Thank you!', 'Your £4.99 demo fee is paid. We’ll be in touch soon to arrange a quick chat about your demo.', 'is-ok'],
-    already: ['You’ve already paid.', 'Your £4.99 demo fee is paid, so there’s nothing more to do. We’ll be in touch soon.', 'is-ok'],
-    cancelled: ['Payment cancelled.', 'No money has been taken. You can pay after our chat instead: we’ll email you a link.', ''],
-    expired: ['That payment link has expired.', `Please email us at ${CONTACT_EMAIL} and we’ll send you a new one.`, 'is-err'],
+    success: ['Payment received. Thank you!', 'Your request and the £4.99 demo fee are with us. We’ll be in touch soon to arrange a quick chat about your demo.', 'is-ok'],
+    already: ['You’ve already paid.', 'Your £4.99 demo fee is paid and your request is with us, so there’s nothing more to do. We’ll be in touch soon.', 'is-ok'],
+    cancelled: ['Payment cancelled.', 'No money has been taken, and your request hasn’t been sent to us yet. Pay the £4.99 whenever you’re ready to send it.', ''],
+    expired: ['That payment link has expired.', 'Please fill in the form again to send a new request.', 'is-err'],
     error: ['We couldn’t open the payment page.', `Please try again, or email us at ${CONTACT_EMAIL}.`, 'is-err'],
-    unavailable: ['Online payment isn’t switched on yet.', 'We’ll email you a payment link instead.', ''],
+    unavailable: ['Online payment isn’t switched on yet.', `Please email us at ${CONTACT_EMAIL} and we’ll help you straight away.`, ''],
   };
-  const payState = new URLSearchParams(location.search).get('payment');
+  const payParams = new URLSearchParams(location.search);
+  const payState = payParams.get('payment');
   if (payNote && PAY_NOTES[payState]) {
     const [title, text, cls] = PAY_NOTES[payState];
     $('#payNoteTitle').textContent = title;
     $('#payNoteText').textContent = text;
     if (cls) payNote.classList.add(cls);
+    // Cancelled at Stripe: their request is saved, so offer the payment again
+    const rid = payParams.get('r') || '';
+    const key = payParams.get('k') || '';
+    if ((payState === 'cancelled' || payState === 'error') && /^KM-\d{6}-([0-9A-F]{4}|[0-9A-F]{8})$/.test(rid) && /^[0-9a-f]{24}$/.test(key)) {
+      const retry = $('#payRetry');
+      retry.href = `api/pay.php?r=${encodeURIComponent(rid)}&k=${key}`;
+      retry.hidden = false;
+    }
     payNote.hidden = false;
     history.replaceState(null, '', location.pathname + '#contact');
   }
@@ -1126,6 +1172,7 @@
     try { localStorage.setItem('km-motion', motionOff ? 'off' : 'on'); } catch (e) { /* storage blocked */ }
     syncMotionToggles();
     if (motionOff) drawField(performance.now(), true);
+    if (motionOff && buildAuto && autoState === 'playing') { autoResume = false; pauseBuild(); }
     wake();
   }));
   syncMotionToggles();
@@ -1202,7 +1249,99 @@
   const buildSticky = $('.build__sticky');
   const buildGrid = $('.build__grid');
   let buildStatic = reduced;
+
+  /* Phones and small tablets: the build plays by itself when the preview comes into
+     view, like a short video. A flick of the thumb would otherwise race through a
+     scroll-driven scene and it would look finished before it started. */
+  const buildPlay = $('#buildPlay');
+  const BUILD_STEP_MS = 1500;
+  const BUILD_LABELS = {
+    idle: ['Play the build', 'Play the build'],
+    playing: ['Pause', 'Pause the build'],
+    paused: ['Play', 'Play the rest of the build'],
+    done: ['Replay', 'Replay the build'],
+    still: ['Watch it build', 'Watch it build, step by step'],
+  };
+  let buildAuto = false;
+  let autoState = 'idle';
+  let autoTimer = 0;
+  let autoResume = false;
+  const meterTo = n => { buildMeter.style.transform = `scaleX(${(n + 1) / STAGES.length})`; };
+  function setAutoState(state) {
+    autoState = state;
+    buildPlay.dataset.state = state;
+    $('.build__play-label', buildPlay).textContent = BUILD_LABELS[state][0];
+    buildPlay.setAttribute('aria-label', BUILD_LABELS[state][1]);
+  }
+  function autoTick() {
+    setStage(Math.min(STAGES.length - 1, currentStage + 1));
+    meterTo(currentStage);
+    if (currentStage >= STAGES.length - 1) setAutoState('done');
+    else autoTimer = setTimeout(autoTick, BUILD_STEP_MS);
+  }
+  function playBuild(fromStart) {
+    clearTimeout(autoTimer);
+    autoResume = false;
+    if (fromStart || currentStage >= STAGES.length - 1) { setStage(0); meterTo(0); }
+    setAutoState('playing');
+    autoTimer = setTimeout(autoTick, BUILD_STEP_MS);
+  }
+  function pauseBuild() {
+    clearTimeout(autoTimer);
+    if (autoState === 'playing') setAutoState('paused');
+  }
+  function jumpBuild(n) {
+    clearTimeout(autoTimer);
+    autoResume = false;
+    setStage(n);
+    meterTo(n);
+    setAutoState(n >= STAGES.length - 1 ? 'done' : 'paused');
+  }
+  buildPlay.addEventListener('click', () => {
+    if (autoState === 'playing') { autoResume = false; pauseBuild(); }
+    else playBuild(autoState !== 'paused');
+  });
+  // Plays when the preview reaches the middle of the screen (works in landscape too, where it's taller than the screen).
+  // With Reduce Motion or "Pause motion" it waits for a tap on "Watch it build".
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([en]) => {
+      if (!buildAuto) return;
+      if (en.isIntersecting) {
+        if (autoState === 'idle' && !still()) playBuild(true);
+        else if (autoResume) playBuild(false);
+      } else if (autoState === 'playing') { pauseBuild(); autoResume = true; } // carry on when they scroll back
+    }, { rootMargin: '-25% 0px -25% 0px', threshold: 0 }).observe(buildStage);
+  }
+  // After the "See it with your name" sketch changes: phones rewind (then play), desktop follows the scroll
+  function resetBuildStage() {
+    currentStage = -1;
+    if (!buildAuto) { setStage(stageFromScroll()); return; }
+    clearTimeout(autoTimer);
+    autoResume = false;
+    const n = still() ? STAGES.length - 1 : 0;
+    setStage(n);
+    meterTo(n);
+    setAutoState(still() ? 'still' : 'idle');
+  }
+
   function layoutBuild() {
+    const auto = vw < 1024;
+    if (auto) {
+      if (!buildAuto) { build.classList.remove('build--static'); buildAuto = true; resetBuildStage(); }
+      buildAuto = true;
+      buildStatic = true; // no scroll-driven stages
+      build.classList.add('build--auto');
+      buildPlay.hidden = false;
+      return;
+    }
+    if (buildAuto) {
+      clearTimeout(autoTimer);
+      buildAuto = false;
+      build.classList.remove('build--auto');
+      buildPlay.hidden = true;
+      buildMeter.style.transform = '';
+      buildStatic = reduced;
+    }
     if (reduced) return;
     build.classList.remove('build--static');
     const cs = getComputedStyle(buildSticky);
@@ -1228,6 +1367,7 @@
   // Tappable build steps: jump to the middle of that stage
   buildStepBtns.forEach(btn => btn.addEventListener('click', () => {
     const n = Number(btn.dataset.stage);
+    if (buildAuto) { jumpBuild(n); return; }
     if (buildStatic) { setStage(n); return; }
     lockNav(1500, true);
     scrollTo({ top: M.buildTop + ((n + .5) / STAGES.length) * (M.buildH - vh), behavior: 'smooth' });
@@ -1386,8 +1526,7 @@
     mock.dataset.trade = trade;
     STAGES[5].url = `${slugify(name)}.co.uk`;
     STAGES[5].name = 'Live · example address';
-    currentStage = -1;
-    setStage(stageFromScroll());
+    resetBuildStage();
     const fBiz = $('#fBiz');
     if (fBiz && !fBiz.value.trim()) fBiz.value = name;
     if (consent() === 'all') { try { sessionStorage.setItem('km-star', JSON.stringify({ name, trade })); } catch (e) { /* storage blocked */ } }
@@ -1398,8 +1537,7 @@
     if (mono) mono.textContent = '';
     delete mock.dataset.trade;
     STAGES[5] = { ...DEFAULT_LIVE };
-    currentStage = -1;
-    setStage(stageFromScroll());
+    resetBuildStage();
     try { sessionStorage.removeItem('km-star'); } catch (e) { /* storage blocked */ }
     $('#starReset').hidden = true;
     $('#starStatus').replaceChildren();
@@ -1418,7 +1556,7 @@
       const trade = $('#starTrade').value;
       applyStar(name, trade);
       const line = document.createElement('span');
-      line.textContent = `Done. Scroll on to watch ${name} build itself.`;
+      line.textContent = buildAuto ? `Done. Watch ${name} build itself.` : `Done. Scroll on to watch ${name} build itself.`;
       const parts = [line];
       if (trade === 'barber' || trade === 'clinic') {
         const note = document.createElement('span');
@@ -1441,6 +1579,7 @@
         lockNav(1500, true);
         scrollTo({ top: M.buildTop, behavior: reduced ? 'auto' : 'smooth' });
         buildTitle.focus({ preventScroll: true });
+        if (buildAuto && !still()) setTimeout(() => playBuild(true), 900);
       }, 700);
     });
     nameInput.addEventListener('input', () => { if (nameInput.getAttribute('aria-invalid') === 'true' && nameInput.value.trim()) setError(nameInput, ''); });
@@ -1492,6 +1631,16 @@
   });
   if (!buildStatic && currentStage < 0) setStage(stageFromScroll());
   wake();
+  // Back from Stripe: bring the payment message into view once the browser has done its own jump to #contact
+  if (payNote && !payNote.hidden) {
+    const showPayNote = () => setTimeout(() => {
+      const wrap = payNote.closest('.reveal');
+      if (wrap) wrap.classList.add('is-in');
+      payNote.scrollIntoView({ block: 'center', behavior: 'auto' });
+      payNote.focus({ preventScroll: true });
+    }, 120);
+    if (document.readyState === 'complete') showPayNote(); else addEventListener('load', showPayNote, { once: true });
+  }
   runLoader().then(() => {
     body.classList.add('is-ready');
     brand.classList.add('is-blinking');

@@ -38,10 +38,10 @@ foreach ($products as $id => [$name, $desc]) {
 
 // lookup_key => [product, pence, nickname, monthly?]
 $prices = [
-  'km_build_1'         => ['km_build', 49500, '1 page', false],
-  'km_build_2'         => ['km_build', 89900, '2 pages', false],
-  'km_build_3'         => ['km_build', 119900, '3 pages', false],
-  'km_build_4plus'     => ['km_build', 144900, '4+ pages', false],
+  'km_build_1'         => ['km_build', 49499, '1 page', false],
+  'km_build_2'         => ['km_build', 89999, '2 pages', false],
+  'km_build_3'         => ['km_build', 119999, '3 pages', false],
+  'km_build_4plus'     => ['km_build', 144999, '4+ pages', false],
   'km_monthly_small_12' => ['km_management', 4999, '1–2 pages, 12-Month Plan', true],
   'km_monthly_small_5y' => ['km_management', 3999, '1–2 pages, 5-Year Plan', true],
   'km_monthly_large_12' => ['km_management', 5999, '3+ pages, 12-Month Plan', true],

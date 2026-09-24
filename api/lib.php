@@ -10,10 +10,10 @@ if (!defined('KM_API')) { http_response_code(404); exit; }
 
 const KM_DEMO_FEE = '£4.99';
 const KM_TIERS = [
-  '1'  => ['label' => '1 page',   'build' => '£495',   'monthly' => '£49.99 a month on the 12-Month Plan, or £39.99 a month on the 5-Year Plan'],
-  '2'  => ['label' => '2 pages',  'build' => '£899',   'monthly' => '£49.99 a month on the 12-Month Plan, or £39.99 a month on the 5-Year Plan'],
-  '3'  => ['label' => '3 pages',  'build' => '£1,199', 'monthly' => '£59.99 a month on the 12-Month Plan, or £49.99 a month on the 5-Year Plan'],
-  '4+' => ['label' => '4+ pages', 'build' => '£1,449', 'monthly' => '£59.99 a month on the 12-Month Plan, or £49.99 a month on the 5-Year Plan'],
+  '1'  => ['label' => '1 page',   'build' => '£494.99', 'monthly' => '£49.99 a month on the 12-Month Plan, or £39.99 a month on the 5-Year Plan'],
+  '2'  => ['label' => '2 pages',  'build' => '£899.99', 'monthly' => '£49.99 a month on the 12-Month Plan, or £39.99 a month on the 5-Year Plan'],
+  '3'  => ['label' => '3 pages',  'build' => '£1,199.99', 'monthly' => '£59.99 a month on the 12-Month Plan, or £49.99 a month on the 5-Year Plan'],
+  '4+' => ['label' => '4+ pages', 'build' => '£1,449.99', 'monthly' => '£59.99 a month on the 12-Month Plan, or £49.99 a month on the 5-Year Plan'],
 ];
 const KM_CHOICES = [
   'pages'    => ['1', '2', '3', '4+', 'unsure'],
@@ -36,10 +36,17 @@ const KM_RASTER = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
    Config, responses, input
    --------------------------------------------------------------------------- */
 function km_config(): array {
-  $file = __DIR__ . '/config.php';
-  if (!is_file($file)) return [];
-  $cfg = require $file;
-  return is_array($cfg) ? $cfg : [];
+  // Next to this file, or in km-private above public_html (safest: Git deploys never touch it)
+  foreach ([__DIR__ . '/config.php', dirname(__DIR__, 2) . '/km-private/config.php'] as $file) {
+    if (!is_file($file)) continue;
+    $cfg = require $file;
+    if (!is_array($cfg)) return [];
+    // An older config line, dirname(__DIR__, 2) . '/km-private', points one level too high
+    // once config.php is moved into km-private itself: use that folder instead.
+    if (basename(dirname($file)) === 'km-private' && ($cfg['storage_dir'] ?? '') === dirname(dirname($file), 2) . '/km-private') $cfg['storage_dir'] = dirname($file);
+    return $cfg;
+  }
+  return [];
 }
 
 function km_respond(int $status, array $data): void {
@@ -139,13 +146,17 @@ function km_ensure_dir(string $dir): bool {
   return true;
 }
 
-function km_rate_ok(string $storage, int $max): bool {
-  if ($max <= 0 || !km_ensure_dir($storage)) return true;
+function km_rate_ok(string $storage, int $max, bool $failClosed = false): bool {
+  if ($max <= 0) return true;
+  if (!km_ensure_dir($storage)) return !$failClosed;
   $fh = @fopen($storage . '/ratelimit.json', 'c+');
-  if (!$fh) return true;
+  if (!$fh) return !$failClosed;
   flock($fh, LOCK_EX);
   $now = time();
-  $key = hash('sha256', 'km|' . ($_SERVER['REMOTE_ADDR'] ?? '')); // never store the raw IP
+  $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
+  $bin = @inet_pton($ip);
+  if ($bin !== false && strlen($bin) === 16) $ip = bin2hex(substr($bin, 0, 8)) . '::/64'; // IPv6: count the whole /64
+  $key = hash('sha256', 'km|' . $ip); // never store the raw IP
   $data = json_decode((string) stream_get_contents($fh), true) ?: [];
   foreach ($data as $k => $times) {
     $data[$k] = array_values(array_filter((array) $times, fn($t) => $t > $now - 3600));
@@ -197,22 +208,69 @@ function km_uploaded_files(): array {
 }
 
 /** Keeps a private copy of the request (brief.json + files) outside the web root. */
-function km_store(string $storage, array $brief, array &$files): string {
-  $dir = $storage . '/requests/' . date('Y-m-d_Hi') . '_' . km_slug($brief['business'], 30) . '_' . strtolower(substr($brief['id'], -4));
+function km_id_suffix(string $id): string {
+  return strtolower((string) substr($id, (int) strrpos($id, '-') + 1));
+}
+
+function km_store(string $storage, array &$brief, array &$files): string {
+  $dir = $storage . '/requests/' . date('Y-m-d_Hi') . '_' . km_slug($brief['business'], 30) . '_' . km_id_suffix($brief['id']);
   if (!km_ensure_dir($dir)) return '';
   foreach ($files as $i => &$file) {
     $base = km_slug(pathinfo($file['name'], PATHINFO_FILENAME), 50);
     $dest = sprintf('%s/%02d-%s.%s', $dir, $i + 1, $base, $file['ext'] ?: 'bin');
-    if (@move_uploaded_file($file['path'], $dest)) { $file['path'] = $dest; $file['saved'] = true; }
+    if (@move_uploaded_file($file['path'], $dest)) {
+      $file['path'] = $dest;
+      $file['saved'] = true;
+      $brief['files'][$i]['file'] = basename($dest);
+      $brief['files'][$i]['ext'] = $file['ext'];
+    }
   }
   unset($file);
-  @file_put_contents($dir . '/brief.json', json_encode($brief, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+  if (!km_save_json($dir . '/brief.json', $brief)) { km_rmdir($dir); return ''; }
   return $dir;
 }
 
+function km_save_json(string $path, array $data): bool {
+  return (bool) @file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), LOCK_EX);
+}
+
+/** The saved files of a request, ready to attach again (used when the email goes out after payment). */
+function km_load_files(string $dir, array $brief): array {
+  $files = [];
+  foreach ($brief['files'] ?? [] as $f) {
+    $path = $dir . '/' . basename((string) ($f['file'] ?? ''));
+    if (empty($f['file']) || !is_file($path)) { // couldn't be saved: still listed in the email
+      $files[] = ['name' => (string) $f['name'], 'ext' => '', 'mime' => 'application/octet-stream', 'size' => (int) ($f['size'] ?? 0), 'path' => '', 'saved' => false];
+      continue;
+    }
+    $files[] = ['name' => (string) $f['name'], 'ext' => (string) ($f['ext'] ?? strtolower(pathinfo((string) $f['name'], PATHINFO_EXTENSION))),
+      'mime' => (string) ($f['type'] ?? 'application/octet-stream'), 'size' => (int) filesize($path), 'path' => $path, 'saved' => true];
+  }
+  return $files;
+}
+
+/** Which files fit in the email, and the colours in the first few images. */
+function km_prepare_files(array $files): array {
+  $used = 0;
+  $shown = 0;
+  foreach ($files as &$f) {
+    $f['attached'] = $f['path'] !== '' && $used + $f['size'] <= KM_ATTACH_BUDGET;
+    if ($f['attached']) $used += $f['size'];
+    $f['palette'] = ($f['path'] !== '' && in_array($f['mime'], KM_RASTER, true) && $shown++ < 4) ? km_palette($f['path']) : [];
+  }
+  unset($f);
+  return $files;
+}
+
 /** Main colours in an image (logos especially), as hex codes with their share. Needs GD. */
+/** Safe to decode? Pictures over ~20 megapixels could use up PHP's memory. */
+function km_image_ok(string $path): bool {
+  $info = @getimagesize($path);
+  return $info && $info[0] > 0 && $info[1] > 0 && $info[0] * $info[1] <= 20000000;
+}
+
 function km_palette(string $path): array {
-  if (!function_exists('imagecreatefromstring') || filesize($path) > 12 * 1024 * 1024) return [];
+  if (!function_exists('imagecreatefromstring') || filesize($path) > 12 * 1024 * 1024 || !km_image_ok($path)) return [];
   $im = @imagecreatefromstring((string) file_get_contents($path));
   if (!$im) return [];
   $w = imagesx($im);
@@ -362,6 +420,7 @@ function km_ai_tool(): array {
 
 /** Image bytes small enough for the API (long edge 1568px, as Anthropic recommends). */
 function km_ai_image(string $path, string $mime): ?array {
+  if (!km_image_ok($path)) return null;
   $bytes = (string) @file_get_contents($path);
   if ($bytes === '') return null;
   $info = @getimagesizefromstring($bytes);
@@ -390,6 +449,8 @@ function km_ai_content(array $b, array $files): array {
       $blocks[] = ['type' => 'text', 'text' => $label];
       $blocks[] = ['type' => 'image', 'source' => ['type' => 'base64', 'media_type' => $img[0], 'data' => base64_encode($img[1])]];
       $images++;
+    } elseif ($f['path'] === '') {
+      $blocks[] = ['type' => 'text', 'text' => $label . ' (couldn’t be saved)'];
     } elseif ($f['mime'] === 'application/pdf' && $pdfs < 2 && $f['size'] <= 8 * 1024 * 1024) {
       $blocks[] = ['type' => 'text', 'text' => $label];
       $blocks[] = ['type' => 'document', 'source' => ['type' => 'base64', 'media_type' => 'application/pdf', 'data' => base64_encode((string) file_get_contents($f['path']))]];
@@ -491,16 +552,17 @@ function km_quote(string $text): string {
   return '<div style="padding:12px 14px;border-left:3px solid #D4AF37;background:#FAF7EF;font-size:15px;line-height:1.55;white-space:pre-wrap">' . km_h($text) . '</div>';
 }
 
-function km_demo_email(array $cfg, array $b, ?array $ai, string $aiError, array $files, string $savedDir, string $payUrl = ''): array {
+function km_demo_email(array $cfg, array $b, ?array $ai, string $aiError, array $files, string $savedDir, array $paid = []): array {
   $p = $b['package'];
   $first = explode(' ', $b['name'])[0];
-  $subject = 'Demo request: ' . $b['business'] . ' (' . km_pages_label($b) . ($b['quote_items'] ? ', needs a quote' : '') . ')';
+  $test = $paid && empty($paid['livemode']);
+  $subject = ($test ? '[TEST] ' : '') . ($paid ? 'Paid demo request: ' : 'Demo request: ') . $b['business'] . ' (' . km_pages_label($b) . ($b['quote_items'] ? ', needs a quote' : '') . ')';
   $folder = $savedDir ? basename($savedDir) : '';
 
   $h = '<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . km_h($subject) . '</title></head>'
     . '<body style="margin:0;padding:0;background:#F3EFE4"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3EFE4"><tr><td align="center" style="padding:24px 12px">'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#FFFFFF;border-radius:14px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;color:#1A1A1A">'
-    . '<tr><td style="background:#080806;padding:24px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">King Media · New demo request</p>'
+    . '<tr><td style="background:#080806;padding:24px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">King Media · ' . ($paid ? 'Paid demo request' : 'New demo request') . '</p>'
     . '<h1 style="margin:0;font-size:26px;line-height:1.2;color:#F3EEE4">' . km_h($b['business']) . '</h1>'
     . '<p style="margin:6px 0 0;font-size:13px;color:#A9A294">' . km_h($b['received']) . ' · ' . km_h($b['id']) . '</p></td></tr>';
 
@@ -517,9 +579,11 @@ function km_demo_email(array $cfg, array $b, ?array $ai, string $aiError, array 
 
   $h .= km_section('Package', km_rows([
     ['Pages', $p ? '<strong>' . km_h($p['label']) . '</strong>' : '<strong>Not sure yet</strong> (they want help deciding)'],
-    ['Build', $p ? km_h($p['build'] . ' one-off, less the ' . KM_DEMO_FEE . ' demo fee') : 'From £495, depending on pages'],
+    ['Build', $p ? km_h($p['build'] . ' one-off, less the ' . KM_DEMO_FEE . ' demo fee') : 'From £494.99, depending on pages'],
     ['Monthly', $p ? km_h($p['monthly']) : 'From £39.99 a month, depending on pages and plan'],
-    ['Demo fee', km_h(KM_DEMO_FEE . ', taken off the build price if they go ahead') . ($payUrl !== '' ? '<br><span style="font-size:13px;color:#6E675C">Not paid yet. They were offered Stripe checkout straight after sending this; you’ll get a separate “Demo fee paid” email if they pay. Their payment link: <a href="' . km_h($payUrl) . '" style="color:#7A5C0E;word-break:break-all">' . km_h($payUrl) . '</a></span>' : '')],
+    ['Demo fee', $paid
+      ? '<strong style="color:#1E7A45">Paid ' . km_h($paid['amount']) . '</strong> by card, ' . km_h($paid['paid_at']) . ($test ? ' <span style="color:#B3261E">(TEST payment, no real money)</span>' : '') . '<br><span style="font-size:13px;color:#6E675C">Take it off their build invoice with the “Demo fee already paid” coupon in Stripe.</span>'
+      : km_h(KM_DEMO_FEE . ', taken off the build price if they go ahead')],
     ['They need', km_h($b['needs'] ? implode(', ', $b['needs']) : 'Not stated')],
   ]));
 
@@ -566,7 +630,7 @@ function km_demo_email(array $cfg, array $b, ?array $ai, string $aiError, array 
     if ($ai['questions']) $h .= km_section('Ask them on the call', km_list($ai['questions']), 'AI');
     if ($ai['checklist']) $h .= km_section('Build checklist', km_list($ai['checklist'], true), 'AI');
     if ($ai['draft_reply'] !== '') {
-      $draft = $ai['draft_reply'] . ($payUrl !== '' ? "\n\nIf you haven’t paid the £4.99 demo fee yet, you can pay securely here:\n" . $payUrl : '');
+      $draft = $ai['draft_reply'];
       $mailto = 'mailto:' . rawurlencode($b['email']) . '?subject=' . rawurlencode('Your King Media demo') . '&body=' . rawurlencode($draft);
       $btn = strlen($mailto) < 1900 ? '<p style="margin:12px 0 0"><a href="' . km_h($mailto) . '" style="display:inline-block;padding:10px 18px;border-radius:99px;background:#080806;color:#F3EEE4;text-decoration:none;font-size:14px;font-weight:600">Reply to ' . km_h($first) . ' with this draft</a></p>' : '';
       $h .= km_section('Draft reply', km_quote($ai['draft_reply']) . $btn, 'AI');
@@ -584,7 +648,7 @@ function km_demo_email(array $cfg, array $b, ?array $ai, string $aiError, array 
   $t = "NEW DEMO REQUEST: {$b['business']}\n{$b['received']} · {$b['id']}\n\n";
   if ($ai && $ai['summary'] !== '') $t .= "AT A GLANCE (AI)\n{$ai['summary']}\n\n";
   $t .= km_brief_text($b) . "\n";
-  if ($payUrl !== '') $t .= "Demo fee: not paid yet. Their payment link: {$payUrl}\n";
+  if ($paid) $t .= "Demo fee: PAID {$paid['amount']} by card, {$paid['paid_at']}" . ($test ? ' (TEST payment)' : '') . "\n";
   if ($files) {
     $t .= "\nFILES\n";
     foreach ($files as $f) $t .= '- ' . $f['name'] . ' (' . km_size($f['size']) . ', ' . ($f['attached'] ? 'attached' : 'saved on your server') . ")\n";
@@ -618,18 +682,82 @@ function km_question_email(array $q): array {
 }
 
 /* ---------------------------------------------------------------------------
-   Sending: PHP mail() on Hostinger, or .eml files for testing
+   Sending: SMTP through a real mailbox (most reliable), PHP mail(), or .eml
+   files for testing. Every send is logged in storage_dir/mail-log.txt.
    --------------------------------------------------------------------------- */
+function km_log(array $cfg, string $line): void {
+  $storage = km_storage($cfg);
+  if (!km_ensure_dir($storage)) return;
+  $file = $storage . '/mail-log.txt';
+  @file_put_contents($file, date('Y-m-d H:i:s') . ' | ' . $line . "\n", FILE_APPEND | LOCK_EX);
+  if (@filesize($file) > 200000) { // keep it small: last 500 lines
+    $lines = file($file) ?: [];
+    @file_put_contents($file, implode('', array_slice($lines, -500)), LOCK_EX);
+  }
+}
+
+/** Minimal SMTP client: SSL (port 465) or STARTTLS (587), AUTH LOGIN. @return array{0: bool, 1: string} */
+function km_smtp_send(array $smtp, string $from, string $to, string $message): array {
+  $secure = strtolower((string) ($smtp['secure'] ?? 'ssl'));
+  if (!in_array($secure, ['ssl', 'tls'], true)) return [false, "smtp 'secure' must be 'ssl' (port 465) or 'tls' (port 587)"]; // never send the password unencrypted
+  if (empty($smtp['host']) || empty($smtp['username']) || !isset($smtp['password'])) return [false, 'smtp host, username or password missing in config.php'];
+  $verify = ($smtp['verify'] ?? true) !== false;
+  $ctx = stream_context_create(['ssl' => ['verify_peer' => $verify, 'verify_peer_name' => $verify, 'allow_self_signed' => !$verify]]);
+  $remote = ($secure === 'ssl' ? 'ssl://' : 'tcp://') . $smtp['host'] . ':' . (int) ($smtp['port'] ?? ($secure === 'ssl' ? 465 : 587));
+  $fp = @stream_socket_client($remote, $errno, $errstr, 15, STREAM_CLIENT_CONNECT, $ctx);
+  if (!$fp) return [false, "could not connect to {$smtp['host']}: {$errstr} ({$errno})"];
+  stream_set_timeout($fp, 30);
+  $read = function () use ($fp): string {
+    $out = '';
+    while (($line = fgets($fp, 1024)) !== false) {
+      $out .= $line;
+      if (strlen($line) < 4 || $line[3] === ' ') break; // last line of a multi-line reply
+    }
+    return $out;
+  };
+  $step = function (string $cmd, array $ok, string $label = '') use ($fp, $read): void {
+    if ($cmd !== '') fwrite($fp, $cmd . "\r\n");
+    $reply = $read();
+    if (!in_array((int) substr($reply, 0, 3), $ok, true)) throw new RuntimeException(($label ?: strtok($cmd, ' ')) . ' refused: ' . trim(preg_replace('/\s+/', ' ', $reply)));
+  };
+  try {
+    $step('', [220], 'greeting');
+    $host = preg_replace('/[^A-Za-z0-9.-]/', '', (string) ($_SERVER['SERVER_NAME'] ?? 'localhost')) ?: 'localhost';
+    $step('EHLO ' . $host, [250]);
+    if ($secure === 'tls') {
+      $step('STARTTLS', [220]);
+      if (!stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) throw new RuntimeException('STARTTLS failed');
+      $step('EHLO ' . $host, [250]);
+    }
+    $step('AUTH LOGIN', [334]);
+    $step(base64_encode((string) $smtp['username']), [334], 'username');
+    $step(base64_encode((string) $smtp['password']), [235], 'password');
+    $step('MAIL FROM:<' . $from . '>', [250]);
+    $step('RCPT TO:<' . $to . '>', [250, 251]);
+    $step('DATA', [354]);
+    if ($message !== '' && ($message[0] === '.' || strpos($message, "\n.") !== false)) $message = preg_replace('/^\./m', '..', $message); // dot-stuffing
+    fwrite($fp, $message . "\r\n.\r\n");
+    stream_set_timeout($fp, 120); // the server may scan a large message before saying OK
+    $step('', [250], 'message');
+    @fwrite($fp, "QUIT\r\n");
+  } catch (Throwable $e) {
+    fclose($fp);
+    return [false, $e->getMessage()];
+  }
+  fclose($fp);
+  return [true, ''];
+}
 function km_header_text(string $s): string {
   return preg_match('/[^\x20-\x7E]/', $s) ? mb_encode_mimeheader($s, 'UTF-8', 'B', "\r\n") : $s;
 }
 
 function km_addr(string $email, string $name): string {
-  $name = trim(str_replace(['"', '\\', "\r", "\n", '<', '>'], '', $name));
-  return $name === '' ? $email : (preg_match('/[^\x20-\x7E]/', $name) ? km_header_text($name) : '"' . $name . '"') . ' <' . $email . '>';
+  $name = trim((string) preg_replace('/[",;:@<>\\\r\n]+/', ' ', $name));
+  if ($name === '') return $email;
+  return (preg_match('/[^\x20-\x7E]/', $name) ? '=?UTF-8?B?' . base64_encode($name) . '?=' : '"' . $name . '"') . ' <' . $email . '>';
 }
 
-function km_send(array $cfg, string $subject, string $html, string $text, array $attachments, string $replyTo, string $replyName): bool {
+function km_send(array $cfg, string $subject, string $html, string $text, array $attachments, string $replyTo, string $replyName, string $ref = ''): bool {
   $from = (string) $cfg['from_email'];
   $mixed = 'km-mixed-' . bin2hex(random_bytes(8));
   $alt = 'km-alt-' . bin2hex(random_bytes(8));
@@ -654,15 +782,28 @@ function km_send(array $cfg, string $subject, string $html, string $text, array 
   $body .= "--{$mixed}--\r\n";
   $to = (string) $cfg['to_email'];
   $subjectHeader = km_header_text($subject);
+  $transport = (string) ($cfg['mail_transport'] ?? 'mail');
+  $error = '';
 
-  if (($cfg['mail_transport'] ?? 'mail') === 'file') {
-    $dir = rtrim((string) $cfg['storage_dir'], '/') . '/outbox';
-    if (!km_ensure_dir($dir)) return false;
+  if ($transport === 'file') {
+    $dir = km_storage($cfg) . '/outbox';
     $eml = "To: {$to}\r\nSubject: {$subjectHeader}\r\n" . implode("\r\n", $headers) . "\r\n\r\n" . $body;
-    return (bool) file_put_contents($dir . '/' . date('Ymd-His') . '-' . bin2hex(random_bytes(3)) . '.eml', $eml);
+    $ok = km_ensure_dir($dir) && file_put_contents($dir . '/' . date('Ymd-His') . '-' . bin2hex(random_bytes(3)) . '.eml', $eml);
+    if (!$ok) $error = 'could not write to the outbox folder';
+  } elseif ($transport === 'smtp') {
+    $message = "To: {$to}\r\nSubject: {$subjectHeader}\r\n" . implode("\r\n", $headers) . "\r\n\r\n" . $body;
+    [$ok, $error] = km_smtp_send((array) ($cfg['smtp'] ?? []), $from, $to, $message);
+  } else {
+    $ok = @mail($to, $subjectHeader, $body, implode("\r\n", $headers), '-f' . $from) ?: @mail($to, $subjectHeader, $body, implode("\r\n", $headers));
+    if (!$ok) $error = 'PHP mail() refused the message' . (($e = error_get_last()) ? ': ' . $e['message'] : '');
   }
-  $ok = @mail($to, $subjectHeader, $body, implode("\r\n", $headers), '-f' . $from);
-  return $ok ?: @mail($to, $subjectHeader, $body, implode("\r\n", $headers));
+  km_log($cfg, ($ref ?: 'email') . " | {$transport} | " . ($ok ? 'sent' : 'FAILED: ' . $error));
+  $problem = $ok ? '' : (preg_match('/password refused|username refused|AUTH/i', $error) ? 'mailbox login failed: check the smtp username and password'
+    : (preg_match('/could not connect/i', $error) ? 'could not reach the mail server'
+    : (preg_match('/MAIL refused|RCPT refused/i', $error) ? 'the mail server refused the sender or recipient address'
+    : (preg_match('/missing|must be/i', $error) ? 'smtp settings incomplete in config.php' : 'the email could not be sent (details in mail-log.txt)'))));
+  if (km_ensure_dir(km_storage($cfg))) km_save_json(km_storage($cfg) . '/mail-status.json', ['at' => date('Y-m-d H:i'), 'ok' => (bool) $ok, 'transport' => $transport, 'problem' => $problem]);
+  return (bool) $ok;
 }
 
 /* ---------------------------------------------------------------------------
@@ -682,15 +823,20 @@ function km_purge(array $cfg, string $storage): void {
   $days = (int) ($cfg['retention_days'] ?? 90);
   if ($days <= 0) return;
   $cutoff = time() - $days * 86400;
-  foreach (km_ls($storage . '/requests') as $d) if (is_dir($d) && filemtime($d) < $cutoff) km_rmdir($d);
+  $unpaidCutoff = time() - 2 * 86400;
+  foreach (km_ls($storage . '/requests') as $d) {
+    if (!is_dir($d)) continue;
+    $unpaid = km_stripe_on($cfg) && !is_file($d . '/paid.json') && is_file($d . '/brief.json') && !empty((json_decode((string) file_get_contents($d . '/brief.json'), true) ?: [])['awaiting_payment']);
+    if (filemtime($d) < ($unpaid ? $unpaidCutoff : $cutoff)) km_rmdir($d);
+  }
   foreach (km_ls($storage . '/outbox') as $f) if (is_file($f) && filemtime($f) < $cutoff) @unlink($f);
 }
 
 /** The saved folder for a request ID, if it's still on the server. */
 function km_find_request(string $storage, string $id): string {
-  if (!preg_match('/^KM-\d{6}-[0-9A-F]{4}$/', $id)) return '';
+  if (!preg_match('/^KM-\d{6}-([0-9A-F]{4}|[0-9A-F]{8})$/', $id)) return '';
   foreach (km_ls($storage . '/requests') as $d) {
-    if (!str_ends_with($d, '_' . strtolower(substr($id, -4))) || !is_file($d . '/brief.json')) continue;
+    if (!str_ends_with($d, '_' . km_id_suffix($id)) || !is_file($d . '/brief.json')) continue;
     $brief = json_decode((string) file_get_contents($d . '/brief.json'), true);
     if (($brief['id'] ?? '') === $id) return $d;
   }
@@ -713,11 +859,37 @@ function km_handle_question(array $cfg): void {
   if ($q['text'] === '') $e['qText'] = 'Please type your question.';
   if ($e) km_fail(422, 'invalid', 'Please fix the highlighted fields.', $e);
   [$subject, $html, $text] = km_question_email($q);
-  if (!km_send($cfg, $subject, $html, $text, [], $q['email'], $q['name'])) {
+  if (!km_send($cfg, $subject, $html, $text, [], $q['email'], $q['name'], 'question')) {
     error_log('[King Media] question email failed to send');
     km_fail(502, 'send', 'Sorry, your question didn’t send.');
   }
   km_respond(200, ['ok' => true]);
+}
+
+/** How many saved requests are still waiting for payment. */
+function km_unpaid_count(string $storage): int {
+  $n = 0;
+  foreach (km_ls($storage . '/requests') as $d) if (is_dir($d) && !is_file($d . '/paid.json') && filemtime($d) > time() - 2 * 86400) $n++;
+  return $n;
+}
+
+function km_finish_fn(): string {
+  return function_exists('litespeed_finish_request') ? 'litespeed_finish_request' : (function_exists('fastcgi_finish_request') ? 'fastcgi_finish_request' : '');
+}
+
+/** Writes the AI brief (if on) and emails the full request with its files. */
+function km_deliver_demo(array $cfg, array $b, array $files, string $dir, int $aiTimeout, array $paid = []): bool {
+  $files = km_prepare_files($files);
+  [$ai, $aiError] = km_ai_brief($cfg, $b, $files, $aiTimeout);
+  if ($aiError !== '') km_log($cfg, $b['id'] . ' | AI brief skipped: ' . $aiError);
+  if ($ai && $dir) km_save_json($dir . '/ai-brief.json', $ai);
+  [$subject, $html, $text] = km_demo_email($cfg, $b, $ai, $aiError, $files, $dir, $paid);
+  $sent = km_send($cfg, $subject, $html, $text, array_filter($files, fn($f) => $f['attached']), $b['email'], $b['name'], $b['id']);
+  if ($dir) {
+    if ($sent) @unlink($dir . '/EMAIL-NOT-SENT.txt');
+    else @file_put_contents($dir . '/EMAIL-NOT-SENT.txt', "The email for this request failed to send. Everything is saved in this folder. See mail-log.txt.\n");
+  }
+  return $sent;
 }
 
 function km_handle_demo(array $cfg, string $storage): void {
@@ -727,49 +899,53 @@ function km_handle_demo(array $cfg, string $storage): void {
   [$files, $fileError] = km_uploaded_files();
   if ($fileError !== '') km_fail(422, 'files', $fileError, ['files' => $fileError]);
 
-  $b['id'] = 'KM-' . date('ymd') . '-' . strtoupper(bin2hex(random_bytes(2)));
+  // Payments set up: never email a request for free. If something needed is missing, say so.
+  $payFirst = km_stripe_configured($cfg);
+  if ($payFirst && !km_stripe_on($cfg)) {
+    km_log($cfg, 'demo request refused: Stripe key set but the secret or site_url is missing in config.php');
+    km_fail(503, 'setup', 'Sorry, online payment isn’t working just now. Please email us instead.');
+  }
+  if ($payFirst && km_unpaid_count($storage) >= 300) {
+    km_log($cfg, 'demo request refused: 300 unpaid requests waiting (possible abuse)');
+    km_fail(503, 'busy', 'Sorry, we can’t take new requests just now. Please email us instead.');
+  }
+
+  do { $b['id'] = 'KM-' . date('ymd') . '-' . strtoupper(bin2hex(random_bytes(4))); } while (km_find_request($storage, $b['id']) !== '');
   $b['received'] = km_received();
+  $b['awaiting_payment'] = $payFirst;
   $b['files'] = array_map(fn($f) => ['name' => $f['name'], 'size' => $f['size'], 'type' => $f['mime']], $files);
   $dir = km_store($storage, $b, $files);
-
-  $used = 0;
-  $shown = 0;
-  foreach ($files as &$f) {
-    $f['attached'] = $used + $f['size'] <= KM_ATTACH_BUDGET;
-    if ($f['attached']) $used += $f['size'];
-    $f['palette'] = (in_array($f['mime'], KM_RASTER, true) && $shown++ < 4) ? km_palette($f['path']) : [];
+  if ($payFirst && $dir === '') {
+    km_log($cfg, 'demo request refused: could not save it (storage folder not writable or full)');
+    km_fail(503, 'storage', 'Sorry, we couldn’t save your request just now. Please try again later, or email us.');
   }
-  unset($f);
 
-  $payUrl = ($dir !== '' && km_stripe_on($cfg)) ? km_pay_url($cfg, $b['id']) : '';
-  $work = function (int $aiTimeout) use ($cfg, $b, $files, $dir, $storage, $payUrl): bool {
-    [$ai, $aiError] = km_ai_brief($cfg, $b, $files, $aiTimeout);
-    if ($aiError !== '') error_log('[King Media] AI brief skipped: ' . $aiError);
-    if ($ai && $dir) @file_put_contents($dir . '/ai-brief.json', json_encode($ai, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-    [$subject, $html, $text] = km_demo_email($cfg, $b, $ai, $aiError, $files, $dir, $payUrl);
-    $sent = km_send($cfg, $subject, $html, $text, array_filter($files, fn($f) => $f['attached']), $b['email'], $b['name']);
-    if (!$sent) {
-      error_log('[King Media] demo request email failed to send: ' . $b['id']);
-      if ($dir) @file_put_contents($dir . '/EMAIL-NOT-SENT.txt', "The email for this request failed to send. Everything is saved in this folder.\n");
-    }
+  // Payments on: save it and send them to Stripe. You're only emailed once they've paid.
+  if ($payFirst) {
+    km_log($cfg, $b['id'] . ' | request saved, waiting for the £4.99 payment');
+    km_respond(200, ['ok' => true, 'id' => $b['id'], 'pay_url' => km_pay_url($cfg, $b['id']), 'pay_required' => true]);
+    $finish = km_finish_fn();
+    if ($finish !== '') { $finish(); km_retry_unsent($cfg, $storage); } // retries only once the visitor has their answer
     km_purge($cfg, $storage);
-    return $sent;
-  };
+    return;
+  }
 
-  // Reply to the visitor straight away where the server allows, then write the
-  // AI brief and send the email without keeping them waiting.
-  $finish = function_exists('litespeed_finish_request') ? 'litespeed_finish_request' : (function_exists('fastcgi_finish_request') ? 'fastcgi_finish_request' : '');
+  // Payments off: email it straight away. Reply to the visitor first where the
+  // server allows, so they aren't kept waiting while the AI brief is written.
+  $finish = km_finish_fn();
   if ($finish !== '' && $dir !== '') {
     ignore_user_abort(true);
     @set_time_limit(150);
-    km_respond(200, ['ok' => true, 'id' => $b['id'], 'pay_url' => $payUrl]);
+    km_respond(200, ['ok' => true, 'id' => $b['id']]);
     $finish();
-    $work(90);
+    km_deliver_demo($cfg, $b, $files, $dir, 90);
+    km_purge($cfg, $storage);
     return;
   }
   @set_time_limit(90);
-  if (!$work(30)) km_fail(502, 'send', 'Sorry, your request didn’t send.');
-  km_respond(200, ['ok' => true, 'id' => $b['id'], 'pay_url' => $payUrl]);
+  if (!km_deliver_demo($cfg, $b, $files, $dir, 30)) km_fail(502, 'send', 'Sorry, your request didn’t send.');
+  km_purge($cfg, $storage);
+  km_respond(200, ['ok' => true, 'id' => $b['id']]);
 }
 
 /* ---------------------------------------------------------------------------
@@ -778,7 +954,13 @@ function km_handle_demo(array $cfg, string $storage): void {
 const KM_DEMO_FEE_PENCE = 499;
 
 function km_storage(array $cfg): string {
-  return rtrim((string) ($cfg['storage_dir'] ?? (__DIR__ . '/storage')), '/');
+  $dir = (string) ($cfg['storage_dir'] ?? '');
+  return rtrim($dir !== '' ? $dir : dirname(__DIR__, 2) . '/km-private', '/');
+}
+
+/** A Stripe key is in config.php (whether or not everything else needed is set). */
+function km_stripe_configured(array $cfg): bool {
+  return !empty($cfg['stripe']['secret_key']);
 }
 
 function km_secret_ok(array $cfg): bool {
@@ -822,6 +1004,13 @@ function km_stripe(array $cfg, string $method, string $path, array $params = [])
 
 /** @return array{0: string, 1: string} [Checkout URL, error] */
 function km_checkout_session(array $cfg, array $brief): array {
+  // Still have an open Checkout for this request? Send them back to it rather than making another.
+  $dir = km_find_request(km_storage($cfg), (string) $brief['id']);
+  $open = $dir !== '' ? (json_decode((string) @file_get_contents($dir . '/checkout.json'), true) ?: []) : [];
+  if (!empty($open['session']) && time() - (int) ($open['created'] ?? 0) < 23 * 3600) {
+    [$st, $res] = km_stripe($cfg, 'GET', '/v1/checkout/sessions/' . rawurlencode((string) $open['session']));
+    if ($st === 200 && ($res['status'] ?? '') === 'open' && is_string($res['url'] ?? null)) return [$res['url'], ''];
+  }
   $site = rtrim((string) $cfg['site_url'], '/');
   $back = fn(string $state) => $site . '/?payment=' . $state . '&r=' . rawurlencode($brief['id']) . '#contact';
   $price = (string) ($cfg['stripe']['demo_price'] ?? '');
@@ -844,10 +1033,14 @@ function km_checkout_session(array $cfg, array $brief): array {
     ],
     'locale' => 'en-GB',
     'success_url' => $back('success'),
-    'cancel_url' => $back('cancelled'),
+    'cancel_url' => $site . '/?payment=cancelled&r=' . rawurlencode($brief['id']) . '&k=' . km_pay_key($cfg, $brief['id']) . '#contact',
   ];
   [$status, $res] = km_stripe($cfg, 'POST', '/v1/checkout/sessions', $params);
-  if ($status === 200 && is_string($res['url'] ?? null)) return [$res['url'], ''];
+  if ($status === 200 && is_string($res['url'] ?? null)) {
+    $dir = km_find_request(km_storage($cfg), (string) $brief['id']);
+    if ($dir !== '') km_save_json($dir . '/checkout.json', ['session' => (string) ($res['id'] ?? ''), 'url' => $res['url'], 'created' => time()]);
+    return [$res['url'], ''];
+  }
   return ['', 'HTTP ' . $status . ': ' . substr((string) ($res['error']['message'] ?? 'no Checkout URL returned'), 0, 300)];
 }
 
@@ -866,16 +1059,25 @@ function km_stripe_signature_ok(string $payload, string $header, string $secret,
   return false;
 }
 
-/** Records a paid demo fee and emails you. False means "ask Stripe to retry". */
-function km_record_payment(array $cfg, array $s): bool {
+/** Only one process at a time may work on a request (Stripe retries and our own retries can overlap). */
+function km_lock(string $dir) {
+  $fh = @fopen($dir . '/.lock', 'c');
+  if (!$fh) return null;
+  if (!flock($fh, LOCK_EX | LOCK_NB)) { fclose($fh); return false; }
+  return $fh;
+}
+
+function km_unlock($fh): void {
+  if ($fh) { flock($fh, LOCK_UN); fclose($fh); }
+}
+
+/**
+ * Records a paid demo fee. Returns the job still to do (sending the request email),
+ * or [] when there's nothing to do (Stripe repeating itself, or another process has it).
+ */
+function km_record_payment(array $cfg, array $s): array {
   $id = (string) ($s['client_reference_id'] ?? ($s['metadata']['request_id'] ?? ''));
   $dir = km_find_request(km_storage($cfg), $id);
-  $marker = $dir ? $dir . '/paid.json' : '';
-  if ($marker && is_file($marker)) {
-    $prev = json_decode((string) file_get_contents($marker), true);
-    if (($prev['session'] ?? '') === ($s['id'] ?? '')) return true; // Stripe sent this one before
-  }
-  $brief = $dir ? (json_decode((string) file_get_contents($dir . '/brief.json'), true) ?: []) : [];
   $paid = [
     'session'  => (string) ($s['id'] ?? ''),
     'amount'   => '£' . number_format(((int) ($s['amount_total'] ?? 0)) / 100, 2),
@@ -883,14 +1085,83 @@ function km_record_payment(array $cfg, array $s): bool {
     'name'     => (string) ($s['customer_details']['name'] ?? ''),
     'paid_at'  => km_received(),
     'livemode' => !empty($s['livemode']),
+    'emailed'  => false,
+    'attempts' => 0,
+    'last_try' => 0,
   ];
-  $business = (string) ($brief['business'] ?? ($s['metadata']['business'] ?? 'Unknown business'));
-  $subject = ($paid['livemode'] ? '' : '[TEST] ') . 'Demo fee paid: ' . $business . ' (' . $paid['amount'] . ')';
+  $job = ['id' => $id, 'dir' => $dir, 'paid' => $paid, 'business' => (string) ($s['metadata']['business'] ?? '')];
+  if ($dir === '') { km_log($cfg, ($id ?: 'unknown request') . ' | paid ' . $paid['amount'] . ' but the request is no longer saved'); return $job; }
+
+  $lock = km_lock($dir);
+  if ($lock === false) return []; // another process is recording or sending this one right now
+  $prev = is_file($dir . '/paid.json') ? (json_decode((string) file_get_contents($dir . '/paid.json'), true) ?: []) : [];
+  if ($prev && ($prev['session'] ?? '') !== $paid['session'] && !empty($prev['emailed'])) {
+    // Paid twice (e.g. two Checkout tabs): don't send the request again, just tell the owner
+    km_log($cfg, $id . ' | SECOND payment ' . $paid['session'] . ' (already paid by ' . ($prev['session'] ?? '?') . ')');
+    km_unlock($lock);
+    km_send_paid_notice($cfg, $job, true);
+    return [];
+  }
+  if (($prev['session'] ?? '') === $paid['session']) {
+    if (!empty($prev['emailed'])) { km_unlock($lock); return []; }
+    $paid = $prev; // Stripe is retrying after an email that failed: try again
+  }
+  km_save_json($dir . '/paid.json', $paid);
+  // Marked as not yet sent until the email really goes, so a crash mid-send is retried later
+  @file_put_contents($dir . '/EMAIL-NOT-SENT.txt', "Paid, email not sent yet. See mail-log.txt.\n");
+  km_unlock($lock);
+  km_log($cfg, $id . ' | paid ' . $paid['amount'] . ($paid['livemode'] ? '' : ' (test)'));
+  $job['paid'] = $paid;
+  return $job;
+}
+
+/** Sends the full request email for a paid request. */
+function km_email_paid(array $cfg, array $job, int $aiTimeout): bool {
+  if ($job['dir'] === '') return km_send_paid_notice($cfg, $job); // request no longer on the server
+  $lock = km_lock($job['dir']);
+  if ($lock === false) return true; // someone else is sending it
+  $paid = json_decode((string) @file_get_contents($job['dir'] . '/paid.json'), true) ?: $job['paid'];
+  if (!empty($paid['emailed'])) { km_unlock($lock); return true; }
+  $brief = json_decode((string) @file_get_contents($job['dir'] . '/brief.json'), true) ?: [];
+  if (!$brief) { km_unlock($lock); return km_send_paid_notice($cfg, $job); }
+  // Count the attempt before trying, so a crash still counts and backs off
+  $paid['attempts'] = (int) ($paid['attempts'] ?? 0) + 1;
+  $paid['last_try'] = time();
+  km_save_json($job['dir'] . '/paid.json', $paid);
+  $sent = km_deliver_demo($cfg, $brief, km_load_files($job['dir'], $brief), $job['dir'], $aiTimeout, $paid);
+  $paid['emailed'] = $sent;
+  km_save_json($job['dir'] . '/paid.json', $paid);
+  km_unlock($lock);
+  return $sent;
+}
+
+/**
+ * Paid requests whose email hasn't gone yet get another go whenever the site is next used,
+ * backing off from 5 minutes to 6 hours between tries, for up to a week.
+ */
+function km_retry_unsent(array $cfg, string $storage): void {
+  foreach (km_ls($storage . '/requests') as $d) {
+    if (!is_file($d . '/paid.json')) continue;
+    $paid = json_decode((string) file_get_contents($d . '/paid.json'), true) ?: [];
+    if (!empty($paid['emailed'])) continue;
+    $attempts = (int) ($paid['attempts'] ?? 0);
+    $wait = min(21600, 300 * (2 ** max(0, $attempts - 1)));
+    $since = time() - (int) ($paid['last_try'] ?? filemtime($d . '/paid.json'));
+    if ($since < max(300, $wait) || $since > 7 * 86400 && $attempts > 0) continue;
+    km_email_paid($cfg, ['id' => '', 'dir' => $d, 'paid' => $paid, 'business' => ''], 20);
+  }
+}
+
+/** Fallback when a payment arrives for a request that's no longer saved. */
+function km_send_paid_notice(array $cfg, array $job, bool $second = false): bool {
+  $paid = $job['paid'];
+  $business = $job['business'] ?: 'Unknown business';
+  $subject = ($paid['livemode'] ? '' : '[TEST] ') . ($second ? 'Paid twice: ' : 'Demo fee paid: ') . $business . ' (' . $paid['amount'] . ')';
   $rows = [
     ['Business', km_h($business)],
     ['Amount', '<strong>' . km_h($paid['amount']) . '</strong>' . ($paid['livemode'] ? '' : ' <span style="color:#B3261E">(test payment, no real money)</span>')],
     ['Paid by', km_h(trim($paid['name'] . ' ' . ($paid['email'] ? '<' . $paid['email'] . '>' : '')))],
-    ['Request', km_h($id ?: 'Not linked to a request') . ($dir ? '' : ' <span style="color:#6E675C">(request folder not found)</span>')],
+    ['Request', km_h($job['id'] ?: 'Not linked to a request') . ' <span style="color:#6E675C">' . ($second ? '(this request was already paid and emailed to you: refund one of the payments in Stripe)' : '(the request details are no longer on the server: check Stripe and reply to them)') . '</span>'],
     ['Stripe', '<code style="font-size:13px">' . km_h($paid['session']) . '</code>'],
   ];
   $html = '<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>' . km_h($subject) . '</title></head><body style="margin:0;padding:0;background:#F3EFE4">'
@@ -899,9 +1170,7 @@ function km_record_payment(array $cfg, array $s): bool {
     . '<tr><td style="background:#080806;padding:22px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">King Media · Demo fee paid</p>'
     . '<h1 style="margin:0;font-size:22px;color:#F3EEE4">' . km_h($business) . '</h1><p style="margin:6px 0 0;font-size:13px;color:#A9A294">' . km_h($paid['paid_at']) . '</p></td></tr>'
     . km_section('Payment', km_rows($rows))
-    . '<tr><td style="padding:22px 28px 26px;font-size:13px;color:#6E675C">Remember to take this ' . km_h($paid['amount']) . ' off their build invoice (use the “Demo fee already paid” coupon in Stripe).</td></tr></table></td></tr></table></body></html>';
-  $text = "DEMO FEE PAID: {$business}\n{$paid['paid_at']}\n\nAmount: {$paid['amount']}" . ($paid['livemode'] ? '' : ' (TEST payment)') . "\nPaid by: {$paid['name']} {$paid['email']}\nRequest: {$id}\nStripe: {$paid['session']}\n\nTake this off their build invoice.\n";
-  if (!km_send($cfg, $subject, $html, $text, [], $paid['email'] ?: (string) $cfg['to_email'], $paid['name'])) return false;
-  if ($marker) @file_put_contents($marker, json_encode($paid, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-  return true;
+    . '<tr><td style="padding:22px 28px 26px;font-size:13px;color:#6E675C">Take this ' . km_h($paid['amount']) . ' off their build invoice with the “Demo fee already paid” coupon in Stripe.</td></tr></table></td></tr></table></body></html>';
+  $text = "DEMO FEE PAID: {$business}\n{$paid['paid_at']}\n\nAmount: {$paid['amount']}" . ($paid['livemode'] ? '' : ' (TEST payment)') . "\nPaid by: {$paid['name']} {$paid['email']}\nRequest: {$job['id']} (details no longer on the server)\nStripe: {$paid['session']}\n";
+  return km_send($cfg, $subject, $html, $text, [], $paid['email'] ?: (string) $cfg['to_email'], $paid['name'], ($job['id'] ?: 'payment') . ' notice');
 }

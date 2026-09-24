@@ -1,7 +1,8 @@
 <?php
 /*
- * King Media: Stripe calls this when a demo fee has been paid.
- * Add it in Stripe (Developers > Webhooks) with the event checkout.session.completed
+ * King Media: Stripe calls this when a demo fee has been paid. That's when the
+ * full demo request (with files and AI brief) is emailed to you.
+ * Add it in Stripe (Developers > Webhooks) with the events checkout.session.completed
  * and checkout.session.async_payment_succeeded, then put its signing secret in config.php.
  */
 define('KM_API', true);
@@ -19,10 +20,27 @@ if ($secret === '' || !km_stripe_signature_ok($payload, (string) ($_SERVER['HTTP
 $event = json_decode($payload, true) ?: [];
 $session = $event['data']['object'] ?? [];
 $paidEvent = in_array($event['type'] ?? '', ['checkout.session.completed', 'checkout.session.async_payment_succeeded'], true);
-if ($paidEvent && ($session['payment_status'] ?? '') === 'paid' && !km_record_payment($cfg, $session)) {
-  http_response_code(500); // Stripe will try again later
-  echo 'Could not record payment';
-  exit;
+$job = ($paidEvent && ($session['payment_status'] ?? '') === 'paid') ? km_record_payment($cfg, $session) : [];
+
+if ($job) {
+  // Tell Stripe "got it" straight away, then write the AI brief and send the email
+  $finish = km_finish_fn();
+  if ($finish !== '') {
+    ignore_user_abort(true);
+    @set_time_limit(150);
+    http_response_code(200);
+    echo 'ok';
+    $finish();
+    km_email_paid($cfg, $job, 90);
+    km_retry_unsent($cfg, km_storage($cfg));
+    exit;
+  }
+  @set_time_limit(90);
+  if (!km_email_paid($cfg, $job, 20)) {
+    http_response_code(500); // Stripe will try again later
+    echo 'Could not send the email';
+    exit;
+  }
 }
 http_response_code(200);
 echo 'ok';
