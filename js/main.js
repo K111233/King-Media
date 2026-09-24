@@ -835,7 +835,7 @@
   /* On phones the contact intro is a long scroll above the form, so "Get your demo" goes straight to the form */
   document.addEventListener('click', e => {
     const a = e.target.closest('a[href="#contact"]');
-    if (!a || !form || vw > 720 || a.dataset.pages || a.id === 'donePayBtn' || e.defaultPrevented) return;
+    if (!a || !form || vw > 720 || a.dataset.pages || a.id === 'donePayBtn' || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     lockNav();
     const target = form.hidden ? formDone : form;
@@ -1297,6 +1297,7 @@
     else mock.style.zoom = '';
     reserveStage();
   }
+  if (document.fonts) document.fonts.ready.then(() => { if (mock) reserveStage(); }); // text sizes settle once the fonts arrive
   // Below desktop the preview sits in the page flow, and the phone step is taller than the rest.
   // Hold the tallest step's height so the page underneath never jumps while it plays.
   function reserveStage() {
