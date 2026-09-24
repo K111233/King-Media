@@ -31,4 +31,6 @@ echo json_encode([
   'last_email_ok'       => $last ? (bool) $last['ok'] : null,
   'last_email_problem'  => $last && !$last['ok'] ? (string) ($last['problem'] ?? 'failed') : '',
   'paid_waiting_to_send'=> $waiting,
+  'last_payment_page_ok'      => ($pay = json_decode((string) @file_get_contents($storage . '/payment-status.json'), true)) ? (bool) $pay['ok'] : null,
+  'last_payment_page_problem' => $pay && !$pay['ok'] ? (string) $pay['problem'] : '',
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

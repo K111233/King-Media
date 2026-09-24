@@ -958,6 +958,11 @@ function km_storage(array $cfg): string {
   return rtrim($dir !== '' ? $dir : dirname(__DIR__, 2) . '/km-private', '/');
 }
 
+/** Stripe's error text, with anything that looks like a key or secret blanked out. */
+function km_hide_keys(string $s): string {
+  return substr((string) preg_replace('/\b(sk|rk|pk|whsec)_[A-Za-z0-9_*]+/', '[key]', $s), 0, 240);
+}
+
 /** A Stripe key is in config.php (whether or not everything else needed is set). */
 function km_stripe_configured(array $cfg): bool {
   return !empty($cfg['stripe']['secret_key']);

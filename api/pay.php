@@ -29,8 +29,10 @@ if (is_file($dir . '/paid.json')) $back('already');
 $brief = json_decode((string) file_get_contents($dir . '/brief.json'), true) ?: [];
 [$url, $err] = km_checkout_session($cfg, $brief);
 if ($url === '') {
-  error_log('[King Media] Stripe Checkout failed for ' . $id . ': ' . $err);
+  km_log($cfg, $id . ' | Stripe Checkout FAILED: ' . $err);
+  km_save_json(km_storage($cfg) . '/payment-status.json', ['at' => date('Y-m-d H:i'), 'ok' => false, 'problem' => km_hide_keys($err)]);
   $back('error');
 }
+km_save_json(km_storage($cfg) . '/payment-status.json', ['at' => date('Y-m-d H:i'), 'ok' => true, 'problem' => '']);
 header('Cache-Control: no-store');
 header('Location: ' . $url, true, 303);

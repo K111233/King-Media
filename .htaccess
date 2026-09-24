@@ -4,3 +4,11 @@ RewriteRule (^|/)\.git - [F,L]
 
 # No folder listings anywhere
 Options -Indexes
+
+# Pages are always re-checked, so visitors get updates straight away.
+# (CSS and JS are linked with ?v=… version tags, so they can be kept.)
+<IfModule mod_headers.c>
+  <FilesMatch "\.html?$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
