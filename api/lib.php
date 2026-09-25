@@ -13,7 +13,7 @@ const KM_TIERS = [
   '1'  => ['label' => '1 page',   'build' => '£494.99', 'monthly' => '£49.99 a month on the 12-Month Plan, or £39.99 a month on the 5-Year Plan'],
   '2'  => ['label' => '2 pages',  'build' => '£899.99', 'monthly' => '£49.99 a month on the 12-Month Plan, or £39.99 a month on the 5-Year Plan'],
   '3'  => ['label' => '3 pages',  'build' => '£1,199.99', 'monthly' => '£59.99 a month on the 12-Month Plan, or £49.99 a month on the 5-Year Plan'],
-  '4+' => ['label' => '4+ pages', 'build' => '£1,449.99', 'monthly' => '£59.99 a month on the 12-Month Plan, or £49.99 a month on the 5-Year Plan'],
+  '4+' => ['label' => '4–6 pages', 'build' => '£1,449.99', 'monthly' => '£59.99 a month on the 12-Month Plan, or £49.99 a month on the 5-Year Plan'],
 ];
 const KM_CHOICES = [
   'pages'    => ['1', '2', '3', '4+', 'unsure'],
@@ -1204,7 +1204,7 @@ function km_send_paid_notice(array $cfg, array $job, bool $second = false): bool
 const KM_COMPANY = ['type' => 'sole_trader', 'name' => 'King Media', 'trading_as' => 'King Media', 'owner' => '', 'address' => '124 City Road, London, EC1V 2NX',
   'number' => '', 'registered_in' => 'England and Wales', 'office' => ''];
 const KM_BUILD_PENCE = ['1' => 49499, '2' => 89999, '3' => 119999, '4+' => 144999];
-const KM_PAGE_LABELS = ['1' => '1 page', '2' => '2 pages', '3' => '3 pages', '4+' => '4 or more pages'];
+const KM_PAGE_LABELS = ['1' => '1 page', '2' => '2 pages', '3' => '3 pages', '4+' => '4 to 6 pages'];
 const KM_PLANS = [
   '12m' => ['name' => '12-Month Plan', 'months' => 12, 'term' => '12 months', 'pence' => ['1' => 4999, '2' => 4999, '3' => 5999, '4+' => 5999]],
   '5y'  => ['name' => '5-Year Plan', 'months' => 60, 'term' => '5 years (60 months)', 'pence' => ['1' => 3999, '2' => 3999, '3' => 4999, '4+' => 4999]],
@@ -1295,7 +1295,9 @@ function km_contract_create(array $cfg, array $in): array {
     'domain' => strtolower(km_clean((string) ($in['domain'] ?? ''), 120)),
     'pages' => array_key_exists((string) ($in['pages'] ?? ''), KM_BUILD_PENCE) ? (string) $in['pages'] : '',
     'quoted' => km_clean((string) ($in['quoted'] ?? ''), 600, true),
-    'domain_owned' => !empty($in['domain_owned']),
+    'demo' => km_clean((string) ($in['demo'] ?? ''), 300),
+    'agreed' => km_clean((string) ($in['agreed'] ?? ''), 800, true),
+    'domain_status' => in_array((string) ($in['domain_status'] ?? ''), ['provider', 'existing', 'client'], true) ? (string) $in['domain_status'] : 'provider',
   ];
   foreach (['business' => 'the business name', 'address' => 'their business address', 'contact' => 'the contact name', 'domain' => 'the website address'] as $k => $what) {
     if ($o[$k] === '') $e[$k] = 'Please add ' . $what . '.';
@@ -1351,6 +1353,7 @@ function km_contract_sign(array $cfg, array $c, array $in): array {
   if (count($words) < 2 || mb_strlen($name) < 4) $e['sign_name'] = 'Please type your full name (first and last name) to sign.';
   if ($role === '') $e['sign_role'] = 'Please add your position, for example Owner or Director.';
   if (empty($in['agree'])) $e['agree'] = 'Please tick to confirm you agree and can sign for the business.';
+  if (empty($in['agree_terms'])) $e['agree_terms'] = 'Please tick to confirm you understand the minimum term, the Early Exit Fee and who owns the domain name.';
   if ($e) return [false, $e];
 
   $lock = km_lock($c['dir']);
@@ -1358,7 +1361,7 @@ function km_contract_sign(array $cfg, array $c, array $in): array {
   if ($lock === false || is_file($c['dir'] . '/signed.json')) { km_unlock($lock ?: null); return [true, []]; } // signed already (double click)
   $now = time();
   $signed = [
-    'plan' => $plan, 'name' => $name, 'role' => $role,
+    'plan' => $plan, 'name' => $name, 'role' => $role, 'key_points' => true,
     'at' => $now, 'at_text' => date('j F Y, H:i', $now) . ' (UK time)',
     'ip' => (string) ($_SERVER['REMOTE_ADDR'] ?? ''), 'agent' => mb_substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 300),
     'version' => KM_AGREEMENT_VERSION,
@@ -1415,6 +1418,8 @@ function km_contract_checkout(array $cfg, array $c): array {
   $build = (int) $offer['build_pence'] - (int) $plan['monthly_pence'];
   if ($build < 100) return ['', 'the build fee isn’t more than the monthly fee'];
   $link = km_contract_url($cfg, $offer['id']);
+  $deadline = (int) $signed['at'] + KM_UNPAID_DAYS * 86400;
+  if ($deadline < time() + 1900) return ['', 'the time to pay has run out'];
   $meta = ['kind' => 'contract', 'contract_id' => $offer['id'], 'business' => mb_substr($offer['business'], 0, 400), 'plan' => $plan['name']];
   $params = [
     'mode' => 'subscription',
@@ -1429,6 +1434,7 @@ function km_contract_checkout(array $cfg, array $c): array {
     'customer_email' => $offer['email'],
     'metadata' => $meta,
     'locale' => 'en-GB',
+    'expires_at' => min(time() + 23 * 3600, $deadline), // never payable after the 14 days to pay (Clause 5.1)
     'managed_payments' => ['enabled' => 'false'], // normal Stripe payments, as for the demo fee
     'success_url' => $link . '&paid=1',
     'cancel_url' => $link . '&cancelled=1',
@@ -1461,7 +1467,8 @@ function km_contract_paid(array $cfg, array $s): bool {
     'amount' => $amount, 'paid_at' => km_received(), 'paid_ts' => time(), 'next_charge' => km_month_later(time()), 'livemode' => !empty($s['livemode']), 'emailed' => false]);
   if (!$second) km_save_json($c['dir'] . '/paid.json', $paid);
   km_log($cfg, $id . ' | contract paid ' . $amount . ($second ? ' AGAIN (second Checkout: refund one)' : '') . (!empty($s['livemode']) ? '' : ' (test)'));
-  [$subject, $html, $text] = km_contract_email($c['offer'], $c['signed'], $second ? 'paid-twice' : 'paid', $paid + ['second_session' => $session, 'second_amount' => $amount]);
+  $late = !empty($c['offer']['withdrawn']) ? 'withdrawn' : (($c['signed'] && time() > (int) $c['signed']['at'] + KM_UNPAID_DAYS * 86400) ? 'lapsed' : '');
+  [$subject, $html, $text] = km_contract_email($c['offer'], $c['signed'], $second ? 'paid-twice' : 'paid', $paid + ['second_session' => $session, 'second_amount' => $amount, 'late' => $late]);
   $ok = km_send($cfg, $subject, $html, $text, [], $c['offer']['email'], $c['offer']['contact'], $id . ($second ? ' paid twice' : ' paid'));
   if (!$second) { $paid['emailed'] = $ok; km_save_json($c['dir'] . '/paid.json', $paid); }
   km_unlock($lock);
@@ -1488,6 +1495,7 @@ function km_email_agreement(array $offer, array $signed): string {
     '<td>' => '<td style="' . $cell . '">',
     '<h2>' => '<h2 style="font-size:16px;margin:22px 0 6px;color:#1A1A1A">',
     '<h2 id="order-form">' => '<h2 id="order-form" style="font-size:16px;margin:26px 0 6px;color:#1A1A1A">',
+    '<h2 id="processing">' => '<h2 id="processing" style="font-size:16px;margin:26px 0 6px;color:#1A1A1A">',
     '<h3>' => '<h3 style="font-size:14px;margin:16px 0 6px;color:#1A1A1A">',
     '<p>' => '<p style="margin:6px 0">',
     '<ul>' => '<ul style="margin:6px 0;padding-left:20px">',
@@ -1515,13 +1523,13 @@ function km_contract_email(array $offer, array $signed, string $kind, array $pai
     $subject = 'Your King Media agreement is signed';
     $head = 'Thanks, ' . explode(' ', (string) ($signed['name'] ?? ''))[0] . '. Your agreement is signed.';
     $intro = 'Your signed copy of the agreement is attached: open it in any web browser, or print it. If you haven’t paid yet, pay the build fee on Stripe’s secure page to get your website live. Your agreement starts once it’s paid.';
-    $foot = 'Questions? Just reply to this email.';
+    $foot = 'Questions? Just reply to this email. Agreement fingerprint (SHA-256): ' . (string) ($signed['sha256'] ?? '');
     if ($link !== '') $button = '<tr><td style="padding:18px 28px 0"><a href="' . km_h($link) . '" style="display:inline-block;padding:12px 20px;border-radius:99px;background:#D4AF37;color:#080806;font-weight:700;text-decoration:none">Pay ' . km_h($today) . ' securely</a></td></tr>';
   } elseif ($kind === 'signed') {
     $subject = 'Contract signed: ' . $offer['business'] . ' (' . $plan['name'] . ')';
     $head = $offer['business'] . ' has signed';
     $intro = 'They’re being taken to Stripe to pay ' . $today . '. You’ll get another email when it’s paid. Their signed copy is attached.';
-    $foot = 'Contract ' . $offer['id'] . ' · signed from IP ' . ($signed['ip'] ?? '') . ' · fingerprint ' . substr((string) ($signed['sha256'] ?? ''), 0, 16);
+    $foot = 'Contract ' . $offer['id'] . ' · signed from IP ' . ($signed['ip'] ?? '') . ' · fingerprint (SHA-256) ' . (string) ($signed['sha256'] ?? '');
   } elseif ($kind === 'paid-twice') {
     $subject = 'Paid twice: ' . $offer['business'] . ' (' . ($paid['second_amount'] ?? '') . ')';
     $head = $offer['business'] . ' paid twice';
@@ -1531,7 +1539,8 @@ function km_contract_email(array $offer, array $signed, string $kind, array $pai
     $test = empty($paid['livemode']);
     $subject = ($test ? '[TEST] ' : '') . 'Contract paid: ' . $offer['business'] . ' (' . $paid['amount'] . ')';
     $head = $offer['business'] . ' has paid' . ($test ? ' (test payment)' : '');
-    $intro = 'Paid ' . $paid['amount'] . ' today. Their monthly payments of ' . $monthly . ' start on ' . date('j F Y', (int) $paid['next_charge']) . '. The website is due to go live tomorrow.';
+    $intro = 'Paid ' . $paid['amount'] . ' today. Their monthly payments of ' . $monthly . ' start on ' . date('j F Y', (int) $paid['next_charge']) . '. The website is due to go live tomorrow.'
+      . (($paid['late'] ?? '') !== '' ? ' NOTE: this payment came in after the link ' . ($paid['late'] === 'withdrawn' ? 'was withdrawn' : 'lapsed (14 days after signing)') . '. Either accept it (the agreement then starts today) or refund it and cancel the subscription in Stripe.' : '');
     $foot = 'Contract ' . $offer['id'] . ' · Stripe ' . ($paid['subscription'] ?: $paid['session']);
   }
   $html = '<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>' . km_h($subject) . '</title></head><body style="margin:0;padding:0;background:#F3EFE4">'

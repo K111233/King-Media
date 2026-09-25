@@ -568,7 +568,7 @@
     '1': { label: '1 page', build: '£494.99', monthly: MONTHLY_1_2 },
     '2': { label: '2 pages', build: '£899.99', monthly: MONTHLY_1_2 },
     '3': { label: '3 pages', build: '£1,199.99', monthly: MONTHLY_3PLUS },
-    '4+': { label: '4+ pages', build: '£1,449.99', monthly: MONTHLY_3PLUS },
+    '4+': { label: '4–6 pages', build: '£1,449.99', monthly: MONTHLY_3PLUS },
   };
 
   /* ---------------------------------------------------------------------

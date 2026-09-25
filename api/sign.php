@@ -74,7 +74,7 @@ $chosen = $c['signed'] ? ($plans[$c['signed']['plan']] ?? null) : null;
 $posted = fn(string $k) => km_h((string) ($_POST[$k] ?? ''));
 $err = fn(string $k) => isset($errors[$k]) ? '<p class="field__error" id="' . $k . 'Err">' . km_h($errors[$k]) . '</p>' : '<p class="field__error" id="' . $k . 'Err"></p>';
 $bad = fn(string $k) => isset($errors[$k]) ? ' aria-invalid="true"' : '';
-$saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['monthly_pence']) * 60 : 0;
+$saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['monthly_pence']) * 59 : 0; // month 1 is in the build fee on both plans
 ?><!doctype html>
 <html lang="en-GB">
 <head>
@@ -85,7 +85,7 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
 <meta name="theme-color" content="#080806">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/css/style.css?v=20260924e">
+<link rel="stylesheet" href="/css/style.css?v=20260925a">
 <style>
   .sign__lede { margin-top: .75rem; font-size: var(--fs-lede); color: var(--bone-200); }
   .sign__box { margin-top: 1.75rem; padding: clamp(1.1rem, 3vw, 1.6rem); border-radius: 20px; background: var(--ink-850); border: 1px solid var(--line); }
@@ -129,6 +129,11 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
   .sign__sig-name { font-family: var(--f-serif); font-style: italic; font-size: clamp(1.8rem, 6vw, 2.4rem); line-height: 1.1; color: var(--acc-300); overflow-wrap: anywhere; }
   .no-js .sign__sig, .sign__sig:not(.is-on) { display: none; }
   [data-plan-show][hidden] { display: none !important; }
+  .keypoints { margin-top: 2rem; padding: clamp(1.1rem, 3vw, 1.6rem); border-radius: 20px; border: 1px solid rgba(212, 175, 55, .55); background: rgba(212, 175, 55, .07); }
+  .keypoints h2 { margin-top: 0; font-size: 1.35rem; }
+  .keypoints ul { display: grid; gap: .55rem; padding-left: 1.1rem; margin-top: .75rem; }
+  .keypoints li { color: var(--bone-100); font-size: .95rem; overflow-wrap: anywhere; }
+  .keypoints [data-plan-show] { display: block; }
 </style>
 </head>
 <body class="legal-page">
@@ -199,7 +204,7 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
             <input type="radio" name="plan" value="<?= $h($pk) ?>" data-price="<?= $h(km_money($pl['monthly_pence'])) ?>" data-term="<?= $h($pl['term']) ?>"<?= (($_POST['plan'] ?? '') === $pk) ? ' checked' : '' ?> required>
             <span class="plan__name"><?= $h($pl['name']) ?></span>
             <span class="plan__price"><?= $h(km_money($pl['monthly_pence'])) ?> <small style="font-size:.9rem;color:var(--bone-300)">a month</small></span>
-            <span class="plan__meta"><?= $pk === '12m' ? '12-month minimum, then month to month' : '5-year minimum' . ($saving > 0 ? ', and you save ' . $h(km_money($saving)) . ' over the 5 years' : '') ?></span>
+            <span class="plan__meta"><?= $pk === '12m' ? '12-month minimum, then month to month' : '5-year minimum' . ($saving > 0 ? ', and you save ' . $h(km_money($saving)) . ' over the 5 years (your first month is in the build fee)' : '') ?></span>
           </label>
 <?php endforeach; ?>
         </fieldset>
@@ -213,13 +218,20 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
 
       <section class="agreement" aria-labelledby="agreementTitle">
         <h2 id="agreementTitle" style="font-size:1.35rem">2. Read your agreement</h2>
-        <p class="small">King Media Website Design, Hosting &amp; Maintenance Service Agreement, with your Order Form at the end. All prices include VAT. <a href="#sign">Skip to signing</a></p>
+        <p class="small">King Media Website Design, Hosting &amp; Maintenance Service Agreement, with your Order Form at the end. All prices include VAT. <a href="#keypoints">Jump to the key points</a></p>
         <?= km_agreement_body($o, [], 3) ?>
+      </section>
+
+      <section class="keypoints" id="keypoints" aria-labelledby="keyTitle">
+        <h2 id="keyTitle">Key points: please read before you sign</h2>
+        <p class="small">A plain-English summary. The full agreement above is what counts.</p>
+        <?= km_agreement_keypoints($o) ?>
+        <p class="small" style="margin-top:.9rem">Anything you were promised on the phone should be in this agreement. If it isn’t, email us at enquiries@kingmedia.uk before you sign.</p>
       </section>
 
       <div class="sign__box" id="sign">
         <h2 style="font-size:1.35rem">3. Sign</h2>
-<?php if ($errors): $to = ['plan' => '#plans', 'sign_name' => '#signName', 'sign_role' => '#signRole', 'agree' => '#agree']; ?>
+<?php if ($errors): $to = ['plan' => '#plans', 'sign_name' => '#signName', 'sign_role' => '#signRole', 'agree' => '#agree', 'agree_terms' => '#agreeTerms']; ?>
         <div class="sign__errors" role="alert"><strong>Please check:</strong><ul>
 <?php foreach ($errors as $ek => $em): ?>
           <li><?= isset($to[$ek]) ? '<a href="' . $to[$ek] . '">' . $h($em) . '</a>' : $h($em) ?></li>
@@ -239,8 +251,10 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
             <input id="signRole" name="sign_role" type="text" autocapitalize="words" placeholder="For example Owner or Director" required value="<?= $posted('sign_role') ?>" aria-describedby="sign_roleErr"<?= $bad('sign_role') ?>>
             <?= $err('sign_role') ?>
           </div>
-          <label class="check"><input type="checkbox" id="agree" name="agree" value="1" required aria-describedby="agreeErr"<?= !empty($_POST['agree']) ? ' checked' : '' ?><?= $bad('agree') ?>> <span>I’ve read and agree to the Service Agreement and Order Form above, and I’m authorised to sign for <?= $h($o['business']) ?>. Typing my name counts as my signature.</span></label>
+          <label class="check"><input type="checkbox" id="agree" name="agree" value="1" required aria-describedby="agreeErr"<?= !empty($_POST['agree']) ? ' checked' : '' ?><?= $bad('agree') ?>> <span>I’ve read and agree to the Service Agreement and Order Form above. <?= $h($o['business']) ?> is buying these services for its business, not as a consumer, and I’m authorised to sign for it. Typing my name counts as my signature.</span></label>
           <?= $err('agree') ?>
+          <label class="check"><input type="checkbox" id="agreeTerms" name="agree_terms" value="1" required aria-describedby="agree_termsErr"<?= !empty($_POST['agree_terms']) ? ' checked' : '' ?><?= $bad('agree_terms') ?>> <span>I understand I’m committing to the minimum term of the plan I’ve chosen, that leaving early means paying an Early Exit Fee (clause 6), and how the domain name is owned (clause 8.5).</span></label>
+          <?= $err('agree_terms') ?>
           <button type="submit" class="btn btn--primary"><span class="btn__label">Sign and pay <?= $h($build) ?></span></button>
           <p class="small">Next you’ll pay on Stripe’s secure page and set up your monthly payment. We’ll email you a copy of what you signed.</p>
         </div>
@@ -263,12 +277,13 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
     var drawSig = function () { sigName.textContent = sigIn.value.trim(); sig.classList.toggle('is-on', sigIn.value.trim() !== ''); };
     sigIn.addEventListener('input', drawSig); drawSig();
   }
-  // Show the chosen plan's price and term in the summary
+  // Show the chosen plan's price and term in the summary, and only its lines in the key points
   document.querySelectorAll('input[name="plan"]').forEach(function (r) {
     r.addEventListener('change', function () {
       var p = document.querySelector('[data-plan-price]'), t = document.querySelector('[data-plan-term]');
       if (p) p.textContent = r.dataset.price;
       if (t) t.textContent = r.dataset.term;
+      document.querySelectorAll('[data-plan-show]').forEach(function (el) { el.hidden = el.dataset.planShow !== r.value; });
     });
     if (r.checked) r.dispatchEvent(new Event('change'));
   });

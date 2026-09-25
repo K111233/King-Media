@@ -52,6 +52,7 @@ if ($ready && $_SERVER['REQUEST_METHOD'] === 'POST') {
       if ($c['dir'] && in_array(km_contract_state($c), ['open', 'signed', 'expired'], true)) {
         $c['offer']['withdrawn'] = true;
         km_save_json($c['dir'] . '/offer.json', $c['offer']);
+        if (!empty($c['checkout']['session'])) km_stripe($cfg, 'POST', '/v1/checkout/sessions/' . rawurlencode((string) $c['checkout']['session']) . '/expire'); // close any open payment page
         km_log($cfg, $c['offer']['id'] . ' | contract link withdrawn');
         header('Location: contracts.php?withdrawn=' . rawurlencode($c['offer']['id']), true, 303);
         exit;
@@ -76,7 +77,7 @@ $labels = ['open' => 'Sent, not signed yet', 'signed' => 'Signed, not paid yet',
 <title>Contract links | King Media</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="stylesheet" href="/css/style.css?v=20260924e">
+<link rel="stylesheet" href="/css/style.css?v=20260925a">
 <style>
   .admin__box { margin-top: 1.5rem; padding: clamp(1.1rem, 3vw, 1.6rem); border-radius: 20px; background: var(--ink-850); border: 1px solid var(--line); }
   .admin__box h2 { margin-top: 0; }
@@ -150,7 +151,14 @@ $labels = ['open' => 'Sent, not signed yet', 'signed' => 'Signed, not paid yet',
         <div class="field"><label for="monthly_12m">12-Month Plan monthly, if not standard (£)</label><input id="monthly_12m" name="monthly_12m" inputmode="decimal" placeholder="Standard" value="<?= $v('monthly_12m') ?>"><?= $err('monthly_12m') ?></div>
         <div class="field"><label for="monthly_5y">5-Year Plan monthly, if not standard (£)</label><input id="monthly_5y" name="monthly_5y" inputmode="decimal" placeholder="Standard" value="<?= $v('monthly_5y') ?>"><?= $err('monthly_5y') ?></div>
         <div class="field wide"><label for="quoted">Separately quoted work included (optional)</label><textarea id="quoted" name="quoted" rows="2" placeholder="For example: online booking system, as quoted on 20 September"><?= $v('quoted') ?></textarea></div>
-        <label class="check wide"><input type="checkbox" name="domain_owned" value="1"<?= !empty($_POST['domain_owned']) ? ' checked' : '' ?>> <span>Premium plan: the client will own their domain name (Clause 8.5)</span></label>
+        <div class="field"><label for="domain_status">Domain name</label>
+          <select id="domain_status" name="domain_status">
+<?php foreach (['provider' => 'New: we register it and own it (standard)', 'existing' => 'They already own it (it stays theirs)', 'client' => 'Premium: registered in their name, they own it'] as $dk => $dl): ?>
+            <option value="<?= $dk ?>"<?= (($_POST['domain_status'] ?? 'provider') === $dk) ? ' selected' : '' ?>><?= $h($dl) ?></option>
+<?php endforeach; ?>
+          </select></div>
+        <div class="field"><label for="demo">Approved demo (link or short description)</label><input id="demo" name="demo" placeholder="The demo link they approved" value="<?= $v('demo') ?>"></div>
+        <div class="field wide"><label for="agreed">Anything else agreed on the phone (optional)</label><textarea id="agreed" name="agreed" rows="2" placeholder="Anything you promised that isn't in the standard agreement. Leave empty if nothing."><?= $v('agreed') ?></textarea></div>
       </div>
       <button type="submit" class="btn btn--primary" style="margin-top:1.25rem"<?= $problem ? ' disabled' : '' ?>><span class="btn__label">Make the link</span></button>
     </form>
