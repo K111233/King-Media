@@ -1470,14 +1470,34 @@ function km_contract_paid(array $cfg, array $s): bool {
   $late = !empty($c['offer']['withdrawn']) ? 'withdrawn' : (($c['signed'] && time() > (int) $c['signed']['at'] + KM_UNPAID_DAYS * 86400) ? 'lapsed' : '');
   [$subject, $html, $text] = km_contract_email($c['offer'], $c['signed'], $second ? 'paid-twice' : 'paid', $paid + ['second_session' => $session, 'second_amount' => $amount, 'late' => $late]);
   $ok = km_send($cfg, $subject, $html, $text, [], $c['offer']['email'], $c['offer']['contact'], $id . ($second ? ' paid twice' : ' paid'));
-  if (!$second) { $paid['emailed'] = $ok; km_save_json($c['dir'] . '/paid.json', $paid); }
+  if (!$second) {
+    $paid['emailed'] = $ok;
+    if (empty($paid['client_emailed'])) $paid['client_emailed'] = km_contract_welcome($cfg, $c, $paid);
+    km_save_json($c['dir'] . '/paid.json', $paid);
+  }
   km_unlock($lock);
   return $ok;
+}
+
+/** The client's "payment received" confirmation, with their signed agreement attached again. */
+function km_contract_welcome(array $cfg, array $c, array $paid): bool {
+  $offer = $c['offer'];
+  $files = is_file($c['dir'] . '/agreement-signed.html') ? [['path' => $c['dir'] . '/agreement-signed.html', 'mime' => 'text/html',
+    'name' => 'King Media agreement - ' . km_slug($offer['business'], 60) . ' - signed ' . date('Y-m-d', (int) ($c['signed']['at'] ?? time())) . '.html']] : [];
+  [$subject, $html, $text] = km_contract_email($offer, $c['signed'], 'welcome', $paid);
+  return km_send($cfg, $subject, $html, $text, $files, (string) $cfg['to_email'], 'King Media', $offer['id'] . ' client payment confirmation', $offer['email']);
 }
 
 /** Contract emails that didn't go (mailbox down): try again when the site is next used, for up to a week. */
 function km_contract_retry(array $cfg, string $storage): void {
   foreach (km_ls($storage . '/contracts') as $d) {
+    $paid = km_read_json($d . '/paid.json');
+    if ($paid && empty($paid['client_emailed']) && time() - (int) ($paid['paid_ts'] ?? 0) < 7 * 86400 && time() - (int) ($paid['client_last_try'] ?? 0) > 1800 && ($lock = km_lock($d))) {
+      $paid['client_last_try'] = time();
+      $paid['client_emailed'] = km_contract_welcome($cfg, km_contract_load($cfg, basename($d)), $paid);
+      km_save_json($d . '/paid.json', $paid);
+      km_unlock($lock);
+    }
     $signed = km_read_json($d . '/signed.json');
     $e = (array) ($signed['emails'] ?? []);
     if (!$signed || (!empty($e['client']) && !empty($e['signed'])) || time() - (int) $signed['at'] > 7 * 86400) continue;
@@ -1530,6 +1550,14 @@ function km_contract_email(array $offer, array $signed, string $kind, array $pai
     $head = $offer['business'] . ' has signed';
     $intro = 'They’re being taken to Stripe to pay ' . $today . '. You’ll get another email when it’s paid. Their signed copy is attached.';
     $foot = 'Contract ' . $offer['id'] . ' · signed from IP ' . ($signed['ip'] ?? '') . ' · fingerprint (SHA-256) ' . (string) ($signed['sha256'] ?? '');
+  } elseif ($kind === 'welcome') {
+    $subject = 'Payment received: your King Media website is on its way';
+    $head = 'Thank you, ' . explode(' ', (string) ($signed['name'] ?? ''))[0] . '. You’re all set.';
+    $intro = 'We’ve received your payment of ' . ($paid['amount'] ?? $today) . '. Your website goes live tomorrow, and we’ll let you know when it’s live. Your monthly payments of ' . $monthly
+      . (!empty($paid['next_charge']) ? ' start on ' . date('j F Y', (int) $paid['next_charge']) . ', then on the same day each month.' : ' start one month after today, then on the same day each month.')
+      . ' Your signed agreement is attached again for your records.';
+    $rows = array_merge([['Paid', km_h(($paid['amount'] ?? $today) . (!empty($paid['paid_ts']) ? ' on ' . date('j F Y', (int) $paid['paid_ts']) : ''))]], $rows);
+    $foot = 'Questions, or a change you’d like? Just reply to this email. Up to 5 website changes a month are included.';
   } elseif ($kind === 'paid-twice') {
     $subject = 'Paid twice: ' . $offer['business'] . ' (' . ($paid['second_amount'] ?? '') . ')';
     $head = $offer['business'] . ' paid twice';
