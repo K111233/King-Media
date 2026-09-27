@@ -77,7 +77,7 @@ $labels = ['open' => 'Sent, not signed yet', 'signed' => 'Signed, not paid yet',
 <title>Contract links | King Media</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="stylesheet" href="/css/style.css?v=20260925a">
+<link rel="stylesheet" href="/css/style.css?v=20260927a">
 <style>
   .admin__box { margin-top: 1.5rem; padding: clamp(1.1rem, 3vw, 1.6rem); border-radius: 20px; background: var(--ink-850); border: 1px solid var(--line); }
   .admin__box h2 { margin-top: 0; }

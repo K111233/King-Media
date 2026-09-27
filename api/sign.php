@@ -85,7 +85,7 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
 <meta name="theme-color" content="#080806">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/css/style.css?v=20260925a">
+<link rel="stylesheet" href="/css/style.css?v=20260927a">
 <style>
   .sign__lede { margin-top: .75rem; font-size: var(--fs-lede); color: var(--bone-200); }
   .sign__box { margin-top: 1.75rem; padding: clamp(1.1rem, 3vw, 1.6rem); border-radius: 20px; background: var(--ink-850); border: 1px solid var(--line); }
@@ -267,6 +267,7 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
 <footer class="legal-foot">
   <div class="container">
     <p>© <?= date('Y') ?> King Media</p>
+    <p class="legal-foot__company"><?= km_h(KM_DISCLOSURE) ?></p>
     <p><a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy &amp; cookies</a> · <a href="mailto:enquiries@kingmedia.uk">enquiries@kingmedia.uk</a></p>
   </div>
 </footer>

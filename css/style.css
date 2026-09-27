@@ -1654,6 +1654,8 @@ html.has-cookie { scroll-padding-bottom: calc(var(--cookie-h, 9rem) + 24px + env
 .legal-foot { padding: 2rem 0 calc(2rem + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); color: var(--muted); font-size: .875rem; }
 .legal-foot .container { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; justify-content: space-between; align-items: center; }
 .legal-foot a { color: var(--bone-300); }
+.legal-foot__company, .site-footer__company { flex-basis: 100%; font-size: .8125rem; line-height: 1.5; color: var(--muted); }
+.site-footer__company { margin-top: 1rem; }
 
 @media (max-width: 480px) { .legal-bar .brand__word { display: none; } .legal-bar .btn .btn__label .long { display: none; } }
 @media (min-width: 481px) { .legal-bar .btn .btn__label .short { display: none; } }

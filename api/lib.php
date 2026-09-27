@@ -1199,10 +1199,12 @@ function km_send_paid_notice(array $cfg, array $job, bool $second = false): bool
    On Stripe that's two lines: the build (fee minus one month) + the monthly plan.
    Links are made on the password-protected page api/contracts.php.
    --------------------------------------------------------------------------- */
-// Who the agreement is with. For now King Media trades as a sole trader. Once the limited company is
-// ready, set in config.php: 'company' => ['type' => 'company', 'name' => 'KING WEB MEDIA LTD', 'number' => '…', 'office' => '…'],
-const KM_COMPANY = ['type' => 'sole_trader', 'name' => 'King Media', 'trading_as' => 'King Media', 'owner' => '', 'address' => '124 City Road, London, EC1V 2NX',
-  'number' => '', 'registered_in' => 'England and Wales', 'office' => ''];
+// Who the agreement is with: the limited company (incorporated 27 September 2026), trading as King Media.
+// Checked on Companies House. config.php can override any of these with 'company' => [...].
+const KM_COMPANY = ['type' => 'company', 'name' => 'KING WEB MEDIA LTD', 'trading_as' => 'King Media', 'owner' => '', 'address' => '124 City Road, London, EC1V 2NX',
+  'number' => '17483413', 'registered_in' => 'England and Wales', 'office' => '124 City Road, London, EC1V 2NX'];
+// The line every client-facing page and email must carry for a limited company
+const KM_DISCLOSURE = 'King Media is a trading name of KING WEB MEDIA LTD, a company registered in England and Wales, company number 17483413. Registered office: 124 City Road, London, EC1V 2NX.';
 const KM_BUILD_PENCE = ['1' => 49499, '2' => 89999, '3' => 119999, '4+' => 144999];
 const KM_PAGE_LABELS = ['1' => '1 page', '2' => '2 pages', '3' => '3 pages', '4+' => '4 to 6 pages'];
 const KM_PLANS = [
@@ -1543,7 +1545,7 @@ function km_contract_email(array $offer, array $signed, string $kind, array $pai
     $subject = 'Your King Media agreement is signed';
     $head = 'Thanks, ' . explode(' ', (string) ($signed['name'] ?? ''))[0] . '. Your agreement is signed.';
     $intro = 'Your signed copy of the agreement is attached: open it in any web browser, or print it. If you haven’t paid yet, pay the build fee on Stripe’s secure page to get your website live. Your agreement starts once it’s paid.';
-    $foot = 'Questions? Just reply to this email. Agreement fingerprint (SHA-256): ' . (string) ($signed['sha256'] ?? '');
+    $foot = 'Questions? Just reply to this email. Agreement fingerprint (SHA-256): ' . (string) ($signed['sha256'] ?? '') . ' · ' . KM_DISCLOSURE;
     if ($link !== '') $button = '<tr><td style="padding:18px 28px 0"><a href="' . km_h($link) . '" style="display:inline-block;padding:12px 20px;border-radius:99px;background:#D4AF37;color:#080806;font-weight:700;text-decoration:none">Pay ' . km_h($today) . ' securely</a></td></tr>';
   } elseif ($kind === 'signed') {
     $subject = 'Contract signed: ' . $offer['business'] . ' (' . $plan['name'] . ')';
@@ -1557,7 +1559,7 @@ function km_contract_email(array $offer, array $signed, string $kind, array $pai
       . (!empty($paid['next_charge']) ? ' start on ' . date('j F Y', (int) $paid['next_charge']) . ', then on the same day each month.' : ' start one month after today, then on the same day each month.')
       . ' Your signed agreement is attached again for your records.';
     $rows = array_merge([['Paid', km_h(($paid['amount'] ?? $today) . (!empty($paid['paid_ts']) ? ' on ' . date('j F Y', (int) $paid['paid_ts']) : ''))]], $rows);
-    $foot = 'Questions, or a change you’d like? Just reply to this email. Up to 5 website changes a month are included.';
+    $foot = 'Questions, or a change you’d like? Just reply to this email. Up to 5 website changes a month are included. · ' . KM_DISCLOSURE;
   } elseif ($kind === 'paid-twice') {
     $subject = 'Paid twice: ' . $offer['business'] . ' (' . ($paid['second_amount'] ?? '') . ')';
     $head = $offer['business'] . ' paid twice';
