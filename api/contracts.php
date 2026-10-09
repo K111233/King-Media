@@ -77,20 +77,25 @@ $labels = ['open' => 'Sent, not signed yet', 'signed' => 'Signed, not paid yet',
 <title>Contract links | King Media</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="stylesheet" href="/css/style.css?v=20260927a">
+<meta name="theme-color" content="#0B0A08">
+<link rel="preload" href="/assets/fonts/mona-display.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/mona-text.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=20260928a">
 <style>
-  .admin__box { margin-top: 1.5rem; padding: clamp(1.1rem, 3vw, 1.6rem); border-radius: 20px; background: var(--ink-850); border: 1px solid var(--line); }
+  .admin__box { --field-bg: var(--bg); margin-top: 32px; padding: clamp(20px, 3vw, 32px); background: var(--bg-raised); border: 1px solid var(--line); }
   .admin__box h2 { margin-top: 0; }
-  .admin__grid { display: grid; gap: 1rem; }
-  @media (min-width: 700px) { .admin__grid { grid-template-columns: 1fr 1fr; } .admin__grid .wide { grid-column: 1 / -1; } }
-  .admin__note { margin-top: 1.25rem; padding: 1rem 1.2rem; border-radius: 14px; border: 1px solid rgba(212, 175, 55, .45); background: rgba(212, 175, 55, .08); color: var(--bone-100); }
-  .admin__note--err { border-color: #E5746A; background: rgba(229, 116, 106, .1); }
-  .admin__link { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .75rem; }
-  .admin__link input { flex: 1 1 18rem; min-width: 0; font-family: var(--f-mono); font-size: .8rem; }
-  .small { font-size: .875rem; color: var(--bone-300); }
-  .check { display: flex; gap: .6rem; align-items: flex-start; color: var(--bone-100); }
-  .check input { margin-top: .25rem; width: 1.15rem; height: 1.15rem; accent-color: var(--acc-500); }
-  .admin table td .btn { min-height: 36px; }
+  .admin__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  @media (min-width: 700px) { .admin__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin__grid .wide { grid-column: 1 / -1; } }
+  .admin__note { margin-top: 24px; padding: 16px 20px; background: var(--bg-raised); border: 1px solid var(--gold-rule); color: var(--fg); }
+  .legal .admin__note { color: var(--fg); }
+  .admin__note--err { border-color: var(--err); border-left-width: 2px; }
+  .admin__link { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .admin__link input { flex: 1 1 18rem; min-width: 0; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line-ui); border-radius: var(--r-1); background: var(--bg); color: var(--fg); font-size: var(--fs-small); }
+  .small { font-size: var(--fs-small); color: var(--fg-2); }
+  .check { display: flex; gap: 12px; align-items: flex-start; color: var(--fg); }
+  .check input { margin-top: 3px; width: 20px; height: 20px; accent-color: var(--gold); }
+  .admin td .btn { margin: 0 8px 8px 0; }
+  .admin .legal__table table { min-width: 40rem; }
   .field select { width: 100%; }
 </style>
 </head>
@@ -117,7 +122,7 @@ $labels = ['open' => 'Sent, not signed yet', 'signed' => 'Signed, not paid yet',
         <input id="pw" name="password" type="password" autocomplete="current-password" required autofocus>
         <?= $err('login') ?>
       </div>
-      <button type="submit" class="btn btn--primary" style="margin-top:1rem"><span class="btn__label">Log in</span></button>
+      <button type="submit" class="btn btn--primary" style="margin-top:24px"><span class="btn__label">Log in</span></button>
     </form>
 <?php else: ?>
 <?php if ($problem): ?><p class="admin__note admin__note--err" role="alert"><?= $h($problem) ?> Links can’t be made until this is sorted.</p><?php endif; ?>
@@ -130,10 +135,10 @@ $labels = ['open' => 'Sent, not signed yet', 'signed' => 'Signed, not paid yet',
 <?php endif; ?>
     <form method="post" class="admin__box" novalidate>
       <h2>Make a new link</h2>
-      <p class="small">The client picks the 12-Month or 5-Year Plan themselves. Leave the price boxes empty to use your standard prices.</p>
+      <p class="small">The client picks the 12-Month, 5-Year or Care Plan themselves. Leave the price boxes empty to use your standard prices.</p>
       <?= $err('form') ?>
       <input type="hidden" name="action" value="create"><input type="hidden" name="csrf" value="<?= $h($csrf) ?>">
-      <div class="admin__grid" style="margin-top:1rem">
+      <div class="admin__grid" style="margin-top:24px">
         <div class="field"><label for="business">Business legal / trading name *</label><input id="business" name="business" required value="<?= $v('business') ?>"><?= $err('business') ?></div>
         <div class="field"><label for="company_number">Their company number (if a company)</label><input id="company_number" name="company_number" value="<?= $v('company_number') ?>"></div>
         <div class="field wide"><label for="address">Business address *</label><textarea id="address" name="address" rows="2" required><?= $v('address') ?></textarea><?= $err('address') ?></div>
@@ -144,12 +149,13 @@ $labels = ['open' => 'Sent, not signed yet', 'signed' => 'Signed, not paid yet',
         <div class="field"><label for="pages">Number of pages *</label>
           <select id="pages" name="pages" required><option value="">Choose…</option>
 <?php foreach (KM_PAGE_LABELS as $pk => $pl): ?>
-            <option value="<?= $h($pk) ?>"<?= (($_POST['pages'] ?? '') === $pk) ? ' selected' : '' ?>><?= $h($pl) ?> (<?= $h(km_money(KM_BUILD_PENCE[$pk])) ?>, then <?= $h(km_money(KM_PLANS['12m']['pence'][$pk])) ?> or <?= $h(km_money(KM_PLANS['5y']['pence'][$pk])) ?> a month)</option>
+            <option value="<?= $h($pk) ?>"<?= (($_POST['pages'] ?? '') === $pk) ? ' selected' : '' ?>><?= $h($pl) ?> (<?= $h(km_money(KM_BUILD_PENCE[$pk])) ?>, then <?= $h(km_money(KM_PLANS['12m']['pence'][$pk])) ?>, <?= $h(km_money(KM_PLANS['5y']['pence'][$pk])) ?> or <?= $h(km_money(KM_PLANS['care']['pence'][$pk])) ?> a month)</option>
 <?php endforeach; ?>
           </select><?= $err('pages') ?></div>
         <div class="field"><label for="build">Build fee, if not standard (£)</label><input id="build" name="build" inputmode="decimal" placeholder="Standard" value="<?= $v('build') ?>"><?= $err('build') ?></div>
         <div class="field"><label for="monthly_12m">12-Month Plan monthly, if not standard (£)</label><input id="monthly_12m" name="monthly_12m" inputmode="decimal" placeholder="Standard" value="<?= $v('monthly_12m') ?>"><?= $err('monthly_12m') ?></div>
         <div class="field"><label for="monthly_5y">5-Year Plan monthly, if not standard (£)</label><input id="monthly_5y" name="monthly_5y" inputmode="decimal" placeholder="Standard" value="<?= $v('monthly_5y') ?>"><?= $err('monthly_5y') ?></div>
+        <div class="field"><label for="monthly_care">Care Plan monthly, if not standard (£)</label><input id="monthly_care" name="monthly_care" inputmode="decimal" placeholder="Standard" value="<?= $v('monthly_care') ?>"><?= $err('monthly_care') ?></div>
         <div class="field wide"><label for="quoted">Separately quoted work included (optional)</label><textarea id="quoted" name="quoted" rows="2" placeholder="For example: online booking system, as quoted on 20 September"><?= $v('quoted') ?></textarea></div>
         <div class="field"><label for="domain_status">Domain name</label>
           <select id="domain_status" name="domain_status">
@@ -160,7 +166,7 @@ $labels = ['open' => 'Sent, not signed yet', 'signed' => 'Signed, not paid yet',
         <div class="field"><label for="demo">Approved demo (link or short description)</label><input id="demo" name="demo" placeholder="The demo link they approved" value="<?= $v('demo') ?>"></div>
         <div class="field wide"><label for="agreed">Anything else agreed on the phone (optional)</label><textarea id="agreed" name="agreed" rows="2" placeholder="Anything you promised that isn't in the standard agreement. Leave empty if nothing."><?= $v('agreed') ?></textarea></div>
       </div>
-      <button type="submit" class="btn btn--primary" style="margin-top:1.25rem"<?= $problem ? ' disabled' : '' ?>><span class="btn__label">Make the link</span></button>
+      <button type="submit" class="btn btn--primary" style="margin-top:32px"<?= $problem ? ' disabled' : '' ?>><span class="btn__label">Make the link</span></button>
     </form>
 
     <div class="admin__box">

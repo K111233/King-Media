@@ -6,7 +6,7 @@
  */
 if (!defined('KM_API')) { http_response_code(404); exit; }
 
-const KM_AGREEMENT_VERSION = 'KM-SA-2026-09-27';
+const KM_AGREEMENT_VERSION = 'KM-SA-2026-10-09';
 
 /** How the domain is held: 'provider' (new, owned by King Media), 'existing' (the client already owns it) or 'client' (registered in the client's name). */
 function km_domain_status(array $offer): string {
@@ -25,7 +25,7 @@ function km_provider_text(array $co, bool $full = true): string {
   return $who . ($full ? ', a sole trader whose address for service is ' . km_h($co['address']) : '');
 }
 
-/** The agreement as HTML. Before signing it shows both plans; once signed, the plan they chose. */
+/** The agreement as HTML. Before signing it shows every plan on offer; once signed, the plan they chose. */
 function km_agreement_body(array $offer, array $signed = [], int $level = 2): string {
   $h2 = 'h' . $level; $h3 = 'h' . ($level + 1); // one level down when it sits inside the signing page
   $co = (array) ($offer['company'] ?? KM_COMPANY);
@@ -53,13 +53,14 @@ function km_agreement_body(array $offer, array $signed = [], int $level = 2): st
       '“Approved Demo” means the demo of the Website the Client reviewed and approved before signing.',
       '“Build Fee” means the one-off fee for the design and build of the Website stated on the Order Form (standard Build Fees: £494.99 for 1 page, £899.99 for 2 pages, £1,199.99 for 3 pages, or £1,449.99 for 4 to 6 pages; websites of more than 6 pages are quoted). The Build Fee includes the Monthly Fee for the first month of the Plan.',
       '“Business Day” means a day other than a Saturday, Sunday or public holiday in England.',
+      '“Change Allowance” means the number of Website Changes included in each month of the Plan: five (5) on the 12-Month Plan and the 5-Year Plan, or one (1) on the Care Plan.',
       '“Demo Fee” means any fee the Client paid for the Provider to prepare a demo of the Website.',
       '“Early Exit Fee” has the meaning in Clause 6.3.',
       '“Fees” means the Build Fee, the Monthly Fee and any other sums payable under this Agreement.',
-      '“Initial Term” means the minimum term of the Plan, beginning on the Payment Date: 12 months on the 12-Month Plan, or 60 months on the 5-Year Plan.',
-      '“Monthly Fee” means the monthly fee for the Plan stated on the Order Form (standard Monthly Fees: for a Website of 1 or 2 pages, £49.99 on the 12-Month Plan or £39.99 on the 5-Year Plan; for 3 or more pages, £59.99 or £49.99).',
+      '“Initial Term” means the minimum term of the Plan, beginning on the Payment Date: 12 months on the 12-Month Plan or the Care Plan, or 60 months on the 5-Year Plan.',
+      '“Monthly Fee” means the monthly fee for the Plan stated on the Order Form (standard Monthly Fees: for a Website of 1 or 2 pages, £49.99 on the 12-Month Plan or £39.99 on the 5-Year Plan; for 3 or more pages, £59.99 or £49.99; on the Care Plan, £19.99 for a Website of any size).',
       '“Payment Date” means the date the Client pays the Build Fee.',
-      '“Plan” means the monthly plan chosen on the Order Form: the “12-Month Plan” (Initial Term 12 months) or the “5-Year Plan” (Initial Term 60 months, with a lower Monthly Fee).',
+      '“Plan” means the monthly plan chosen on the Order Form: the “12-Month Plan” (Initial Term 12 months), the “5-Year Plan” (Initial Term 60 months, with a lower Monthly Fee) or the “Care Plan” (Initial Term 12 months, with a lower Monthly Fee and a lower Change Allowance).',
       '“Plan Saving” means the difference between the 12-Month Plan and 5-Year Plan Monthly Fees for the Website shown on the Order Form.',
       '“Services” means the services described in Clause 3.',
       '“Start Date” means the date the Provider confirms in writing that the Website is live.',
@@ -68,8 +69,8 @@ function km_agreement_body(array $offer, array $signed = [], int $level = 2): st
 
     . $head('3. Services')
     . $c('3.1', 'Subject to payment of the Fees, the Provider shall provide: (a) design and build of the Website; (b) management of the domain name stated on the Order Form and, where the Provider registers it, its registration and on-time renewal (see Clause 8.5); (c) hosting of the Website with an SSL certificate (the padlock); and (d) Maintenance Services.')
-    . $c('3.2', '“Maintenance Services” means security and software updates, fixing faults under Clause 3.5, daily backups under Clause 3.6, and up to five (5) Website Changes a month under Clause 3.3. Maintenance Services do not include new pages, new functionality (including taking online payments, online booking systems, and e-commerce, online shop or catalogue work) or major redesigns. The Provider will provide a separate written quote for any such work under Clause 4.4, which will proceed only once the Client has accepted that quote.')
-    . $c('3.3', 'Website Changes. In each month of the Plan (running from the monthly payment date in Clause 4.3), the Client may ask for up to five (5) Website Changes, big or small. A Website Change is one request about one thing on an existing page, for example new prices or a new price list, new opening hours, swapping the photos in a gallery, or adding or changing one section. Unused Website Changes do not carry over. A “major redesign” means changing the overall look or layout of a whole page or of the whole Website (such as new colours, fonts or page structure). If a request is really a new page, new functionality or a major redesign, or counts as more than one Website Change, the Provider will say so before starting. Requests beyond five in a month will be done the next month, or quoted if the Client wants them sooner.')
+    . $c('3.2', '“Maintenance Services” means security and software updates, fixing faults under Clause 3.5, daily backups under Clause 3.6, and Website Changes up to the Change Allowance each month under Clause 3.3. Maintenance Services do not include new pages, new functionality (including taking online payments, online booking systems, and e-commerce, online shop or catalogue work) or major redesigns. The Provider will provide a separate written quote for any such work under Clause 4.4, which will proceed only once the Client has accepted that quote.')
+    . $c('3.3', 'Website Changes. In each month of the Plan (running from the monthly payment date in Clause 4.3), the Client may ask for Website Changes up to the Change Allowance, big or small. A Website Change is one request about one thing on an existing page, for example new prices or a new price list, new opening hours, swapping the photos in a gallery, or adding or changing one section. Unused Website Changes do not carry over. A “major redesign” means changing the overall look or layout of a whole page or of the whole Website (such as new colours, fonts or page structure). If a request is really a new page, new functionality or a major redesign, or counts as more than one Website Change, the Provider will say so before starting. Requests beyond the Change Allowance in a month will be done the next month, or quoted if the Client wants them sooner.')
     . $c('3.4', 'How to ask. The Client can ask for Website Changes by text or WhatsApp to the business number the Provider gives the Client, or by email to enquiries@kingmedia.uk. Requests sent anywhere else, including to a salesperson’s own phone, count only once they reach one of these. The Provider will use reasonable efforts to make each Website Change within five (5) Business Days of receiving everything it needs, and will tell the Client when it is live. The Client should check each change, especially prices, allergen and other legal information.')
     . $c('3.5', 'Faults. If the Website is offline or not working properly, the Client should tell the Provider by text, WhatsApp or email. The Provider will start work on it within one Business Day and fix faults within its control as soon as reasonably possible. Fixing a fault does not count as a Website Change. The Provider deals with requests on Business Days, and will give at least 7 days’ notice of any absence longer than 5 Business Days, during which it will still deal with faults that take the Website offline.')
     . $c('3.6', 'Backups. The Provider backs up the Website at least once a day, keeps backups for at least 7 days, and stores them separately from the live Website. If the Website is lost or damaged, the Provider will restore it from the most recent backup at no charge.')
@@ -92,9 +93,9 @@ function km_agreement_body(array $offer, array $signed = [], int $level = 2): st
     . $c('5.3', 'The Provider will confirm any notice to end this Agreement by email within 2 Business Days, and will cancel the recurring card payment so that nothing is taken after the end date except sums already due. If the Client does not receive that confirmation, it should call or text the Provider.')
 
     . $head('6. Ending the Plan early')
-    . $c('6.1', 'The Monthly Fees, and the lower Monthly Fee on the 5-Year Plan in particular, are offered in return for the Client’s commitment to the whole Initial Term. The Provider fixes the Client’s price and plans its time and capacity on that basis.')
+    . $c('6.1', 'The Monthly Fees, and the lower Monthly Fees on the 5-Year Plan and the Care Plan in particular, are offered in return for the Client’s commitment to the whole Initial Term. The Provider fixes the Client’s price and plans its time and capacity on that basis.')
     . $c('6.2', 'The Client may end this Agreement before the end of the Initial Term by giving at least 30 days’ notice under Clause 15.6 and paying the Early Exit Fee. Using this right is not a breach of this Agreement. The Client keeps paying the Monthly Fee, and receiving the Services, during the notice period.')
-    . $c('6.3', 'The Early Exit Fee is: (a) on the 12-Month Plan: the Monthly Fees that would have fallen due after the end of the notice period, up to the end of the Initial Term; and (b) on the 5-Year Plan: whichever is lower of (i) the Monthly Fees that would have fallen due after the end of the notice period, up to the end of the Initial Term, and (ii) twelve times the 12-Month Plan Monthly Fee for the Website, plus the Plan Saving multiplied by the number of months of the Initial Term that have started before this Agreement ends.')
+    . $c('6.3', 'The Early Exit Fee is: (a) on the 12-Month Plan or the Care Plan: the Monthly Fees that would have fallen due after the end of the notice period, up to the end of the Initial Term; and (b) on the 5-Year Plan: whichever is lower of (i) the Monthly Fees that would have fallen due after the end of the notice period, up to the end of the Initial Term, and (ii) twelve times the 12-Month Plan Monthly Fee for the Website, plus the Plan Saving multiplied by the number of months of the Initial Term that have started before this Agreement ends.')
     . $c('6.4', 'The Early Exit Fee is due on the date this Agreement ends.')
     . $c('6.5', 'If the Provider ends this Agreement under Clause 7.1 because of the Client’s breach (including non-payment), the Client shall pay any unpaid sums plus the Early Exit Fee, calculated as if the notice period under Clause 6.2 had ended on the date the Provider ends this Agreement. This is instead of damages for the loss of the rest of the Initial Term.')
     . $c('6.6', 'No Early Exit Fee is payable if this Agreement ends under Clause 7.1 because of the Provider’s breach or insolvency, or under Clause 4.2, 12.2(d), 14, 15.12 or 16.')
@@ -182,11 +183,11 @@ function km_agreement_body(array $offer, array $signed = [], int $level = 2): st
     . (($offer['demo'] ?? '') !== '' ? $row('Approved Demo', $h($offer['demo'])) : '')
     . $row('Website domain name', $h($offer['domain']))
     . $row('Domain name', $domain)
-    . $row('Services included', 'Design and build, domain name (managed, and registered and renewed by the Provider unless the Client already owns it), hosting with SSL, security updates, fault fixing, daily backups, and up to 5 Website Changes a month')
+    . $row('Services included', 'Design and build, domain name (managed, and registered and renewed by the Provider unless the Client already owns it), hosting with SSL, security updates, fault fixing, daily backups, and ' . ($chosen ? km_changes_text($chosen, 'Website Change') . ' a month' : 'Website Changes each month up to the Change Allowance for the Plan chosen'))
     . $row('Number of pages', $h($pages))
     . $row('Build Fee', '<strong>' . $h($build) . '</strong>, paid when signing. Includes the Monthly Fee for the first month.')
     . $row('Separately quoted work', ($offer['quoted'] ?? '') !== '' ? nl2br($h($offer['quoted'])) : 'None')
-    . $row('Plan', $chosen ? '<strong>' . $h($chosen['name']) . '</strong> (Initial Term ' . $h($chosen['term']) . ' from the Payment Date)' : 'The plan the Client chooses when signing: 12-Month Plan (Initial Term 12 months) or 5-Year Plan (Initial Term 60 months), from the Payment Date')
+    . $row('Plan', $chosen ? '<strong>' . $h($chosen['name']) . '</strong> (Initial Term ' . $h($chosen['term']) . ' from the Payment Date)' : 'The plan the Client chooses when signing: ' . implode(', or ', array_map(fn($p) => $h($p['name']) . ' (Initial Term ' . $h($p['term']) . ')', $plans)) . ', from the Payment Date')
     . $row('Monthly Fee', $chosen ? '<strong>' . $h($monthlyText) . '</strong>' : $h($monthlyText))
     . ($twelve ? $row('12-Month Plan Monthly Fee for this Website (used in Clause 6.3)', $h(km_money($twelve))) : '')
     . $row('Monthly payments', 'One month after the Build Fee is paid, then on or about the same day each month, by card')
@@ -246,8 +247,9 @@ function km_agreement_keypoints(array $offer): string {
     '<strong>Who you’re dealing with:</strong> ' . km_provider_text($co) . '. enquiries@kingmedia.uk',
     '<strong>Today:</strong> ' . km_money($build) . ' for your website build, including your first month.',
     '<strong>Then:</strong> ' . $both(fn($p) => '<em>' . $p['name'] . ':</em> ' . km_money($p['monthly_pence']) . ' a month by card, starting a month after you pay, for at least ' . ($p['months'] - 1) . ' more payments. Minimum total ' . km_money($build + ($p['months'] - 1) * $p['monthly_pence']) . '.'),
+    '<strong>Changes:</strong> ' . $both(fn($p) => '<em>' . $p['name'] . ':</em> ' . km_changes_text($p) . ' a month.') . ' Fixing a fault never counts as a change.',
     '<strong>Minimum term:</strong> ' . $both(fn($p) => '<em>' . $p['name'] . ':</em> ' . $p['term'] . ' from the day you pay, then month to month.') . ' We’ll email you before it ends.',
-    '<strong>Leaving early</strong> costs an Early Exit Fee (clause 6). ' . $both(fn($p, $k) => $k === '12m' ? '<em>12-Month Plan:</em> the monthly fees left in your minimum term.' : '<em>5-Year Plan:</em> at most a year’s fees at the 12-Month price plus the ' . km_money($saving) . ' a month discount you’ve had, or the fees left if that’s less.') . ' Fairer rules apply if you close your business or can’t carry on (clauses 6.8–6.10).',
+    '<strong>Leaving early</strong> costs an Early Exit Fee (clause 6). ' . $both(fn($p, $k) => $k !== '5y' ? '<em>' . $p['name'] . ':</em> the monthly fees left in your minimum term.' : '<em>5-Year Plan:</em> at most a year’s fees at the 12-Month price plus the ' . km_money($saving) . ' a month discount you’ve had, or the fees left if that’s less.') . ' Fairer rules apply if you close your business or can’t carry on (clauses 6.8–6.10).',
     '<strong>Your web address:</strong> ' . $domain,
     '<strong>Your website:</strong> your words, photos and logo are always yours. Once everything’s paid, you can keep your website if you leave (clause 8.4).',
     '<strong>Missed payments:</strong> we’ll warn you before your website is taken offline (clause 4.6).',

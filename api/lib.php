@@ -10,10 +10,10 @@ if (!defined('KM_API')) { http_response_code(404); exit; }
 
 const KM_DEMO_FEE = '£4.99';
 const KM_TIERS = [
-  '1'  => ['label' => '1 page',   'build' => '£494.99', 'monthly' => '£49.99 a month on the 12-Month Plan, or £39.99 a month on the 5-Year Plan'],
-  '2'  => ['label' => '2 pages',  'build' => '£899.99', 'monthly' => '£49.99 a month on the 12-Month Plan, or £39.99 a month on the 5-Year Plan'],
-  '3'  => ['label' => '3 pages',  'build' => '£1,199.99', 'monthly' => '£59.99 a month on the 12-Month Plan, or £49.99 a month on the 5-Year Plan'],
-  '4+' => ['label' => '4–6 pages', 'build' => '£1,449.99', 'monthly' => '£59.99 a month on the 12-Month Plan, or £49.99 a month on the 5-Year Plan'],
+  '1'  => ['label' => '1 page',   'build' => '£494.99', 'monthly' => '£49.99 a month on the 12-Month Plan, £39.99 a month on the 5-Year Plan, or £19.99 a month on the Care Plan'],
+  '2'  => ['label' => '2 pages',  'build' => '£899.99', 'monthly' => '£49.99 a month on the 12-Month Plan, £39.99 a month on the 5-Year Plan, or £19.99 a month on the Care Plan'],
+  '3'  => ['label' => '3 pages',  'build' => '£1,199.99', 'monthly' => '£59.99 a month on the 12-Month Plan, £49.99 a month on the 5-Year Plan, or £19.99 a month on the Care Plan'],
+  '4+' => ['label' => '4–6 pages', 'build' => '£1,449.99', 'monthly' => '£59.99 a month on the 12-Month Plan, £49.99 a month on the 5-Year Plan, or £19.99 a month on the Care Plan'],
 ];
 const KM_CHOICES = [
   'pages'    => ['1', '2', '3', '4+', 'unsure'],
@@ -580,7 +580,7 @@ function km_demo_email(array $cfg, array $b, ?array $ai, string $aiError, array 
   $h .= km_section('Package', km_rows([
     ['Pages', $p ? '<strong>' . km_h($p['label']) . '</strong>' : '<strong>Not sure yet</strong> (they want help deciding)'],
     ['Build', $p ? km_h($p['build'] . ' one-off') : 'From £494.99, depending on pages'],
-    ['Monthly', $p ? km_h($p['monthly']) : 'From £39.99 a month, depending on pages and plan'],
+    ['Monthly', $p ? km_h($p['monthly']) : 'From £19.99 a month, depending on pages and plan'],
     ['Demo fee', $paid
       ? '<strong style="color:#1E7A45">Paid ' . km_h($paid['amount']) . '</strong> by card, ' . km_h($paid['paid_at']) . ($test ? ' <span style="color:#B3261E">(TEST payment, no real money)</span>' : '')
       : km_h(KM_DEMO_FEE . ' demo fee, separate from the build price')],
@@ -1208,9 +1208,17 @@ const KM_DISCLOSURE = 'King Media is a trading name of KING WEB MEDIA LTD, a com
 const KM_BUILD_PENCE = ['1' => 49499, '2' => 89999, '3' => 119999, '4+' => 144999];
 const KM_PAGE_LABELS = ['1' => '1 page', '2' => '2 pages', '3' => '3 pages', '4+' => '4 to 6 pages'];
 const KM_PLANS = [
-  '12m' => ['name' => '12-Month Plan', 'months' => 12, 'term' => '12 months', 'pence' => ['1' => 4999, '2' => 4999, '3' => 5999, '4+' => 5999]],
-  '5y'  => ['name' => '5-Year Plan', 'months' => 60, 'term' => '5 years (60 months)', 'pence' => ['1' => 3999, '2' => 3999, '3' => 4999, '4+' => 4999]],
+  '12m' => ['name' => '12-Month Plan', 'months' => 12, 'term' => '12 months', 'changes' => 5, 'pence' => ['1' => 4999, '2' => 4999, '3' => 5999, '4+' => 5999]],
+  '5y'  => ['name' => '5-Year Plan', 'months' => 60, 'term' => '5 years (60 months)', 'changes' => 5, 'pence' => ['1' => 3999, '2' => 3999, '3' => 4999, '4+' => 4999]],
+  // The essentials at a lower price: the same hosting and care, with 1 change a month, for any size of site
+  'care' => ['name' => 'Care Plan', 'months' => 12, 'term' => '12 months', 'changes' => 1, 'pence' => ['1' => 1999, '2' => 1999, '3' => 1999, '4+' => 1999]],
 ];
+
+/** "up to 5 Website Changes" / "1 Website Change", for the plan's monthly allowance. */
+function km_changes_text(array $plan, string $noun = 'change'): string {
+  $n = (int) ($plan['changes'] ?? 5);
+  return ($n === 1 ? '1 ' . $noun : 'up to ' . $n . ' ' . $noun . 's');
+}
 const KM_CONTRACT_DAYS = 30;  // an unsigned link stops working after this
 const KM_UNPAID_DAYS = 14;    // a signed link that hasn't been paid lapses after this (no contract until paid)
 
@@ -1350,7 +1358,7 @@ function km_contract_sign(array $cfg, array $c, array $in): array {
   $name = km_clean((string) ($in['sign_name'] ?? ''), 100);
   $role = km_clean((string) ($in['sign_role'] ?? ''), 80);
   $e = [];
-  if (!isset($plans[$plan])) $e['plan'] = 'Please choose the 12-Month Plan or the 5-Year Plan.';
+  if (!isset($plans[$plan])) $e['plan'] = 'Please choose your plan.';
   $words = array_filter(preg_split('/\s+/u', $name), fn($w) => preg_match('/\p{L}/u', $w));
   if (count($words) < 2 || mb_strlen($name) < 4) $e['sign_name'] = 'Please type your full name (first and last name) to sign.';
   if ($role === '') $e['sign_role'] = 'Please add your position, for example Owner or Director.';
@@ -1429,7 +1437,7 @@ function km_contract_checkout(array $cfg, array $c): array {
       ['quantity' => 1, 'price_data' => ['currency' => 'gbp', 'unit_amount' => $build,
         'product_data' => ['name' => 'Website design & build (' . (KM_PAGE_LABELS[$offer['pages']] ?? '') . ')', 'description' => 'One-off. With your first month below, this makes your build fee of ' . km_money((int) $offer['build_pence']) . '.']]],
       ['quantity' => 1, 'price_data' => ['currency' => 'gbp', 'unit_amount' => (int) $plan['monthly_pence'], 'recurring' => ['interval' => 'month'],
-        'product_data' => ['name' => 'Website management: ' . $plan['name'], 'description' => 'Hosting, domain, security, backups and up to 5 changes a month. First month today, then monthly. Minimum term ' . $plan['term'] . '.']]],
+        'product_data' => ['name' => 'Website management: ' . $plan['name'], 'description' => 'Hosting, domain, security, backups and ' . km_changes_text($plan) . ' a month. First month today, then monthly. Minimum term ' . $plan['term'] . '.']]],
     ],
     'subscription_data' => ['description' => mb_substr('King Media website: ' . $offer['business'], 0, 400), 'metadata' => $meta],
     'client_reference_id' => $offer['id'],

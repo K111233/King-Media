@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en-GB" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Halcyon Physio: a concept website by King Media</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Halcyon Physio is a made-up physiotherapy clinic: a concept website designed and built by King Media.">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#F1F7F5">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script>
+(function (d, w) { var r = d.documentElement; r.classList.replace('no-js', 'js'); var off = false;
+  try { off = localStorage.getItem('km-motion') === 'off'; } catch (e) {}
+  if (!off && !matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('motion-ok');
+  if (/[?&]embed=1(&|$)/.test(location.search) && w.self !== w.top) r.classList.add('is-embed');
+})(document, window);
+</script>
+<link rel="preload" href="../fonts/instrument-sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../concepts.css?v=1">
+<style>
+/* Instrument Sans, wdth 100 / wght 600 instance, Latin + Latin Extended-A (18.1KB) */
+@font-face { font-family: "Instrument Sans"; src: url("../fonts/instrument-sans.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Instrument Sans Fallback"; src: local("Arial Bold"), local("Arial-BoldMT"); font-weight: 600; size-adjust: 97.6%; ascent-override: 99.4%; descent-override: 25.6%; line-gap-override: 0%; }
+:root {
+  --mist: #F1F7F5;   /* page */
+  --white: #FFFFFF;  /* cards, slot panel */
+  --sage: #E4F0EC;   /* soft panels, footer */
+  --ink: #123B39;    /* text: 11.32:1 on mist, 10.63:1 on sage-ish #E6F1EE */
+  --muted: #3D5F5C;  /* secondary text: 6.48:1 on mist, 7.02:1 on white */
+  --teal: #1F6F6B;   /* buttons (white text 5.92:1), kicker text (5.46:1 on mist, 5.07:1 on sage) */
+  --teal-deep: #155955; /* hover, selected chip (white text 8.10:1) */
+  --line-ui: #5E8783;   /* chip borders: 3.99:1 on white, 3.67:1 on mist */
+  --peach: #F2A65A;     /* decorative dots only, never text */
+  --rule: rgba(18, 59, 57, .14);
+  --sans-d: "Instrument Sans", "Instrument Sans Fallback", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --pad: max(20px, env(safe-area-inset-left), env(safe-area-inset-right));
+  scroll-padding-top: 16px;
+}
+body { background: var(--mist); color: var(--ink); font-size: 1.0625rem; }
+.wrap { width: 100%; max-width: calc(1152px + 2 * var(--pad)); margin: 0 auto; padding-inline: var(--pad); }
+
+/* Buttons and links */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px; border-radius: 999px; font-weight: 600; font-size: 1rem; line-height: 1.2; text-decoration: none; white-space: nowrap; }
+.btn--solid { background: var(--teal); color: #fff; }
+.btn--line { border: 1.5px solid var(--teal); color: var(--teal); }
+.btn:active { opacity: .72; }
+.btn:focus-visible, .nav a:focus-visible, .logo:focus-visible, .foot__in a:focus-visible, .textlink:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.textlink { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-weight: 600; color: var(--teal); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
+@media (hover: hover) and (pointer: fine) {
+  .btn--solid:hover { background: var(--teal-deep); }
+  .btn--line:hover { background: var(--teal); color: #fff; }
+  .nav a:hover, .foot__in a:hover { text-decoration-color: var(--teal); }
+  .textlink:hover { color: var(--ink); }
+}
+.motion-ok .btn { transition: background-color 160ms ease, color 160ms ease; }
+
+/* Header */
+.top { background: var(--mist); border-bottom: 1px solid var(--rule); }
+.top__in { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "logo book" "nav nav"; align-items: center; column-gap: 16px; padding-top: 10px; }
+.logo { grid-area: logo; display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 6px 0; font-family: var(--sans-d); font-weight: 600; font-size: 1.375rem; line-height: 1.1; letter-spacing: -.02em; text-decoration: none; }
+.logo svg { flex: none; }
+.top .btn { grid-area: book; min-height: 44px; padding: 0 20px; }
+.nav { grid-area: nav; display: flex; gap: 26px; margin-top: 2px; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 500; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+
+/* Hero */
+.hero { padding-block: 28px 56px; }
+.hero__in { display: grid; gap: 32px; }
+.kicker { display: flex; align-items: center; gap: 10px; font-size: 1rem; font-weight: 600; color: var(--teal); }
+.kicker::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--peach); flex: none; }
+.hero h1 { margin-top: 14px; font-family: var(--sans-d); font-weight: 600; font-size: clamp(2.75rem, 1.95rem + 3.6vw, 4.75rem); line-height: 1.02; letter-spacing: -.035em; }
+.lede { margin-top: 18px; max-width: 36ch; font-size: 1.1875rem; line-height: 1.5; color: var(--muted); }
+.hero__photo img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; border-radius: 28px; background: var(--sage); }
+
+/* Next available: real radio chips */
+.slots { margin-top: 28px; padding: 20px; background: var(--white); border-radius: 22px; box-shadow: 0 1px 0 var(--rule), 0 18px 40px -28px rgba(18, 59, 57, .45); }
+.slots__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 16px; }
+.slots h2 { font-family: var(--sans-d); font-weight: 600; font-size: 1.25rem; letter-spacing: -.01em; }
+.slots__head p { font-size: 1rem; color: var(--muted); }
+.slots fieldset { margin: 14px 0 0; padding: 0; border: 0; min-width: 0; }
+.chips { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.chip { position: relative; display: block; cursor: pointer; }
+.chip input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.chip__face { display: grid; place-items: center; align-content: center; min-height: 58px; padding: 6px 4px; border: 1.5px solid var(--line-ui); border-radius: 14px; background: var(--white); line-height: 1.2; text-align: center; }
+.chip__day { font-size: 1rem; color: var(--muted); }
+.chip__time { font-weight: 700; font-size: 1.0625rem; font-variant-numeric: tabular-nums lining-nums; }
+.chip input:checked + .chip__face { background: var(--teal-deep); border-color: var(--teal-deep); color: #fff; }
+.chip input:checked + .chip__face .chip__day { color: #fff; }
+.chip input:focus-visible + .chip__face { outline: 2px solid var(--ink); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { .chip:hover .chip__face { border-color: var(--teal-deep); background: var(--sage); } .chip:hover input:checked + .chip__face { background: var(--teal-deep); } }
+.motion-ok .chip__face { transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease; }
+.slots__foot { margin-top: 12px; font-size: 1rem; color: var(--muted); }
+
+/* Sections */
+.section { padding-block: 64px; }
+.h2 { font-family: var(--sans-d); font-weight: 600; font-size: clamp(2rem, 1.55rem + 2vw, 3rem); line-height: 1.06; letter-spacing: -.03em; }
+.sec-head p { margin-top: 12px; max-width: 52ch; color: var(--muted); }
+
+/* Treatments */
+.cards { display: grid; gap: 18px; margin-top: 32px; }
+.card { overflow: hidden; background: var(--white); border-radius: 22px; }
+.card img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; background: var(--sage); }
+.card__body { padding: 20px 22px 24px; }
+.card h3 { font-family: var(--sans-d); font-weight: 600; font-size: 1.5rem; line-height: 1.15; letter-spacing: -.02em; }
+.card p { margin-top: 8px; line-height: 1.55; }
+.card .good { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--rule); font-size: 1rem; color: var(--muted); }
+.card .good strong { font-weight: 600; color: var(--ink); }
+
+/* First visit steps */
+.visit { background: var(--sage); }
+.steps { display: grid; gap: 28px; margin-top: 36px; counter-reset: step; }
+.steps li { display: grid; grid-template-columns: 48px 1fr; column-gap: 16px; align-items: start; align-content: start; counter-increment: step; }
+.steps li::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: var(--white); color: var(--teal); font-family: var(--sans-d); font-weight: 600; font-size: 1.25rem; }
+.steps h3 { font-family: var(--sans-d); font-weight: 600; font-size: 1.3125rem; letter-spacing: -.015em; padding-top: 10px; }
+.steps p { margin-top: 6px; color: var(--muted); max-width: 40ch; }
+
+/* Prices and about */
+.duo { display: grid; gap: 48px; }
+.prices { margin-top: 24px; border-top: 1px solid var(--rule); }
+.prices li { display: flex; align-items: baseline; gap: 12px; padding-block: 16px; border-bottom: 1px solid var(--rule); }
+.prices .what { flex: 1; }
+.prices .what small { display: block; font-size: 1rem; color: var(--muted); }
+.prices .price { font-weight: 700; font-size: 1.125rem; color: var(--teal); font-variant-numeric: tabular-nums lining-nums; }
+.note { margin-top: 18px; font-size: 1rem; color: var(--muted); }
+.about { padding: 32px 24px; background: var(--white); border-radius: 22px; }
+.about p { margin-top: 14px; max-width: 54ch; }
+.about .btn { margin-top: 24px; }
+
+/* Reviews placeholder */
+.reviews { padding-block: 0 64px; }
+.reviews .km-placeholder { color: var(--muted); background: var(--white); }
+
+/* Clinic */
+.clinic { background: var(--white); }
+.clinic__in { display: grid; gap: 36px; }
+.clinic p { margin-top: 14px; max-width: 46ch; }
+.hours-list { margin: 24px 0 28px; border-top: 1px solid var(--rule); }
+.hours-list div { display: flex; justify-content: space-between; gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--rule); }
+.hours-list dt { font-weight: 600; }
+.hours-list dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums lining-nums; }
+.map { min-height: 240px; align-content: center; color: var(--muted); background: var(--mist); }
+
+/* Footer */
+.foot { background: var(--sage); }
+.foot__in { display: grid; gap: 12px; padding-block: 40px; }
+.foot__name { font-family: var(--sans-d); font-weight: 600; font-size: 1.625rem; line-height: 1.1; letter-spacing: -.02em; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.foot__in a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+@media (min-width: 768px) {
+  :root { --pad: 40px; scroll-padding-top: 96px; }
+  .top { position: sticky; top: 0; z-index: 40; }
+  .top__in { grid-template-columns: auto 1fr auto; grid-template-areas: "logo nav book"; min-height: 76px; padding-block: 0; }
+  .logo { font-size: 1.5rem; }
+  .nav { justify-content: flex-end; gap: 36px; margin: 0 12px 0 0; }
+  .hero { padding-block: 44px 72px; }
+  .hero__in { grid-template-columns: 1.05fr 1fr; align-items: center; gap: 48px; }
+  .slots { padding: 22px 24px 20px; }
+  .section { padding-block: 96px; }
+  #treatments { padding-top: 48px; }
+  .sec-head { display: flex; justify-content: space-between; align-items: end; gap: 32px; }
+  .sec-head p { margin-top: 0; max-width: 44ch; }
+  .cards { grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 44px; }
+  .steps { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .steps li { grid-template-columns: 1fr; row-gap: 14px; }
+  .steps li::before { grid-row: auto; }
+  .steps h3 { padding-top: 0; }
+  .duo { grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: start; }
+  .about { padding: 40px; }
+  .clinic__in { grid-template-columns: 1fr 1fr; gap: 64px; align-items: stretch; }
+  .foot__in { grid-template-columns: 1fr auto; align-items: center; }
+  .foot nav { grid-column: 2; grid-row: 1 / span 2; }
+}
+@media (min-width: 1280px) {
+  :root { --pad: 64px; }
+  .hero__in { gap: 72px; }
+  .chips { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .chip__face { min-height: 62px; }
+}
+@media (forced-colors: active) {
+  .btn, .chip__face { border: 1px solid ButtonText; }
+  .chip input:checked + .chip__face { outline: 3px solid Highlight; outline-offset: 2px; }
+  .kicker::before { background: CanvasText; }
+}
+
+/* The sign: a visitor’s name at hero size (King Media “See it with your name”; hidden until a name is applied) */
+.km-sign { font-family: var(--sans-d); font-weight: 600; color: var(--teal); }
+.km-map { --m-bg: var(--sage); --m-road: var(--white); --m-ink: var(--ink); --m-park: #CFE3D8; --m-water: #CFE6EA; --m-pin: var(--teal); }
+</style>
+</head>
+<body>
+<a class="km-skip" href="#main">Skip to content</a>
+
+<aside class="km-strip" aria-label="About this concept">
+  <p><span class="km-strip__made">Concept website by King Media. Halcyon Physio is a made-up business.</span><span class="km-strip__typed">A King Media concept design, showing a name a visitor typed in. Not a real business.</span></p>
+  <nav class="km-strip__links" aria-label="King Media">
+    <a href="/#concepts" data-km-back>Back to King Media</a>
+    <a class="km-strip__cta" href="/#contact">Get my demo</a>
+  </nav>
+</aside>
+
+<header class="top" id="top">
+  <div class="wrap top__in">
+    <a class="logo" href="#top"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="15" fill="#1F6F6B"/><path d="M8.5 16.5a6.5 6.5 0 0 1 13 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M7 21c2.7 0 2.7-1.6 5.3-1.6s2.7 1.6 5.4 1.6 2.6-1.6 5.3-1.6" fill="none" stroke="#F2A65A" stroke-width="2" stroke-linecap="round"/></svg><span data-slot="name">Halcyon Physio</span></a>
+    <nav class="nav" aria-label="Main">
+      <a href="#treatments">Treatments</a>
+      <a href="#prices">Prices</a>
+      <a href="#clinic">Clinic</a>
+    </nav>
+    <a class="btn btn--solid" href="#times">Book online</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero__in">
+      <div class="hero__copy">
+        <p class="km-sign"><span data-slot="name">Halcyon Physio</span></p>
+        <p class="kicker">Physiotherapy and sports rehab</p>
+        <h1 id="hero-title">Move better. Feel better.</h1>
+        <p class="lede">Hands-on treatment for back and neck pain, sports injuries and recovery after surgery, explained in plain English.</p>
+
+        <section class="slots" id="times" aria-labelledby="times-title">
+          <div class="slots__head">
+            <h2 id="times-title">Next available</h2>
+            <p>First assessment · 45 min</p>
+          </div>
+          <fieldset>
+            <legend class="visually-hidden">Choose an appointment time</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="slot" value="Tue 9:30" data-toast="{value} selected. Demo only, nothing is booked."><span class="chip__face"><span class="chip__day">Tue</span> <span class="chip__time">9:30</span></span></label>
+              <label class="chip"><input type="radio" name="slot" value="Tue 11:00" data-toast="{value} selected. Demo only, nothing is booked."><span class="chip__face"><span class="chip__day">Tue</span> <span class="chip__time">11:00</span></span></label>
+              <label class="chip"><input type="radio" name="slot" value="Wed 14:15" data-toast="{value} selected. Demo only, nothing is booked."><span class="chip__face"><span class="chip__day">Wed</span> <span class="chip__time">14:15</span></span></label>
+              <label class="chip"><input type="radio" name="slot" value="Thu 8:45" data-toast="{value} selected. Demo only, nothing is booked."><span class="chip__face"><span class="chip__day">Thu</span> <span class="chip__time">8:45</span></span></label>
+              <label class="chip"><input type="radio" name="slot" value="Thu 17:30" data-toast="{value} selected. Demo only, nothing is booked."><span class="chip__face"><span class="chip__day">Thu</span> <span class="chip__time">17:30</span></span></label>
+              <label class="chip"><input type="radio" name="slot" value="Fri 12:00" data-toast="{value} selected. Demo only, nothing is booked."><span class="chip__face"><span class="chip__day">Fri</span> <span class="chip__time">12:00</span></span></label>
+            </div>
+          </fieldset>
+          <p class="slots__foot">No referral needed. New times open every morning.</p>
+        </section>
+      </div>
+      <div class="hero__photo">
+        <picture>
+          <source type="image/avif" srcset="img/hero-480.avif 480w, img/hero-760.avif 760w, img/hero-1080.avif 1080w" sizes="(min-width: 1280px) 540px, (min-width: 768px) 44vw, calc(100vw - 40px)">
+          <source type="image/webp" srcset="img/hero-480.webp 480w, img/hero-760.webp 760w, img/hero-1080.webp 1080w" sizes="(min-width: 1280px) 540px, (min-width: 768px) 44vw, calc(100vw - 40px)">
+          <img src="img/hero-760.webp" alt="A physiotherapist bends a patient’s knee to stretch his thigh as he lies on a treatment couch" width="760" height="608" fetchpriority="high" decoding="async">
+        </picture>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="treatments" aria-labelledby="treatments-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="h2" id="treatments-title">Treatments, in plain English</h2>
+        <p>No jargon. Here’s what we help with, and what a session involves.</p>
+      </div>
+      <ul class="cards" role="list">
+        <li class="card">
+          <picture>
+            <source type="image/avif" srcset="img/back-400.avif 400w, img/back-600.avif 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, calc(100vw - 40px)">
+            <source type="image/webp" srcset="img/back-400.webp 400w, img/back-600.webp 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, calc(100vw - 40px)">
+            <img src="img/back-400.webp" alt="A therapist’s hands working on the muscles of a woman’s upper back" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+          <div class="card__body">
+            <h3>Back and neck pain</h3>
+            <p>A stiff neck from the desk, or a back that twinges when you bend. We find the cause, ease it with hands-on treatment and show you simple exercises to keep it away.</p>
+            <p class="good"><strong>Good for:</strong> desk workers, drivers and new parents</p>
+          </div>
+        </li>
+        <li class="card">
+          <picture>
+            <source type="image/avif" srcset="img/sports-400.avif 400w, img/sports-600.avif 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, calc(100vw - 40px)">
+            <source type="image/webp" srcset="img/sports-400.webp 400w, img/sports-600.webp 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, calc(100vw - 40px)">
+            <img src="img/sports-400.webp" alt="A physiotherapist kneels beside a man lying on a couch and examines his bent knee" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+          <div class="card__body">
+            <h3>Sports injuries</h3>
+            <p>Sprains, strains, a sore knee or a tight hamstring. We work out what went wrong, treat it and build a plan that gets you back to your sport without it happening again.</p>
+            <p class="good"><strong>Good for:</strong> runners, footballers and gym-goers</p>
+          </div>
+        </li>
+        <li class="card">
+          <picture>
+            <source type="image/avif" srcset="img/surgery-400.avif 400w, img/surgery-600.avif 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, calc(100vw - 40px)">
+            <source type="image/webp" srcset="img/surgery-400.webp 400w, img/surgery-600.webp 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, calc(100vw - 40px)">
+            <img src="img/surgery-400.webp" alt="A clinician in a white coat fits a white wrist splint to a woman’s hand" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+          <div class="card__body">
+            <h3>Recovery after surgery</h3>
+            <p>After a new hip or knee, or a repaired ligament or wrist. Step-by-step rehab that rebuilds strength and movement, at a pace that suits you.</p>
+            <p class="good"><strong>Good for:</strong> joint replacements, ligament repairs and fractures</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section visit" id="first-visit" aria-labelledby="visit-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="h2" id="visit-title">Your first visit</h2>
+        <p>Forty-five calm minutes, one to one. Wear something comfortable.</p>
+      </div>
+      <ol class="steps" role="list">
+        <li><h3>We listen</h3><p>Tell us what hurts, when it started and what makes it worse. There’s no rush.</p></li>
+        <li><h3>We check and treat</h3><p>We look at how you move, explain what we find in plain words and start treatment the same day.</p></li>
+        <li><h3>You leave with a plan</h3><p>Clear next steps and a few exercises to do at home, sent to your phone.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="section">
+    <div class="wrap duo">
+      <section id="prices" aria-labelledby="prices-title">
+        <h2 class="h2" id="prices-title">Prices</h2>
+        <ul class="prices" role="list">
+          <li><span class="what">First assessment and treatment<small>45 minutes</small></span><span class="price">£60</span></li>
+          <li><span class="what">Follow-up session<small>30 minutes</small></span><span class="price">£45</span></li>
+          <li><span class="what">Sports massage<small>45 minutes</small></span><span class="price">£50</span></li>
+          <li><span class="what">Rehab after surgery<small>45 minutes</small></span><span class="price">£55</span></li>
+        </ul>
+        <p class="note">Claiming on health insurance? Tell us when you book and we’ll sort the paperwork.</p>
+      </section>
+      <section class="about" id="about" aria-labelledby="about-title">
+        <h2 class="h2" id="about-title">About <span data-slot="name">Halcyon Physio</span></h2>
+        <p>A small, quiet clinic with three treatment rooms and time built into every appointment, so nobody feels rushed.</p>
+        <p>All our physiotherapists are registered with the Health and Care Professions Council, and we treat adults of every age and fitness level.</p>
+        <a class="btn btn--solid" href="#times">See the next times</a>
+      </section>
+    </div>
+  </div>
+
+  <div class="reviews">
+    <div class="wrap">
+      <div class="km-placeholder">
+        <span class="km-placeholder__tag">Placeholder</span>
+        <p>Your Google reviews appear here.</p>
+        <small>On a real site, this space shows your latest reviews from Google.</small>
+      </div>
+    </div>
+  </div>
+
+  <section class="section clinic" id="clinic" aria-labelledby="clinic-title">
+    <div class="wrap clinic__in">
+      <div>
+        <h2 class="h2" id="clinic-title">Visit the clinic</h2>
+        <p>Ground-floor treatment rooms with step-free access, and free parking right outside.</p>
+        <dl class="hours-list">
+          <div><dt>Monday to Friday</dt><dd>8am–8pm</dd></div>
+          <div><dt>Saturday</dt><dd>9am–1pm</dd></div>
+          <div><dt>Sunday</dt><dd>Closed</dd></div>
+        </dl>
+        <a class="btn btn--line" href="#times">Book online</a>
+      </div>
+      <figure class="km-map map">
+        <svg viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="m-bg" width="480" height="300"/><path class="m-park" d="M318 16h134v82H318z"/><path class="m-water" d="M-10 244c62-16 108 8 160-6s98-42 152-32 98 30 188 16v90H-10z"/><path class="m-minor" d="M0 54h480M0 176h300M98 0v236M292 0v300M394 0v216M36 116l62-62M150 236l142-62M394 54l86 46"/><path class="m-road" d="M0 118h480M198 0v300M0 270l480-122"/><path class="m-pin" d="M198 124c-9-13-15-21-15-29a15 15 0 0 1 30 0c0 8-6 16-15 29z"/><circle class="m-dot" cx="198" cy="95" r="5.5"/></svg>
+        <figcaption><span class="km-placeholder__tag">Placeholder</span> Map appears here</figcaption>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <p class="foot__name"><span data-slot="name">Halcyon Physio</span></p>
+    <p>Clinic hours · 8am–8pm, Monday to Friday</p>
+    <nav aria-label="Footer">
+      <a href="#treatments">Treatments</a>
+      <a href="#prices">Prices</a>
+      <a href="#clinic">Clinic</a>
+    </nav>
+  </div>
+  <div class="km-colophon">
+  <div class="km-colophon__in">
+    <p>A concept website designed and built by King Media. Halcyon Physio is a made-up business: its treatments, prices, appointment times and opening hours are examples. <a href="/#contact">Get my demo</a></p>
+    <details>
+      <summary>Photo credits</summary>
+      <ul>
+        <li>Leg stretch: <a href="https://commons.wikimedia.org/wiki/File:Physiotherapist_working_examining_treating_injured_leg_of_male_patient.jpg" target="_blank" rel="noopener">Nenad Stojković (Shixart1985)<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0<span class="visually-hidden"> (opens in a new tab)</span></a>, via Wikimedia Commons. Cropped and resized.</li>
+        <li>Back treatment: <a href="https://unsplash.com/photos/person-massaging-the-back-of-a-woman-hBLf2nvp-Yc" target="_blank" rel="noopener">Toa Heftiba<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Resized.</li>
+        <li>Knee examination: <a href="https://unsplash.com/photos/a-man-getting-his-leg-examined-by-a-doctor-pbUWW-CBoqY" target="_blank" rel="noopener">yury kirillov<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Resized.</li>
+        <li>Wrist splint: <a href="https://unsplash.com/photos/person-in-white-long-sleeve-shirt-holding-white-textile-HIdUiamYIs0" target="_blank" rel="noopener">Tom Claes<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Cropped and resized.</li>
+      </ul>
+    </details>
+    <p class="km-colophon__company">King Media is a trading name of KING WEB MEDIA LTD, a company registered in England and Wales, company number 17483413. Registered office: 124 City Road, London, EC1V 2NX.</p>
+  </div>
+  </div>
+</footer>
+
+<p class="km-toast" role="status"></p>
+<script src="../concepts.js?v=1" defer></script>
+</body>
+</html>

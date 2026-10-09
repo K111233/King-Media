@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en-GB" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Northside Barbers: a concept website by King Media</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Northside Barbers is a made-up barbershop: a concept website designed and built by King Media.">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#101010">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script>
+(function (d, w) { var r = d.documentElement; r.classList.replace('no-js', 'js'); var off = false;
+  try { off = localStorage.getItem('km-motion') === 'off'; } catch (e) {}
+  if (!off && !matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('motion-ok');
+  if (/[?&]embed=1(&|$)/.test(location.search) && w.self !== w.top) r.classList.add('is-embed');
+})(document, window);
+</script>
+<link rel="preload" href="../fonts/big-shoulders.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../concepts.css?v=1">
+<style>
+/* Big Shoulders Display: wght 800, with Latin Extended-A (13.9KB) */
+@font-face { font-family: "Big Shoulders"; src: url("../fonts/big-shoulders.woff2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Big Shoulders Fallback"; src: local("Arial Bold"), local("Arial-BoldMT"); font-weight: 800; size-adjust: 66.2%; ascent-override: 148.6%; descent-override: 32.2%; line-gap-override: 0%; }
+:root {
+  color-scheme: dark;
+  --ink: #101010;     /* page */
+  --coal: #1A1A1A;    /* panels */
+  --bone: #EDE6D8;    /* text: 15.3:1 on ink, 13.9:1 on coal */
+  --ash: #A39B8B;     /* secondary text: 6.90:1 on ink, 6.31:1 on coal */
+  --brass: #C9A45C;   /* accents and prices: 8.11:1 on ink, 7.42:1 on coal; ink text on brass 8.11:1 */
+  --rule: rgba(237, 230, 216, .14);
+  --pole-red: #B3261E;
+  --pole-blue: #2C4F8C;
+  --display: "Big Shoulders", "Big Shoulders Fallback", "Arial Narrow", Arial, sans-serif;
+  --pad: max(20px, env(safe-area-inset-left), env(safe-area-inset-right));
+  scroll-padding-top: 84px;
+}
+body { background: var(--ink); color: var(--bone); font-size: 1.0625rem; }
+.wrap { width: 100%; max-width: calc(1152px + 2 * var(--pad)); margin: 0 auto; padding-inline: var(--pad); }
+.display { font-family: var(--display); font-weight: 800; text-transform: uppercase; }
+
+/* Buttons and links */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px; border-radius: 4px; font-weight: 700; font-size: 1rem; line-height: 1.2; letter-spacing: .02em; text-decoration: none; white-space: nowrap; }
+.btn--solid { background: var(--brass); color: var(--ink); }
+.btn--line { border: 1.5px solid var(--bone); color: var(--bone); }
+.btn:active { opacity: .75; }
+.btn:focus-visible, .nav a:focus-visible, .logo:focus-visible, .foot__in a:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .btn--solid:hover { background: var(--bone); }
+  .btn--line:hover { background: var(--bone); color: var(--ink); }
+  .nav a:hover, .foot__in a:hover { text-decoration-color: var(--brass); }
+}
+.motion-ok .btn { transition: background-color 160ms ease, color 160ms ease; }
+
+/* Header: "Book a chair" stays on screen at every width */
+.top { position: sticky; top: 0; z-index: 40; background: var(--ink); }
+.top::after { content: ""; display: block; height: 4px; background: repeating-linear-gradient(-45deg, var(--pole-red) 0 7px, var(--bone) 7px 14px, var(--pole-blue) 14px 21px, var(--bone) 21px 28px); }
+.top__in { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 10px; }
+.logo { flex: 1 1 8rem; min-width: 0; font-size: 1.5rem; line-height: 1; letter-spacing: .05em; text-decoration: none; padding-block: 6px; }
+.top .btn { min-height: 44px; padding: 0 18px; font-size: 1rem; }
+.nav { display: flex; gap: 24px; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.nav--desk { display: none; }
+.nav--phone { border-bottom: 1px solid var(--rule); }
+
+/* Hero */
+.hero { padding-block: 32px 56px; }
+.hero__in { display: grid; gap: 40px; }
+.kicker { font-size: 1rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brass); }
+.hero h1 { margin-top: 14px; font-size: clamp(3.5rem, 1rem + 12vw, 8.5rem); line-height: .88; letter-spacing: .005em; }
+.hero h1 span { display: block; }
+.lede { margin-top: 20px; max-width: 34ch; font-size: 1.1875rem; line-height: 1.5; color: var(--ash); }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.hours { display: flex; align-items: center; gap: 10px; margin-top: 22px; font-size: 1rem; }
+.hours strong { font-weight: 700; }
+.hours .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--brass); flex: none; }
+.hero__photo { padding: 10px; }
+.hero__photo img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 2px; outline: 2px solid var(--brass); outline-offset: 8px; background: var(--coal); }
+
+/* Band */
+.band { background: var(--brass); color: var(--ink); font-size: 1.375rem; line-height: 1.2; letter-spacing: .06em; text-align: center; padding: 16px var(--pad); }
+.band span { padding-inline: .4em; }
+
+/* Sections */
+.section { padding-block: 64px; }
+.h2 { font-size: clamp(2.75rem, 1.9rem + 3.4vw, 4.5rem); line-height: .95; letter-spacing: .01em; }
+.sec-head p { margin-top: 12px; max-width: 44ch; color: var(--ash); }
+
+/* Prices */
+.prices { display: grid; gap: 0 56px; margin-top: 32px; border-top: 1px solid var(--rule); }
+.prices li { padding-block: 20px; border-bottom: 1px solid var(--rule); }
+.prices .row { display: flex; align-items: baseline; gap: 12px; }
+.prices h3 { font-size: 1.75rem; line-height: 1.05; letter-spacing: .03em; }
+.prices .lead { flex: 1; min-width: 16px; border-bottom: 2px dotted rgba(237, 230, 216, .3); transform: translateY(-6px); }
+.prices .price { font-family: var(--display); font-weight: 800; font-size: 2.25rem; line-height: 1; color: var(--brass); font-variant-numeric: lining-nums tabular-nums; }
+.prices .desc { margin-top: 6px; color: var(--ash); max-width: 44ch; }
+.prices .desc span { white-space: nowrap; color: var(--bone); }
+.prices__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-top: 32px; }
+.prices__foot p { color: var(--ash); }
+
+/* Gallery */
+.gallery-sec { background: var(--coal); }
+.gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 32px; }
+.gallery li:first-child { grid-column: 1 / -1; }
+.gallery li, .gallery picture { height: 100%; }
+.gallery img { width: 100%; height: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 4px; background: #242424; }
+
+/* About */
+.about__in { display: grid; gap: 32px; }
+.about p { margin-top: 16px; max-width: 58ch; }
+.about p + p { color: var(--ash); }
+ul.ticks { display: grid; gap: 14px; align-content: start; padding: 28px 28px; background: var(--coal); border-left: 3px solid var(--brass); border-radius: 4px; }
+.ticks li { display: flex; gap: 12px; align-items: baseline; font-weight: 600; }
+.ticks li::before { content: ""; flex: none; width: 8px; height: 8px; background: var(--brass); transform: translateY(-2px) rotate(45deg); }
+
+/* Reviews placeholder */
+.reviews { padding-block: 0 64px; }
+.reviews .km-placeholder { color: var(--ash); background: var(--coal); }
+.reviews .km-placeholder p { color: var(--bone); }
+
+/* Visit */
+.visit { border-top: 1px solid var(--rule); }
+.visit__in { display: grid; gap: 36px; }
+.visit p { margin-top: 16px; max-width: 46ch; color: var(--ash); }
+.hours-list { margin: 24px 0 28px; border-top: 1px solid var(--rule); }
+.hours-list div { display: flex; justify-content: space-between; gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--rule); }
+.hours-list dt { font-weight: 700; }
+.hours-list dd { margin: 0; text-align: right; }
+.map { min-height: 240px; align-content: center; color: var(--ash); background: var(--coal); }
+.map p { color: var(--bone); }
+
+/* Footer */
+.foot { background: var(--ink); border-top: 1px solid var(--rule); }
+.foot__in { display: grid; gap: 12px; padding-block: 40px; }
+.foot__name { font-size: 2rem; line-height: 1; letter-spacing: .05em; }
+.foot__in > p:not(.foot__name) { color: var(--ash); }
+.foot nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.foot__in a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+@media (min-width: 768px) {
+  :root { --pad: 40px; scroll-padding-top: 96px; }
+  .top__in { flex-wrap: nowrap; min-height: 72px; padding-block: 0; }
+  .logo { flex: 0 1 auto; font-size: 2rem; }
+  .nav--desk { display: flex; margin-left: auto; margin-right: 12px; gap: 36px; }
+  .nav--phone { display: none; }
+  .top .btn { padding: 0 22px; font-size: 1rem; }
+  .hero { padding-block: 40px 64px; }
+  .hero__in { grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); align-items: center; gap: 48px; }
+  .hero__photo { justify-self: end; width: 100%; max-width: 420px; }
+  .band { font-size: 1.75rem; }
+  .section { padding-block: 96px; }
+  .sec-head { display: flex; justify-content: space-between; align-items: end; gap: 32px; }
+  .sec-head p { margin-top: 0; }
+  .prices { grid-template-columns: 1fr 1fr; margin-top: 44px; border-top: 0; }
+  .prices li:nth-child(-n+2) { border-top: 1px solid var(--rule); }
+  .gallery { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-areas: "fade fade clip scis" "fade fade chair kit"; gap: 14px; margin-top: 44px; }
+  .gallery li:first-child { grid-column: auto; grid-area: fade; }
+  .gallery li:first-child img { aspect-ratio: auto; }
+  .g-clip { grid-area: clip; } .g-scis { grid-area: scis; } .g-chair { grid-area: chair; } .g-kit { grid-area: kit; }
+  .about__in { grid-template-columns: 1.3fr 1fr; gap: 64px; align-items: start; }
+  .visit__in { grid-template-columns: 1fr 1fr; gap: 64px; align-items: stretch; }
+  .foot__in { grid-template-columns: 1fr auto; align-items: center; }
+  .foot nav { grid-column: 2; grid-row: 1 / span 2; }
+}
+@media (min-width: 1280px) {
+  :root { --pad: 64px; }
+  .hero__in { gap: 80px; }
+  .band { font-size: 2rem; }
+}
+@media (forced-colors: active) {
+  .btn { border: 1px solid ButtonText; }
+  .hours .dot, .ticks li::before { background: CanvasText; }
+}
+
+/* The sign: a visitor’s name at hero size (King Media “See it with your name”; hidden until a name is applied) */
+.km-sign { color: var(--brass); }
+.km-map { --m-bg: var(--coal); --m-road: #34322E; --m-ink: var(--bone); --m-park: #2A2D25; --m-water: #22272E; --m-pin: var(--brass); }
+/* Desktop: the hero and its band fill the first screen, so the page (and its poster) never ends on an empty strip */
+@media (min-width: 1024px) and (min-height: 700px) { .hero { display: flex; flex-direction: column; justify-content: center; min-height: calc(100svh - 146px); } .hero > * { width: 100%; } }
+</style>
+</head>
+<body>
+<a class="km-skip" href="#main">Skip to content</a>
+
+<aside class="km-strip" aria-label="About this concept">
+  <p><span class="km-strip__made">Concept website by King Media. Northside Barbers is a made-up business.</span><span class="km-strip__typed">A King Media concept design, showing a name a visitor typed in. Not a real business.</span></p>
+  <nav class="km-strip__links" aria-label="King Media">
+    <a href="/#concepts" data-km-back>Back to King Media</a>
+    <a class="km-strip__cta" href="/#contact">Get my demo</a>
+  </nav>
+</aside>
+
+<header class="top" id="top">
+  <div class="wrap top__in">
+    <a class="logo display" href="#top"><span data-slot="name">Northside Barbers</span></a>
+    <nav class="nav nav--desk" aria-label="Main">
+      <a href="#prices">Prices</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#visit">Visit</a>
+    </nav>
+    <button type="button" class="btn btn--solid" data-toast="On a real site, your booking system opens here. Online booking is quoted separately.">Book a chair</button>
+  </div>
+</header>
+<nav class="nav nav--phone" aria-label="Main">
+  <div class="wrap nav">
+    <a href="#prices">Prices</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#visit">Visit</a>
+  </div>
+</nav>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero__in">
+      <div class="hero__copy">
+        <p class="km-sign display"><span data-slot="name">Northside Barbers</span></p>
+        <p class="kicker">Walk-ins welcome</p>
+        <h1 class="display" id="hero-title"><span>Sharp cuts.</span> <span>No fuss.</span></h1>
+        <p class="lede">Skin fades, scissor cuts and hot towel shaves on the north side of town. Book a chair online, or walk straight in.</p>
+        <div class="hero__actions">
+          <button type="button" class="btn btn--solid" data-toast="On a real site, your booking system opens here. Online booking is quoted separately.">Book a chair</button>
+          <a class="btn btn--line" href="#prices">See prices</a>
+        </div>
+        <p class="hours"><span class="dot" aria-hidden="true"></span><span><strong>Open Mon–Sat</strong> · 9am to 6pm</span></p>
+      </div>
+      <div class="hero__photo">
+        <picture>
+          <source type="image/avif" srcset="img/hero-480.avif 480w, img/hero-760.avif 760w, img/hero-1080.avif 1080w" sizes="(min-width: 1280px) 400px, (min-width: 768px) 34vw, calc(100vw - 60px)">
+          <source type="image/webp" srcset="img/hero-480.webp 480w, img/hero-760.webp 760w, img/hero-1080.webp 1080w" sizes="(min-width: 1280px) 400px, (min-width: 768px) 34vw, calc(100vw - 60px)">
+          <img src="img/hero-760.webp" alt="A barbershop with a black leather barber’s chair, mirrors and pendant lights against a brick wall" width="760" height="950" fetchpriority="high" decoding="async">
+        </picture>
+      </div>
+    </div>
+  </section>
+
+  <p class="band display">Skin&nbsp;fades<span aria-hidden="true">·</span> Scissor&nbsp;cuts<span aria-hidden="true">·</span> Beard&nbsp;sculpts<span aria-hidden="true">·</span> Hot&nbsp;towel&nbsp;shaves</p>
+
+  <section class="section" id="prices" aria-labelledby="prices-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="h2 display" id="prices-title">Prices</h2>
+        <p>The full list, with no hidden extras. Card or cash.</p>
+      </div>
+      <ul class="prices" role="list">
+        <li>
+          <div class="row"><h3 class="display">Skin fade</h3><span class="lead" aria-hidden="true"></span><p class="price">£18</p></div>
+          <p class="desc">Clipper fade down to the skin, finished with scissors on top. <span>40 min</span></p>
+        </li>
+        <li>
+          <div class="row"><h3 class="display">Scissor cut</h3><span class="lead" aria-hidden="true"></span><p class="price">£16</p></div>
+          <p class="desc">A classic cut with scissors all over, washed and styled. <span>40 min</span></p>
+        </li>
+        <li>
+          <div class="row"><h3 class="display">Beard sculpt</h3><span class="lead" aria-hidden="true"></span><p class="price">£10</p></div>
+          <p class="desc">Shaped and lined up with a cut-throat razor, finished with beard oil. <span>20 min</span></p>
+        </li>
+        <li>
+          <div class="row"><h3 class="display">Hot towel shave</h3><span class="lead" aria-hidden="true"></span><p class="price">£20</p></div>
+          <p class="desc">A traditional wet shave with hot towels, a cut-throat razor and balm. <span>30 min</span></p>
+        </li>
+      </ul>
+      <div class="prices__foot">
+        <button type="button" class="btn btn--solid" data-toast="On a real site, your booking system opens here. Online booking is quoted separately.">Book a chair</button>
+        <p>Walk-ins welcome all day. Booking skips the wait.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section gallery-sec" id="gallery" aria-labelledby="gallery-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="h2 display" id="gallery-title">Gallery</h2>
+        <p>Fades, scissor work and the kit behind them.</p>
+      </div>
+      <ul class="gallery" role="list">
+        <li>
+          <picture>
+            <source type="image/avif" srcset="img/fade-640.avif 640w, img/fade-1100.avif 1100w" sizes="(min-width: 1280px) 570px, (min-width: 768px) 48vw, calc(100vw - 40px)">
+            <source type="image/webp" srcset="img/fade-640.webp 640w, img/fade-1100.webp 1100w" sizes="(min-width: 1280px) 570px, (min-width: 768px) 48vw, calc(100vw - 40px)">
+            <img src="img/fade-640.webp" alt="A barber finishing a skin fade with clippers, the top left longer" width="640" height="426" loading="lazy" decoding="async">
+          </picture>
+        </li>
+        <li class="g-clip">
+          <picture>
+            <source type="image/avif" srcset="img/clipper-400.avif 400w, img/clipper-600.avif 600w" sizes="(min-width: 1280px) 280px, (min-width: 768px) 23vw, calc(50vw - 25px)">
+            <source type="image/webp" srcset="img/clipper-400.webp 400w, img/clipper-600.webp 600w" sizes="(min-width: 1280px) 280px, (min-width: 768px) 23vw, calc(50vw - 25px)">
+            <img src="img/clipper-400.webp" alt="Close-up of clippers lining up a fade above the ear" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+        </li>
+        <li class="g-scis">
+          <picture>
+            <source type="image/avif" srcset="img/scissors-400.avif 400w, img/scissors-600.avif 600w" sizes="(min-width: 1280px) 280px, (min-width: 768px) 23vw, calc(50vw - 25px)">
+            <source type="image/webp" srcset="img/scissors-400.webp 400w, img/scissors-600.webp 600w" sizes="(min-width: 1280px) 280px, (min-width: 768px) 23vw, calc(50vw - 25px)">
+            <img src="img/scissors-400.webp" alt="Barber’s scissors hanging on a wooden wall" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+        </li>
+        <li class="g-chair">
+          <picture>
+            <source type="image/avif" srcset="img/chair-400.avif 400w, img/chair-600.avif 600w" sizes="(min-width: 1280px) 280px, (min-width: 768px) 23vw, calc(50vw - 25px)">
+            <source type="image/webp" srcset="img/chair-400.webp 400w, img/chair-600.webp 600w" sizes="(min-width: 1280px) 280px, (min-width: 768px) 23vw, calc(50vw - 25px)">
+            <img src="img/chair-400.webp" alt="A tan leather barber’s chair with a chrome frame" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+        </li>
+        <li class="g-kit">
+          <picture>
+            <source type="image/avif" srcset="img/kit-400.avif 400w, img/kit-600.avif 600w" sizes="(min-width: 1280px) 280px, (min-width: 768px) 23vw, calc(50vw - 25px)">
+            <source type="image/webp" srcset="img/kit-400.webp 400w, img/kit-600.webp 600w" sizes="(min-width: 1280px) 280px, (min-width: 768px) 23vw, calc(50vw - 25px)">
+            <img src="img/kit-400.webp" alt="A shaving brush in a steel bowl beside cut-throat razors and clipper guards" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="section">
+    <div class="wrap about__in">
+      <section class="about" aria-labelledby="about-title">
+        <h2 class="h2 display" id="about-title">About <span data-slot="name">Northside Barbers</span></h2>
+        <p>A proper barbershop on the north side of town. Three chairs, good music and barbers who take their time over every cut.</p>
+        <p>Walk in and wait with a coffee, or book a chair and sit straight down. Either way, you leave looking sharp.</p>
+      </section>
+      <ul class="ticks" role="list">
+        <li>Walk-ins welcome all day</li>
+        <li>Kids welcome with an adult</li>
+        <li>Card and cash accepted</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="reviews">
+    <div class="wrap">
+      <div class="km-placeholder">
+        <span class="km-placeholder__tag">Placeholder</span>
+        <p>Your Google reviews appear here.</p>
+        <small>On a real site, this space shows your latest reviews from Google.</small>
+      </div>
+    </div>
+  </div>
+
+  <section class="section visit" id="visit" aria-labelledby="visit-title">
+    <div class="wrap visit__in">
+      <div>
+        <h2 class="h2 display" id="visit-title">Visit</h2>
+        <p>Walk-ins are welcome until closing. Saturdays get busy, so book a chair if you’re short on time.</p>
+        <dl class="hours-list">
+          <div><dt>Monday to Saturday</dt><dd>9am to 6pm</dd></div>
+          <div><dt>Sunday</dt><dd>Closed</dd></div>
+        </dl>
+        <button type="button" class="btn btn--solid" data-toast="On a real site, your booking system opens here. Online booking is quoted separately.">Book a chair</button>
+      </div>
+      <figure class="km-map map">
+        <svg viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="m-bg" width="480" height="300"/><path class="m-park" d="M318 16h134v82H318z"/><path class="m-water" d="M-10 244c62-16 108 8 160-6s98-42 152-32 98 30 188 16v90H-10z"/><path class="m-minor" d="M0 54h480M0 176h300M98 0v236M292 0v300M394 0v216M36 116l62-62M150 236l142-62M394 54l86 46"/><path class="m-road" d="M0 118h480M198 0v300M0 270l480-122"/><path class="m-pin" d="M198 124c-9-13-15-21-15-29a15 15 0 0 1 30 0c0 8-6 16-15 29z"/><circle class="m-dot" cx="198" cy="95" r="5.5"/></svg>
+        <figcaption><span class="km-placeholder__tag">Placeholder</span> Map appears here</figcaption>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <p class="foot__name display"><span data-slot="name">Northside Barbers</span></p>
+    <p>Open Mon–Sat · 9am to 6pm</p>
+    <nav aria-label="Footer">
+      <a href="#prices">Prices</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#visit">Visit</a>
+    </nav>
+  </div>
+  <div class="km-colophon">
+  <div class="km-colophon__in">
+    <p>A concept website designed and built by King Media. Northside Barbers is a made-up business: its prices and opening hours are examples. <a href="/#contact">Get my demo</a></p>
+    <details>
+      <summary>Photo credits</summary>
+      <ul>
+        <li>Barbershop interior: <a href="https://unsplash.com/photos/black-leather-barber-chair-near-brown-brick-wall-EW_rqoSdDes" target="_blank" rel="noopener">Nathon Oski<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Cropped and resized.</li>
+        <li>Skin fade: <a href="https://unsplash.com/photos/man-in-white-dress-shirt-cutting-hair-of-man-Q82AM6BWBPM" target="_blank" rel="noopener">Michael DeMoya<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Cropped and resized.</li>
+        <li>Clippers: <a href="https://unsplash.com/photos/a-man-getting-his-haircut-1Wxm71sR51s" target="_blank" rel="noopener">William Argueta<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Cropped and resized.</li>
+        <li>Barber’s chair: <a href="https://unsplash.com/photos/brown-barbers-chair-_H1XXY96pqw" target="_blank" rel="noopener">Chris Knight<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Cropped and resized.</li>
+        <li>Scissors and shaving kit: <a href="https://stocksnap.io/photo/barbershop-scissors-R9YRHH2JQY" target="_blank" rel="noopener">Nick Demou<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0<span class="visually-hidden"> (opens in a new tab)</span></a>, via StockSnap. Cropped and resized.</li>
+      </ul>
+    </details>
+    <p class="km-colophon__company">King Media is a trading name of KING WEB MEDIA LTD, a company registered in England and Wales, company number 17483413. Registered office: 124 City Road, London, EC1V 2NX.</p>
+  </div>
+  </div>
+</footer>
+
+<p class="km-toast" role="status"></p>
+<script src="../concepts.js?v=1" defer></script>
+</body>
+</html>

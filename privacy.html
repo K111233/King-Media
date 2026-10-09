@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Privacy &amp; Cookies | King Media</title>
 <meta name="description" content="How King Media collects, uses and protects your information, and the small amount of browser storage this website uses.">
-<meta name="theme-color" content="#080806">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='11' fill='%23080806'/%3E%3Cpath d='M8 9.5h5.2v29H8Z' fill='%23D4AF37'/%3E%3Cpath d='M30.9 9.5H39L25.4 24 39 38.5h-8.1L17.3 24Z' fill='%23F3EEE4'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0B0A08">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='11' fill='%230B0A08'/%3E%3Cpath d='M8 9.5h5.2v29H8Z' fill='%23C9A45A'/%3E%3Cpath d='M30.9 9.5H39L25.4 24 39 38.5h-8.1L17.3 24Z' fill='%23EDE6D8'/%3E%3C/svg%3E">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
@@ -22,8 +22,9 @@
 <meta name="twitter:title" content="Privacy &amp; cookies | King Media">
 <meta name="twitter:image" content="https://kingmedia.uk/assets/share/og-image.png">
 <link rel="canonical" href="https://kingmedia.uk/privacy.html">
-<link rel="preload" href="assets/fonts/syne-normal-500.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="css/style.css?v=20260927a">
+<link rel="preload" href="assets/fonts/mona-display.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/mona-text.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css?v=20260928a">
 </head>
 <body class="legal-page">
 <a class="skip-link" href="#main">Skip to main content</a>
@@ -42,7 +43,7 @@
   <div class="container legal__inner">
     <p class="section-tag"><span aria-hidden="true">(—)</span> Legal</p>
     <h1>Privacy &amp; <em>cookies</em></h1>
-    <p class="legal__meta">Last updated 27 September 2026</p>
+    <p class="legal__meta">Last updated 28 September 2026</p>
 
     <nav class="legal__toc" aria-label="On this page">
       <ol>
@@ -92,13 +93,12 @@
 
     <h2 id="cookies">7. Cookies and browser storage</h2>
     <p>This website doesn’t use tracking, analytics or advertising cookies, and it doesn’t load anything from third parties. Even our fonts are served from our own site. If you choose to pay online, you’ll go to Stripe’s secure payment page, which has its own privacy notice. We only use a small amount of storage in your browser, listed below.</p>
-    <div class="legal__table">
+    <div class="legal__table" role="region" aria-label="Browser storage we use" tabindex="0">
       <table>
         <thead><tr><th scope="col">Name</th><th scope="col">What it does</th><th scope="col">Type</th><th scope="col">How long</th></tr></thead>
         <tbody>
           <tr><td>km-consent</td><td>Remembers your cookie choice, so we don’t keep asking</td><td>Essential</td><td>Until you clear it</td></tr>
           <tr><td>km-motion</td><td>Remembers if you pressed “Pause motion”. Only set if you use it.</td><td>Essential</td><td>Until you clear it</td></tr>
-          <tr><td>km-seen</td><td>Plays a shorter intro if you’ve already seen it this visit</td><td>Essential</td><td>Until you close the tab</td></tr>
           <tr><td>km-star</td><td>Remembers the business name you tried in “See it with your name”. Only set if you choose “Accept all”.</td><td>Optional</td><td>Until you close the tab</td></tr>
         </tbody>
       </table>
@@ -122,7 +122,7 @@
 <script>
   document.getElementById('resetConsent').addEventListener('click', function () {
     try { localStorage.removeItem('km-consent'); sessionStorage.removeItem('km-star'); } catch (e) {}
-    document.getElementById('resetStatus').textContent = 'Done. We’ll ask you again next time you open the homepage.';
+    document.getElementById('resetStatus').textContent = 'Done. We’ll ask you again next time you try ‘See it with your name’.';
   });
 </script>
 </body>

@@ -1,0 +1,149 @@
+/* ==========================================================================
+   KING MEDIA concept pages: shared shell (concepts/concepts.css)
+   Reset, King Media strip and colophon, embed mode, name caret, demo toast,
+   placeholder blocks, before/after slider and demo basket.
+   Each concept page styles its own brand in an inline <style>, using the
+   hooks below. All motion lives under html.motion-ok (set in <head>).
+   ========================================================================== */
+
+/* 01 Reset ---------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; min-height: 100vh; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 1rem; line-height: 1.55; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure, blockquote { margin: 0; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+img, picture, svg { display: block; max-width: 100%; }
+img { height: auto; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+a { color: inherit; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.motion-ok { scroll-behavior: smooth; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Skip link: off-screen until focused */
+.km-skip { position: absolute; left: 12px; top: 12px; z-index: 90; padding: 12px 16px; border-radius: 4px; background: #0B0A08; color: #EDE6D8; font-weight: 600; text-decoration: none; transform: translateY(-200%); }
+.km-skip:focus { transform: none; outline: 2px solid #DDBE7A; outline-offset: 2px; }
+
+/* 02 King Media strip (top) and colophon (bottom) -------------------------- */
+.km-strip, .km-colophon { background: #0B0A08; color: #EDE6D8; font: 400 .9375rem/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; letter-spacing: .005em; }
+.km-strip { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 24px; padding: 8px max(20px, env(safe-area-inset-right)) 8px max(20px, env(safe-area-inset-left)); border-bottom: 1px solid rgba(201, 164, 90, .55); }
+.km-strip p { margin: 0; padding: 6px 0; }
+.km-strip__typed { display: none; }
+.has-name .km-strip__made { display: none; }
+.has-name .km-strip__typed { display: inline; }
+.km-strip__links { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; }
+.km-strip a, .km-colophon a { color: #EDE6D8; text-decoration: underline; text-decoration-color: #C9A45A; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.km-strip a { display: inline-flex; align-items: center; min-height: 44px; }
+.km-strip .km-strip__cta { padding: 0 14px; border-radius: 4px; background: #C9A45A; color: #0B0A08; font-weight: 600; text-decoration: none; }
+.km-strip a:focus-visible, .km-colophon a:focus-visible, .km-colophon summary:focus-visible { outline: 2px solid #DDBE7A; outline-offset: 2px; }
+.km-strip .km-strip__cta:active { background: #B8934B; }
+@media (hover: hover) and (pointer: fine) {
+  .km-strip a:hover, .km-colophon a:hover { text-decoration-color: #DDBE7A; }
+  .km-strip .km-strip__cta:hover { background: #EDE6D8; }
+}
+
+.km-colophon { padding: 32px max(20px, env(safe-area-inset-right)) calc(32px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left)); border-top: 1px solid rgba(201, 164, 90, .55); }
+.km-colophon__in { max-width: 1152px; margin: 0 auto; display: grid; gap: 12px; }
+.km-colophon p { margin: 0; max-width: 72ch; }
+.km-colophon .km-colophon__company { font-size: .875rem; color: #948B7B; }
+.km-colophon details { max-width: 72ch; }
+.km-colophon summary { display: inline-flex; align-items: center; min-height: 44px; cursor: pointer; text-decoration: underline; text-decoration-color: #C9A45A; text-underline-offset: 4px; }
+.km-colophon ul { margin: 4px 0 8px; padding-left: 1.1em; color: #B3AA99; }
+.km-colophon li + li { margin-top: 4px; }
+
+/* 03 Embed mode (only ever set when the page is framed; see the <head> script) */
+.is-embed .km-strip, .is-embed .km-skip { display: none; }
+html.is-embed { scrollbar-width: none; }
+html.is-embed::-webkit-scrollbar { display: none; }
+
+/* 04 Name slot: the gold caret while a visitor types on kingmedia.uk ---------- */
+[data-slot="name"] { overflow-wrap: anywhere; }
+.is-typing [data-slot="name"]::after { content: ""; display: inline-block; width: .08em; height: .72em; margin-left: .06em; background: #C9A45A; vertical-align: baseline; }
+
+/* 05 Demo toast: role="status", never takes focus, gone after 4 seconds ------ */
+.km-toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 80; width: max-content; max-width: calc(100% - 32px); margin: 0; padding: 14px 20px; border-radius: 4px; background: #0B0A08; color: #EDE6D8; font: 400 1rem/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; text-align: left; box-shadow: 0 16px 32px -16px rgba(0, 0, 0, .5); transform: translateX(-50%); visibility: hidden; pointer-events: none; }
+.km-toast.is-on { visibility: visible; }
+.km-toast:empty { padding: 0; }
+.km-toast::before { content: "Demo"; display: block; margin-bottom: 2px; font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #C9A45A; }
+.km-toast:empty::before { content: none; }
+.motion-ok .km-toast { opacity: 0; transform: translate(-50%, 12px); transition: opacity 240ms cubic-bezier(.16, 1, .3, 1), transform 240ms cubic-bezier(.16, 1, .3, 1), visibility 0s linear 240ms; }
+.motion-ok .km-toast.is-on { opacity: 1; transform: translate(-50%, 0); transition-delay: 0s; }
+
+/* 06 Placeholder block ("Your Google reviews appear here.") ------------------ */
+.km-placeholder { display: grid; gap: 6px; padding: 24px; border: 1.5px dashed currentColor; border-radius: 4px; }
+.km-placeholder__tag { justify-self: start; padding: 2px 8px; border: 1px solid currentColor; border-radius: 4px; font-size: .75rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; line-height: 1.6; }
+.km-placeholder p { font-size: 1.125rem; font-weight: 600; }
+.km-placeholder small { font-size: 1rem; }
+
+/* 07 Before/after slider ([data-ba]) -----------------------------------------
+   Markup: .ba[data-ba] > img.ba__img--before, img.ba__img--after,
+   span.ba__tag--before/after, span.ba__handle > i, input.ba__range
+   Colours: set --ba-bg, --ba-knob, --ba-arrow, --ba-focus on the page. */
+.ba { --pos: 50%; position: relative; overflow: hidden; aspect-ratio: 3 / 2; touch-action: pan-y; cursor: ew-resize; -webkit-user-select: none; user-select: none; background: var(--ba-bg, #20331F); }
+.ba__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.ba picture { display: contents; }
+.ba__img--after { clip-path: inset(0 0 0 var(--pos)); }
+.ba__handle { position: absolute; inset: 0; transform: translateX(var(--pos)); pointer-events: none; }
+.ba__handle::before { content: ""; position: absolute; top: 0; bottom: 0; left: -1px; width: 2px; background: var(--ba-knob, #fff); box-shadow: 0 0 0 1px rgba(0, 0, 0, .15); }
+.ba__handle i { position: absolute; top: 50%; left: 0; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%; background: var(--ba-knob, #fff); box-shadow: 0 6px 20px rgba(0, 0, 0, .3); }
+.ba__handle i::before, .ba__handle i::after { content: ""; position: absolute; top: 50%; width: 0; height: 0; margin-top: -6px; border: 6px solid transparent; }
+.ba__handle i::before { left: 9px; border-right: 8px solid var(--ba-arrow, #1F3D2B); border-left: 0; }
+.ba__handle i::after { right: 9px; border-left: 8px solid var(--ba-arrow, #1F3D2B); border-right: 0; }
+.ba__tag { position: absolute; top: 12px; padding: 4px 10px; border-radius: 4px; font: 600 .875rem/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: .06em; text-transform: uppercase; background: rgba(10, 20, 12, .78); color: #fff; pointer-events: none; }
+.ba__tag--before { left: 12px; }
+.ba__tag--after { right: 12px; }
+.ba__range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; pointer-events: none; }
+.ba:has(.ba__range:focus-visible) .ba__handle i { outline: 3px solid var(--ba-focus, #fff); outline-offset: 3px; }
+.ba-caption { margin-top: 8px; font-size: 1rem; }
+.motion-ok .ba.is-hinting { animation: ba-sweep 1.6s cubic-bezier(.76, 0, .24, 1) 1; }
+@keyframes ba-sweep { 0% { --pos: 50%; } 33% { --pos: 32%; } 66% { --pos: 68%; } 100% { --pos: 50%; } }
+
+/* 08 Demo basket ([data-shop]) -----------------------------------------------
+   Markup and class names are unchanged from the old home page: [data-basket],
+   .ww-count, [data-add][data-price] with .ww-add__label, .ww-dock > .ww-toast.
+   Colours: set --ww-ink, --ww-paper, --ww-accent, --ww-ok on the page. */
+.ww-basket { position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: inherit; }
+.ww-count { position: absolute; top: 0; right: -2px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: var(--ww-accent, #8A4B22); color: #fff; font: 700 .75rem/20px system-ui, -apple-system, sans-serif; text-align: center; transform: scale(0); }
+.has-items .ww-count { transform: scale(1); }
+.ww-add { display: inline-flex; align-items: center; justify-content: center; gap: .45em; min-height: 44px; padding: 0 18px; border-radius: 999px; background: var(--ww-ink, #2A2420); color: var(--ww-paper, #F6F0E7); font-weight: 700; white-space: nowrap; }
+.ww-add:active { opacity: .72; }
+.ww-add.is-added { background: var(--ww-ok, #3F6B45); }
+.ww-add.is-added svg { display: none; }
+.ww-dock { position: sticky; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 60; height: 0; }
+.ww-toast { position: absolute; left: 50%; bottom: 12px; width: max-content; max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 4px; background: var(--ww-ink, #2A2420); color: var(--ww-paper, #F6F0E7); font-size: 1rem; line-height: 1.4; text-align: center; transform: translateX(-50%); visibility: hidden; pointer-events: none; }
+.ww-toast.is-on { visibility: visible; }
+.ww-toast small { display: block; margin-top: 2px; font-size: .9375rem; opacity: .9; }
+.motion-ok .ww-count { transition: transform .35s cubic-bezier(.16, 1, .3, 1); }
+.motion-ok .ww-count.is-bump { animation: ww-bump .5s cubic-bezier(.16, 1, .3, 1); }
+.motion-ok .ww-basket.is-bump svg { animation: ww-tilt .5s cubic-bezier(.16, 1, .3, 1); }
+.motion-ok .ww-toast { opacity: 0; transform: translate(-50%, 12px); transition: opacity .24s cubic-bezier(.16, 1, .3, 1), transform .24s cubic-bezier(.16, 1, .3, 1), visibility 0s linear .24s; }
+.motion-ok .ww-toast.is-on { opacity: 1; transform: translate(-50%, 0); transition-delay: 0s; }
+@keyframes ww-bump { 40% { transform: scale(1.3); } }
+@keyframes ww-tilt { 30% { transform: rotate(-12deg); } 60% { transform: rotate(8deg); } }
+
+/* 09 Forced colours ---------------------------------------------------------- */
+@media (forced-colors: active) {
+  .km-toast, .ww-toast, .km-strip .km-strip__cta { border: 1px solid CanvasText; }
+  .ww-add, .ww-basket { border: 1px solid ButtonText; }
+  .is-typing [data-slot="name"]::after, .ba__handle::before, .ba__handle i { background: CanvasText; }
+}
+
+/* The sign (King Media “See it with your name”): the visitor’s name at hero size, only once a name is applied */
+.km-sign { display: none; margin: 0 0 10px; font-size: clamp(2rem, 1.5rem + 2.4vw, 3.25rem); line-height: 1.02; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.has-name .km-sign { display: block; }
+
+/* Map placeholder: an illustrative street grid in the concept’s own palette */
+.km-map { position: relative; margin: 0; overflow: hidden; min-height: 240px; border-radius: 4px; color: var(--m-ink, #222); }
+.km-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.km-map .m-bg { fill: var(--m-bg, #E9E4D8); }
+.km-map .m-park { fill: var(--m-park, #D6DCC4); }
+.km-map .m-water { fill: var(--m-water, #D3DADD); }
+.km-map .m-minor { fill: none; stroke: var(--m-road, #fff); stroke-width: 6; }
+.km-map .m-road { fill: none; stroke: var(--m-road, #fff); stroke-width: 13; }
+.km-map .m-pin { fill: var(--m-pin, #222); }
+.km-map .m-dot { fill: var(--m-bg, #fff); }
+.km-map figcaption { position: absolute; left: 12px; bottom: 12px; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 4px; background: var(--m-bg, #fff); font-size: 1rem; font-weight: 600; line-height: 1.3; }

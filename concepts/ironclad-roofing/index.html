@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en-GB" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ironclad Roofing: a concept website by King Media</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Ironclad Roofing is a made-up roofing firm: a concept website designed and built by King Media.">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script>
+(function (d, w) { var r = d.documentElement; r.classList.replace('no-js', 'js'); var off = false;
+  try { off = localStorage.getItem('km-motion') === 'off'; } catch (e) {}
+  if (!off && !matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('motion-ok');
+  if (/[?&]embed=1(&|$)/.test(location.search) && w.self !== w.top) r.classList.add('is-embed');
+})(document, window);
+</script>
+<link rel="preload" href="../fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../concepts.css?v=1">
+<style>
+/* Archivo, wdth 62 / wght 800 instance, Latin + Latin Extended-A (13.1KB) */
+@font-face { font-family: "Archivo"; src: url("../fonts/archivo.woff2") format("woff2"); font-weight: 800; font-stretch: 62%; font-style: normal; font-display: swap; }
+@font-face { font-family: "Archivo Fallback"; src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"); font-weight: 800; size-adjust: 83.8%; ascent-override: 104.8%; descent-override: 25.1%; line-gap-override: 0%; }
+@font-face { font-family: "Archivo Fallback Wide"; src: local("Arial Bold"), local("Arial-BoldMT"); font-weight: 800; size-adjust: 68.7%; ascent-override: 127.8%; descent-override: 30.6%; line-gap-override: 0%; }
+:root {
+  --yellow: #FFC700;  /* hero, quote band, buttons (black text 12.07:1) */
+  --black: #111111;   /* text: 12.07:1 on yellow, 16.74:1 on paper; yellow text on black 12.07:1 */
+  --coal: #1C1C1C;    /* work cards on black */
+  --paper: #F4F1EA;   /* light sections */
+  --white: #FFFFFF;
+  --muted: #4A4740;   /* secondary text: 8.21:1 on paper */
+  --muted-dk: #C9C2B2; /* secondary text on black: 9.61:1 on coal, higher on #111 */
+  --rule: rgba(17, 17, 17, .18);
+  --rule-dk: rgba(255, 255, 255, .16);
+  --cond: "Archivo", "Archivo Fallback", "Archivo Fallback Wide", "Arial Narrow", system-ui, sans-serif;
+  --pad: max(20px, env(safe-area-inset-left), env(safe-area-inset-right));
+  scroll-padding-top: 16px;
+  scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); /* keeps focus clear of the fixed quote bar */
+}
+body { background: var(--paper); color: var(--black); font-size: 1.0625rem; }
+.wrap { width: 100%; max-width: calc(1152px + 2 * var(--pad)); margin: 0 auto; padding-inline: var(--pad); }
+.cond { font-family: var(--cond); font-weight: 800; font-stretch: 62%; text-transform: uppercase; }
+
+/* Buttons and links */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 0 24px; border-radius: 4px; font-weight: 700; font-size: 1rem; line-height: 1.2; text-decoration: none; white-space: nowrap; }
+.btn svg { flex: none; }
+.btn--yellow { background: var(--yellow); color: var(--black); }
+.btn--black { background: var(--black); color: var(--yellow); }
+.btn--line { border: 2px solid var(--black); color: var(--black); }
+.btn:active { opacity: .78; }
+.btn:focus-visible, .nav a:focus-visible, .logo:focus-visible, .foot__in a:focus-visible { outline: 3px solid var(--black); outline-offset: 3px; }
+.on-dark .btn:focus-visible, .top .btn:focus-visible, .top a:focus-visible, .quotebar .btn:focus-visible, .foot__in a:focus-visible { outline-color: var(--yellow); }
+@media (hover: hover) and (pointer: fine) {
+  .btn--yellow:hover { background: var(--white); }
+  .btn--black:hover { background: #333; }
+  .btn--line:hover { background: var(--black); color: var(--yellow); }
+  .nav a:hover, .foot__in a:hover { text-decoration-color: var(--yellow); }
+}
+.motion-ok .btn { transition: background-color 160ms ease, color 160ms ease; }
+
+/* Header */
+.top { background: var(--black); color: var(--white); }
+.top__in { display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 20px; padding-top: 8px; }
+.logo { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 0; color: var(--yellow); font-size: 1.75rem; line-height: 1; letter-spacing: .02em; text-decoration: none; }
+.logo svg { flex: none; }
+.top .btn { display: none; }
+.nav { display: flex; gap: 24px; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; white-space: nowrap; color: var(--white); text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+
+/* Phones: the quote button is always one tap away, fixed to the bottom */
+.quotebar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; padding: 12px var(--pad) calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--black); border-top: 3px solid var(--yellow); }
+.quotebar .btn { width: 100%; min-height: 52px; font-size: 1.0625rem; }
+.km-toast { bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
+
+/* Hero */
+.hero { background: var(--yellow); padding-block: 28px 48px; }
+.hero__in { display: grid; gap: 32px; }
+.kicker { font-size: 1rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.hero h1 { margin-top: 12px; font-size: clamp(3.125rem, 1rem + 11vw, 4rem); line-height: .92; letter-spacing: -.005em; }
+.lede { margin-top: 20px; max-width: 38ch; font-size: 1.1875rem; line-height: 1.5; }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.hero__note { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 20px; font-weight: 600; }
+.hero__note span { display: inline-flex; align-items: center; gap: 8px; }
+.hero__note span::before { content: ""; width: 8px; height: 8px; background: var(--black); transform: rotate(45deg); flex: none; }
+.hero__photo { position: relative; }
+.hero__photo img { width: 100%; aspect-ratio: 1; object-fit: cover; clip-path: polygon(0 14%, 50% 0, 100% 14%, 100% 100%, 0 100%); background: #2a2a2a; }
+
+/* Hazard stripe */
+.stripe { height: 14px; background: repeating-linear-gradient(-45deg, var(--black) 0 12px, var(--yellow) 12px 24px); }
+
+/* Trust points */
+.trust { background: var(--black); color: var(--white); padding-block: 48px; }
+.trust__list { display: grid; gap: 28px; }
+.trust__list li { display: grid; grid-template-columns: 44px 1fr; column-gap: 16px; align-items: start; align-content: start; }
+.trust__list svg { grid-row: span 2; color: var(--yellow); }
+.trust h2, .trust h3 { color: var(--yellow); font-size: 1.625rem; line-height: 1; letter-spacing: .01em; }
+.trust p { margin-top: 8px; color: var(--muted-dk); }
+
+/* Section heads */
+.section { padding-block: 64px; }
+.h2 { font-size: clamp(2.5rem, 1.8rem + 3vw, 4.25rem); line-height: .95; letter-spacing: 0; }
+.sec-head p { margin-top: 14px; max-width: 50ch; color: var(--muted); }
+
+/* Services */
+.services { display: grid; gap: 0; margin-top: 32px; border-top: 2px solid var(--black); }
+.services li { display: grid; grid-template-columns: 52px 1fr; column-gap: 12px; padding-block: 22px; border-bottom: 1px solid var(--rule); }
+.services .num { font-family: var(--cond); font-weight: 800; font-stretch: 62%; font-size: 1.75rem; line-height: 1; }
+.services h3 { font-size: 1.75rem; line-height: 1; }
+.services p { grid-column: 2; margin-top: 8px; color: var(--muted); max-width: 46ch; }
+
+/* Work grid */
+.work { background: var(--black); color: var(--white); }
+.work .sec-head p { color: var(--muted-dk); }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 32px; }
+.grid figure { background: var(--coal); }
+.grid img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: #2a2a2a; }
+.grid figcaption { padding: 10px 12px 12px; font-size: 1rem; line-height: 1.35; border-top: 3px solid var(--yellow); }
+.work .btn { margin-top: 32px; }
+
+/* Quote steps */
+.quote { background: var(--yellow); }
+.steps { display: grid; gap: 24px; margin-top: 32px; counter-reset: step; }
+.steps li { display: grid; grid-template-columns: 56px 1fr; column-gap: 16px; align-items: start; align-content: start; counter-increment: step; }
+.steps li::before { content: counter(step); grid-row: span 2; display: grid; place-items: center; width: 56px; height: 56px; background: var(--black); color: var(--yellow); font-family: var(--cond); font-weight: 800; font-stretch: 62%; font-size: 1.875rem; }
+.steps h3 { font-size: 1.625rem; line-height: 1; padding-top: 4px; }
+.steps p { margin-top: 8px; max-width: 40ch; }
+.quote .btn { margin-top: 32px; }
+
+/* About and reviews */
+.duo { display: grid; gap: 40px; }
+.about p { margin-top: 16px; max-width: 56ch; }
+.about ul { margin-top: 20px; display: grid; gap: 10px; }
+.about li { display: flex; gap: 12px; align-items: baseline; font-weight: 600; }
+.about li::before { content: ""; flex: none; width: 10px; height: 10px; background: var(--yellow); outline: 2px solid var(--black); transform: translateY(-1px) rotate(45deg); }
+.duo .km-placeholder { color: var(--muted); background: var(--white); align-content: start; }
+
+/* Area and hours */
+.area { background: var(--white); }
+.area__in { display: grid; gap: 36px; }
+.area p { margin-top: 14px; max-width: 46ch; }
+.hours-list { margin: 24px 0 28px; border-top: 2px solid var(--black); }
+.hours-list div { display: flex; justify-content: space-between; gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--rule); }
+.hours-list dt { font-weight: 700; }
+.hours-list dd { margin: 0; text-align: right; }
+.map { min-height: 240px; align-content: center; color: var(--muted); background: var(--paper); }
+
+/* Footer */
+.foot { background: var(--black); color: var(--white); padding-bottom: calc(79px + env(safe-area-inset-bottom, 0px)); }
+.foot__in { display: grid; gap: 12px; padding-block: 40px; }
+.foot__name { color: var(--yellow); font-size: 2rem; line-height: 1; letter-spacing: .02em; }
+.foot p:not(.foot__name) { color: var(--muted-dk); }
+.foot nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.foot__in a { display: inline-flex; align-items: center; min-height: 44px; color: var(--white); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.foot .km-colophon { border-top-color: rgba(255, 199, 0, .45); }
+
+@media (min-width: 768px) {
+  :root { --pad: 40px; scroll-padding-top: 96px; scroll-padding-bottom: 0; }
+  .foot { padding-bottom: 0; }
+  .quotebar { display: none; }
+  .km-toast { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .top { position: sticky; top: 0; z-index: 40; }
+  .top__in { grid-template-columns: auto 1fr auto; min-height: 76px; padding-block: 0; }
+  .top .btn { display: inline-flex; min-height: 48px; }
+  .logo { font-size: 2rem; }
+  .nav { justify-content: flex-end; gap: 24px; }
+  .hero { padding-block: 36px 48px; }
+  .hero h1 { font-size: clamp(3.5rem, 1rem + 5.6vw, 5.5rem); }
+  .hero__in { grid-template-columns: 1.15fr 1fr; align-items: center; gap: 48px; }
+  .trust { padding-block: 56px; }
+  .section { padding-block: 96px; }
+  .sec-head { display: flex; justify-content: space-between; align-items: end; gap: 32px; }
+  .sec-head p { margin-top: 0; max-width: 42ch; }
+  .services { grid-template-columns: 1fr 1fr; column-gap: 48px; border-top: 0; }
+  .services li { border-top: 2px solid var(--black); border-bottom: 0; padding-block: 24px 28px; }
+  .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 44px; }
+  .steps { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .steps li { grid-template-columns: 1fr; row-gap: 16px; }
+  .steps li::before { grid-row: auto; }
+  .steps h3 { padding-top: 0; }
+  .duo { grid-template-columns: 1.2fr 1fr; gap: 64px; align-items: start; }
+  .area__in { grid-template-columns: 1fr 1fr; gap: 64px; align-items: stretch; }
+  .foot__in { grid-template-columns: 1fr auto; align-items: center; }
+  .foot nav { grid-column: 2; grid-row: 1 / span 2; }
+}
+@media (min-width: 1024px) {
+  .nav { gap: 32px; }
+  .trust__list { grid-template-columns: repeat(3, 1fr); gap: 40px; }
+}
+@media (min-width: 1280px) {
+  :root { --pad: 64px; }
+  .hero__in { gap: 72px; }
+}
+@media (forced-colors: active) {
+  .btn { border: 1px solid ButtonText; }
+  .stripe { background: CanvasText; }
+  .hero__note span::before, .about li::before { background: CanvasText; }
+}
+
+/* The sign: a visitor’s name at hero size (King Media “See it with your name”; hidden until a name is applied) */
+.km-sign { color: var(--black); }
+.km-map { --m-bg: #E6E1D5; --m-road: var(--white); --m-ink: var(--black); --m-park: #D5D9C4; --m-water: #D3DADD; --m-pin: var(--black); }
+</style>
+</head>
+<body>
+<a class="km-skip" href="#main">Skip to content</a>
+
+<aside class="km-strip" aria-label="About this concept">
+  <p><span class="km-strip__made">Concept website by King Media. Ironclad Roofing is a made-up business.</span><span class="km-strip__typed">A King Media concept design, showing a name a visitor typed in. Not a real business.</span></p>
+  <nav class="km-strip__links" aria-label="King Media">
+    <a href="/#concepts" data-km-back>Back to King Media</a>
+    <a class="km-strip__cta" href="/#contact">Get my demo</a>
+  </nav>
+</aside>
+
+<header class="top" id="top">
+  <div class="wrap top__in">
+    <a class="logo cond" href="#top"><svg width="34" height="26" viewBox="0 0 34 26" aria-hidden="true"><path d="M2 14 17 3l15 11" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square"/><path d="M8 17 17 10.5 26 17" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square"/></svg><span data-slot="name">Ironclad Roofing</span></a>
+    <nav class="nav" aria-label="Main">
+      <a href="#services">Services</a>
+      <a href="#work">Our work</a>
+      <a href="#quote">Quotes</a>
+    </nav>
+    <button type="button" class="btn btn--yellow" data-toast="On a real site, your quote form opens here.">Get a free quote</button>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero__in">
+      <div class="hero__copy">
+        <p class="km-sign cond"><span data-slot="name">Ironclad Roofing</span></p>
+        <p class="kicker">Roofing&nbsp;· Guttering&nbsp;· Repairs</p>
+        <h1 class="cond" id="hero-title">Roofs built to outlast the weather.</h1>
+        <p class="lede">New roofs, repairs, flat roofs and guttering, done properly and guaranteed in writing. Tell us what’s wrong and we’ll give you a fixed price.</p>
+        <div class="hero__actions">
+          <button type="button" class="btn btn--black" data-toast="On a real site, your quote form opens here.">Get a free quote</button>
+          <a class="btn btn--line" href="#work">See our work</a>
+        </div>
+        <p class="hero__note"><span>Free, fixed quotes</span><span>Call-outs 7 days a week</span></p>
+      </div>
+      <div class="hero__photo">
+        <picture>
+          <source type="image/avif" srcset="img/hero-480.avif 480w, img/hero-760.avif 760w, img/hero-1080.avif 1080w" sizes="(min-width: 1280px) 500px, (min-width: 768px) 42vw, calc(100vw - 40px)">
+          <source type="image/webp" srcset="img/hero-480.webp 480w, img/hero-760.webp 760w, img/hero-1080.webp 1080w" sizes="(min-width: 1280px) 500px, (min-width: 768px) 42vw, calc(100vw - 40px)">
+          <img src="img/hero-760.webp" alt="A roofer in a hi-vis shirt and safety harness seals a shingle roof under a clear blue sky" width="760" height="760" fetchpriority="high" decoding="async">
+        </picture>
+      </div>
+    </div>
+  </section>
+
+  <div class="stripe" aria-hidden="true"></div>
+
+  <section class="trust on-dark" id="why" aria-labelledby="why-title">
+    <div class="wrap">
+      <h2 class="visually-hidden" id="why-title">Why choose us</h2>
+      <ul class="trust__list" role="list">
+        <li>
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M6 5h12v16H6z"/><path d="M9 3h6v4H9zM9 12h6M9 16h4"/></svg>
+          <h3 class="cond">Free, fixed quotes</h3>
+          <p>We come out, look properly and put one price in writing. No call-out fee.</p>
+        </li>
+        <li>
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+          <h3 class="cond">Fully insured</h3>
+          <p>Public liability insurance on every job, with the certificate on request.</p>
+        </li>
+        <li>
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><circle cx="12" cy="10" r="7"/><path d="M8.5 16.5 7 22l5-2.5 5 2.5-1.5-5.5"/><path d="M9.5 10l2 2 3.5-3.5"/></svg>
+          <h3 class="cond">Guaranteed work</h3>
+          <p>Every job comes with a written guarantee. If it leaks, we come back.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="services" aria-labelledby="services-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="h2 cond" id="services-title">What we do</h2>
+        <p>Houses, extensions, garages and outbuildings. If it has a roof, we can look at it.</p>
+      </div>
+      <ul class="services" role="list">
+        <li><span class="num" aria-hidden="true">01</span><h3 class="cond">New roofs</h3><p>A full strip and re-roof in slate, tile or metal, with new battens, membrane and ridge.</p></li>
+        <li><span class="num" aria-hidden="true">02</span><h3 class="cond">Roof repairs</h3><p>Slipped or broken slates and tiles, leaks, storm damage and loose ridge tiles.</p></li>
+        <li><span class="num" aria-hidden="true">03</span><h3 class="cond">Flat roofs</h3><p>Rubber and fibreglass flat roofs for extensions, garages and dormers.</p></li>
+        <li><span class="num" aria-hidden="true">04</span><h3 class="cond">Guttering and fascias</h3><p>Gutters cleared, repaired or replaced, with new fascias and soffits to match.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section work on-dark" id="work" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="h2 cond" id="work-title">Our work</h2>
+        <p>Slate, tile and guttering, finished to the same standard every time.</p>
+      </div>
+      <ul class="grid" role="list">
+        <li>
+          <figure>
+            <picture>
+              <source type="image/avif" srcset="img/new-roof-400.avif 400w, img/new-roof-600.avif 600w" sizes="(min-width: 1280px) 276px, (min-width: 768px) 23vw, calc(50vw - 26px)">
+              <source type="image/webp" srcset="img/new-roof-400.webp 400w, img/new-roof-600.webp 600w" sizes="(min-width: 1280px) 276px, (min-width: 768px) 23vw, calc(50vw - 26px)">
+              <img src="img/new-roof-400.webp" alt="Two roofers lay dark tiles over new battens on a large pitched roof" width="400" height="300" loading="lazy" decoding="async">
+            </picture>
+            <figcaption>New tiled roof</figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure>
+            <picture>
+              <source type="image/avif" srcset="img/slate-400.avif 400w, img/slate-600.avif 600w" sizes="(min-width: 1280px) 276px, (min-width: 768px) 23vw, calc(50vw - 26px)">
+              <source type="image/webp" srcset="img/slate-400.webp 400w, img/slate-600.webp 600w" sizes="(min-width: 1280px) 276px, (min-width: 768px) 23vw, calc(50vw - 26px)">
+              <img src="img/slate-400.webp" alt="A slate roof with two gabled dormer windows and patterned slate hanging" width="400" height="300" loading="lazy" decoding="async">
+            </picture>
+            <figcaption>Slate and dormers</figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure>
+            <picture>
+              <source type="image/avif" srcset="img/tiles-400.avif 400w, img/tiles-600.avif 600w" sizes="(min-width: 1280px) 276px, (min-width: 768px) 23vw, calc(50vw - 26px)">
+              <source type="image/webp" srcset="img/tiles-400.webp 400w, img/tiles-600.webp 600w" sizes="(min-width: 1280px) 276px, (min-width: 768px) 23vw, calc(50vw - 26px)">
+              <img src="img/tiles-400.webp" alt="Neat rows of dark grey roof tiles in bright sunlight" width="400" height="300" loading="lazy" decoding="async">
+            </picture>
+            <figcaption>Interlocking tiles</figcaption>
+          </figure>
+        </li>
+        <li>
+          <figure>
+            <picture>
+              <source type="image/avif" srcset="img/gutter-400.avif 400w, img/gutter-600.avif 600w" sizes="(min-width: 1280px) 276px, (min-width: 768px) 23vw, calc(50vw - 26px)">
+              <source type="image/webp" srcset="img/gutter-400.webp 400w, img/gutter-600.webp 600w" sizes="(min-width: 1280px) 276px, (min-width: 768px) 23vw, calc(50vw - 26px)">
+              <img src="img/gutter-400.webp" alt="A green gutter and downpipe on the corner of a house against a blue sky" width="400" height="300" loading="lazy" decoding="async">
+            </picture>
+            <figcaption>Gutter and downpipe</figcaption>
+          </figure>
+        </li>
+      </ul>
+      <button type="button" class="btn btn--yellow" data-toast="On a real site, your quote form opens here.">Get a free quote</button>
+    </div>
+  </section>
+
+  <section class="section quote" id="quote" aria-labelledby="quote-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="h2 cond" id="quote-title">How a free quote works</h2>
+        <p>No pressure and no charge. You get a price you can hold us to.</p>
+      </div>
+      <ol class="steps" role="list">
+        <li><h3 class="cond">Tell us what’s wrong</h3><p>Send a short message, with a photo if you can. We reply the same day.</p></li>
+        <li><h3 class="cond">We visit and measure</h3><p>At a time that suits you. We check the whole roof, not just the bit you can see.</p></li>
+        <li><h3 class="cond">A fixed price in writing</h3><p>One clear price with everything included. It won’t change once we start.</p></li>
+      </ol>
+      <button type="button" class="btn btn--black" data-toast="On a real site, your quote form opens here.">Get a free quote</button>
+    </div>
+  </section>
+
+  <div class="section">
+    <div class="wrap duo">
+      <section class="about" id="about" aria-labelledby="about-title">
+        <h2 class="h2 cond" id="about-title">About <span data-slot="name">Ironclad Roofing</span></h2>
+        <p>A local roofing firm that turns up when it says it will. We keep the site tidy, protect your garden and clear everything away before we leave.</p>
+        <ul role="list">
+          <li>Scaffolding arranged for you</li>
+          <li>Old materials taken away and recycled</li>
+          <li>Photos of the finished job sent to you</li>
+        </ul>
+      </section>
+      <div class="km-placeholder">
+        <span class="km-placeholder__tag">Placeholder</span>
+        <p>Your Google reviews appear here.</p>
+        <small>On a real site, this space shows your latest reviews from Google.</small>
+      </div>
+    </div>
+  </div>
+
+  <section class="section area" id="area" aria-labelledby="area-title">
+    <div class="wrap area__in">
+      <div>
+        <h2 class="h2 cond" id="area-title">Areas we cover</h2>
+        <p>The town and the villages around it. Not sure if you’re in our area? Ask when you request a quote.</p>
+        <dl class="hours-list">
+          <div><dt>Monday to Saturday</dt><dd>7:30am–6pm</dd></div>
+          <div><dt>Emergency call-outs</dt><dd>7 days a week</dd></div>
+        </dl>
+        <button type="button" class="btn btn--black" data-toast="On a real site, your quote form opens here.">Get a free quote</button>
+      </div>
+      <figure class="km-map map">
+        <svg viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="m-bg" width="480" height="300"/><path class="m-park" d="M318 16h134v82H318z"/><path class="m-water" d="M-10 244c62-16 108 8 160-6s98-42 152-32 98 30 188 16v90H-10z"/><path class="m-minor" d="M0 54h480M0 176h300M98 0v236M292 0v300M394 0v216M36 116l62-62M150 236l142-62M394 54l86 46"/><path class="m-road" d="M0 118h480M198 0v300M0 270l480-122"/><path class="m-pin" d="M198 124c-9-13-15-21-15-29a15 15 0 0 1 30 0c0 8-6 16-15 29z"/><circle class="m-dot" cx="198" cy="95" r="5.5"/></svg>
+        <figcaption><span class="km-placeholder__tag">Placeholder</span> Map appears here</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <div class="quotebar">
+    <button type="button" class="btn btn--yellow" data-toast="On a real site, your quote form opens here."><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" aria-hidden="true"><path d="M6 5h12v16H6z"/><path d="M9 3h6v4H9zM9 12h6M9 16h4"/></svg>Get a free quote</button>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <p class="foot__name cond"><span data-slot="name">Ironclad Roofing</span></p>
+    <p>Call-outs 7 days a week</p>
+    <nav aria-label="Footer">
+      <a href="#services">Services</a>
+      <a href="#work">Our work</a>
+      <a href="#quote">Quotes</a>
+    </nav>
+  </div>
+  <div class="km-colophon">
+  <div class="km-colophon__in">
+    <p>A concept website designed and built by King Media. Ironclad Roofing is a made-up business: its services, promises and opening hours are examples, and the photos are licensed stock, not its own jobs. <a href="/#contact">Get my demo</a></p>
+    <details>
+      <summary>Photo credits</summary>
+      <ul>
+        <li>Roofer in a harness: <a href="https://unsplash.com/photos/a-man-in-a-yellow-shirt-is-working-on-a-roof-eFOkg4ZMiBs" target="_blank" rel="noopener">Raze Solar<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Cropped and resized.</li>
+        <li>New tiled roof: <a href="https://unsplash.com/photos/workers-installing-roof-tiles-on-a-new-building-OnwxQNEbPco" target="_blank" rel="noopener">Sergej (skstrannik)<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Cropped and resized.</li>
+        <li>Slate and dormers: <a href="https://unsplash.com/photos/gabled-dormer-windows-on-slate-roof-u7F0MrTkjSI" target="_blank" rel="noopener">Mark Stuckey<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Cropped and resized.</li>
+        <li>Roof tiles: <a href="https://unsplash.com/photos/dark-grey-roof-tiles-pattern-m_vEaZizd2s" target="_blank" rel="noopener">Michael Jasmund<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://unsplash.com/license" target="_blank" rel="noopener">Unsplash Licence<span class="visually-hidden"> (opens in a new tab)</span></a>, via Unsplash. Resized.</li>
+        <li>Gutter and downpipe: <a href="https://commons.wikimedia.org/wiki/File:Rain_gutter_and_drain_pipe_(25921162725).jpg" target="_blank" rel="noopener">Jeremy from Sydney, Australia<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener">CC BY 2.0<span class="visually-hidden"> (opens in a new tab)</span></a>, via Wikimedia Commons. Cropped and resized.</li>
+      </ul>
+    </details>
+    <p class="km-colophon__company">King Media is a trading name of KING WEB MEDIA LTD, a company registered in England and Wales, company number 17483413. Registered office: 124 City Road, London, EC1V 2NX.</p>
+  </div>
+  </div>
+</footer>
+
+<p class="km-toast" role="status"></p>
+<script src="../concepts.js?v=1" defer></script>
+</body>
+</html>

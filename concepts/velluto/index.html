@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en-GB" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Velluto: a concept website by King Media</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Velluto is a made-up gelato and dessert bar: a concept website designed and built by King Media.">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#539495">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script>
+(function (d, w) { var r = d.documentElement; r.classList.replace('no-js', 'js'); var off = false;
+  try { off = localStorage.getItem('km-motion') === 'off'; } catch (e) {}
+  if (!off && !matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('motion-ok');
+  if (/[?&]embed=1(&|$)/.test(location.search) && w.self !== w.top) r.classList.add('is-embed');
+})(document, window);
+</script>
+<link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../concepts.css?v=1">
+<style>
+@font-face { font-family: "Geist"; src: url("fonts/geist.woff2") format("woff2"); font-weight: 300 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Geist Fallback"; src: local("Arial"); size-adjust: 104%; ascent-override: 96.6%; descent-override: 28.4%; line-gap-override: 0%; }
+:root {
+  --disp: "Geist", "Geist Fallback", "Helvetica Neue", Arial, sans-serif;
+  --pad: max(24px, env(safe-area-inset-left), env(safe-area-inset-right));
+  --ink: #07191a;          /* HUD ink, swapped per chapter by JS; every pair below is >= 4.5:1 */
+  --teal-ink: #07191a;     /* 5.19:1 on #539495 (darkest teal), 9.17:1 on #89c3c4 */
+  --cream: #f4ede4;        /* finale page */
+  --cocoa: #461a0c;        /* flood */
+  --lilac: #cb74c8;
+  scroll-padding-top: 0;
+}
+body { background: var(--cream); color: #1c1411; }
+.film { position: relative; height: calc(var(--units, 4.4) * 100vh); height: calc(var(--units, 4.4) * 100lvh); }
+.stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; background: #539495; isolation: isolate; }
+.ch { position: absolute; inset: 0; overflow: hidden; }
+.ch canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.box { position: absolute; inset: 0 0 auto 0; height: calc(100vh - var(--strip, 0px)); height: calc(100svh - var(--strip, 0px)); pointer-events: none; }
+.box a, .box button { pointer-events: auto; }
+.label { font: 500 .8125rem/1.3 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+.disp { font-family: var(--disp); font-weight: 400; letter-spacing: -.035em; line-height: .96; }
+.js .rv { opacity: 0; }
+
+/* 01 The pour ------------------------------------------------------------ */
+.pour { background: linear-gradient(180deg,#539495 0%,#61a0a1 12.5%,#70acac 25%,#77b4b3 37.5%,#7eb9b8 50%,#84bfbf 62.5%,#88c4c4 75%,#89c3c4 87.5%,#7ebdbd 100%); }
+.pour__title { position: absolute; left: 0; right: 0; top: 18vh; margin: 0; text-align: center; color: #fffaf2; /* 3.35:1 on #539495, large text */ font-family: var(--disp); font-weight: 500; font-size: 22vw; line-height: 1; letter-spacing: -.045em; white-space: nowrap; }
+.pour__title span { display: inline-block; }
+.pour__copy { position: absolute; left: var(--pad); bottom: 92px; max-width: 21rem; color: var(--teal-ink); }
+.pour__copy p + p { margin-top: 10px; }
+.pour__lede { font-size: 1.125rem; line-height: 1.45; }
+.pour__caps { position: absolute; right: var(--pad); bottom: 92px; width: min(24rem, 30vw); height: 7.5rem; color: var(--teal-ink); }
+.cap { position: absolute; right: 0; bottom: 0; text-align: right; }
+.cap .label { display: block; margin-bottom: 12px; }
+.cap .disp { font-size: clamp(2rem, 1rem + 2.2vw, 3.25rem); font-weight: 300; }
+
+/* HUD -------------------------------------------------------------------- */
+.hud { position: fixed; inset: 0; z-index: 30; pointer-events: none; color: var(--ink); transition: color .5s ease; }
+.hud > * { pointer-events: auto; }
+.hud__mark { position: absolute; left: var(--pad); top: calc(var(--strip, 0px) + 22px); font-family: var(--disp); font-weight: 500; font-size: 1.375rem; letter-spacing: -.03em; line-height: 1.1; text-decoration: none; max-width: calc(100% - 2 * var(--pad) - 140px); }
+.hud__mark:focus-visible, .hud__play:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.hud__play { position: absolute; right: var(--pad); top: 50%; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px 0 16px; border-radius: 999px; background: rgba(255, 252, 247, .9); color: #111; font: 500 .9375rem/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; box-shadow: 0 10px 30px -12px rgba(0, 0, 0, .35); transform: translateY(-50%); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.hud__play svg { width: 14px; height: 14px; flex: none; }
+.hud__play .i-pause { display: none; }
+.hud__play[data-state="playing"] .i-play { display: none; }
+.hud__play[data-state="playing"] .i-pause { display: block; }
+.hud__hint { position: absolute; right: var(--pad); bottom: 26px; margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: opacity .4s ease; }
+.hud__hint i { display: block; width: 1px; height: 34px; background: currentColor; transform-origin: top; }
+.motion-ok .hud__hint i { animation: drip 2.2s cubic-bezier(.65, 0, .35, 1) infinite; }
+@keyframes drip { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+.hud.is-off .hud__hint { opacity: 0; visibility: hidden; }
+.hud.is-past { opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
+/* Portrait / phone layout ------------------------------------------------ */
+@media (max-aspect-ratio: 4/5), (max-width: 699px) {
+  :root { --pad: max(20px, env(safe-area-inset-left), env(safe-area-inset-right)); }
+  .pour__copy { right: var(--pad); bottom: calc(100px + env(safe-area-inset-bottom, 0px)); max-width: none; color: #fff8ef; }
+  .pour__caps { left: var(--pad); right: var(--pad); width: auto; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); color: #fff8ef; }
+  .cap { left: 0; right: auto; text-align: left; }
+  .pour__scrim { position: absolute; inset: auto 0 0 0; height: 48%; background: linear-gradient(0deg, rgba(6, 22, 23, .78) 0%, rgba(6, 22, 23, .5) 45%, rgba(6, 22, 23, 0)); pointer-events: none; }
+  .hud__mark { top: calc(var(--strip, 0px) + 18px); font-size: 1.25rem; max-width: calc(100% - 2 * var(--pad)); overflow-wrap: normal; word-break: normal; }
+  .hud__mark.is-long { font-size: 1rem; line-height: 1.2; }
+  .hud__play { right: auto; left: 50%; top: auto; bottom: calc(22px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); }
+  .hud__hint { left: auto; right: var(--pad); bottom: calc(30px + env(safe-area-inset-bottom, 0px)); transform: none; }
+  .hud__hint i { height: 22px; }
+}
+@media (min-aspect-ratio: 4/5) and (min-width: 700px) { .pour__scrim { display: none; } }
+@media (max-height: 560px) and (min-width: 700px) { .pour__copy, .pour__caps { bottom: 64px; } .hud__hint { display: none; } }
+
+/* Footer ----------------------------------------------------------------- */
+.foot { background: var(--cream); color: #1c1411; }
+.foot__in { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 32px; max-width: 1152px; margin: 0 auto; padding: 40px var(--pad); border-top: 1px solid rgba(28, 20, 17, .14); }
+.foot__name { font-family: var(--disp); font-weight: 500; font-size: 1.75rem; letter-spacing: -.03em; }
+.foot__in p:last-child { color: #5a4b43; }
+
+.ch.is-hid > canvas, .ch.is-hid > .port, .ch.is-hid > .pour__scrim, .ch.is-hid > .fl__scrim { visibility: hidden; }
+/* Without motion: stills, no scrubbing; layers cross-fade */
+html:not(.motion-ok) .ch { transition: opacity .45s ease; }
+</style>
+</head>
+<body>
+<a class="km-skip" href="#main">Skip to content</a>
+<aside class="km-strip" aria-label="About this concept">
+  <p><span class="km-strip__made">Concept website by King Media. Velluto is a made-up business.</span><span class="km-strip__typed">A King Media concept design, showing a name a visitor typed in. Not a real business.</span></p>
+  <nav class="km-strip__links" aria-label="King Media">
+    <a href="/#concepts" data-km-back>Back to King Media</a>
+    <a class="km-strip__cta" href="/#contact">Get my demo</a>
+  </nav>
+</aside>
+
+<header class="hud is-off" id="hud">
+  <a class="hud__mark" href="#main"><span data-slot="name">Velluto</span></a>
+  <button class="hud__play" id="play" type="button" data-state="idle">
+    <svg class="i-play" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11L12.5 7z" fill="currentColor"/></svg>
+    <svg class="i-pause" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5h3v11H3zM8 1.5h3v11H8z" fill="currentColor"/></svg>
+    <span id="playLabel">Play live</span>
+  </button>
+  <p class="hud__hint label" id="hint" aria-hidden="true">Scroll<i></i></p>
+</header>
+
+<main id="main">
+  <div class="film" id="film">
+    <div class="stage" id="stage">
+
+      <section class="ch pour" id="pour" aria-labelledby="pourTitle" data-ink="#07191a">
+        <canvas id="pourBg" aria-hidden="true"></canvas>
+        <h1 class="pour__title" id="pourTitle"><span data-slot="name">Velluto</span></h1>
+        <canvas id="pourFg" aria-hidden="true"></canvas>
+        <div class="pour__scrim"></div>
+        <div class="box">
+          <div class="pour__copy" id="pourCopy">
+            <p class="label">Gelato &amp; desserts</p>
+            <p class="pour__lede">Made by hand every morning, in a small English town.</p>
+          </div>
+          <div class="pour__caps" id="caps">
+            <p class="cap rv"><span class="label">01 — Morning</span><span class="disp">Churned at dawn.</span></p>
+            <p class="cap rv"><span class="label">02 — Order</span><span class="disp">Poured to order.</span></p>
+            <p class="cap rv"><span class="label">03 — Finish</span><span class="disp">Finished by hand.</span></p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="foot__in">
+    <p class="foot__name"><span data-slot="name">Velluto</span></p>
+    <p>Gelato &amp; desserts · Open daily, 12–10pm (example hours)</p>
+  </div>
+  <div class="km-colophon">
+  <div class="km-colophon__in">
+    <p>A concept website designed and built by King Media. Velluto is a made-up business: its flavours and opening hours are examples. <a href="/#contact">Get my demo</a></p>
+    <details>
+      <summary>Footage credits</summary>
+      <ul>
+        <li>Motion footage via <a href="https://mixkit.co/" target="_blank" rel="noopener">Mixkit<span class="visually-hidden"> (opens in a new tab)</span></a>, under the <a href="https://mixkit.co/license/" target="_blank" rel="noopener">Mixkit Free Licence<span class="visually-hidden"> (opens in a new tab)</span></a>. Clips cut into frames, cropped and resized.</li>
+      </ul>
+    </details>
+    <p class="km-colophon__company">King Media is a trading name of KING WEB MEDIA LTD, a company registered in England and Wales, company number 17483413. Registered office: 124 City Road, London, EC1V 2NX.</p>
+  </div>
+  </div>
+</footer>
+
+<p class="km-toast" role="status"></p>
+<script src="../concepts.js?v=1" defer></script>
+<script>
+(() => {
+'use strict';
+const d = document, root = d.documentElement, W = window;
+const $ = (s, c = d) => c.querySelector(s), $$ = (s, c = d) => [...c.querySelectorAll(s)];
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const map = (x, a, b) => clamp((x - a) / (b - a));
+const lerp = (a, b, p) => a + (b - a) * p;
+const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const motion = root.classList.contains('motion-ok');
+const PQ = matchMedia('(max-aspect-ratio: 4/5), (max-width: 699px)');
+let portrait = PQ.matches;
+const qs = new URLSearchParams(location.search);
+// Until the first frame is drawn, the King Media home page keeps its poster over this frame (see revealFrame in src/main.js)
+root.classList.add('km-wait');
+let painted = false, afterPaint = null;
+function firstPaint() {
+  if (painted) return;
+  painted = true; root.classList.remove('km-wait');
+  if (afterPaint) { const go = afterPaint; afterPaint = null; go(); }
+}
+
+const film = $('#film'), stage = $('#stage'), hud = $('#hud'), strip = $('.km-strip');
+const END = 3.4, UNITS = END + 1;   // the pour, then a short hold on the finished cone
+film.style.setProperty('--units', UNITS);
+
+/* Timeline, in screen-heights of scroll ------------------------------- */
+const T = { pour: [0.05, 2.8] };
+// Where Play rests without motion: the start, then the finished cone
+const RESTS = [0.02, END];
+
+/* Frame sequences ------------------------------------------------------ */
+let EXT = 'webp';
+const seqs = [];
+let moving = false, lastMove = 0, snapT = 0;
+let unlocked = false, netBusy = 0, decBusy = 0, bytes = 0, clock = 0, tNow = 0, dir = 1, playing = false;
+class Seq {
+  constructor(path, n, opaque, start, end) {
+    Object.assign(this, { path, n, opaque, start, end, blobs: [], req: [], bm: new Map(), use: new Map(), dec: new Set(), urgent: [], ptr: 0, loaded: 0 });
+    this.cap = portrait ? 14 : 22;
+    const o = [0], seen = new Set(o);
+    for (const step of [8, 4, 2, 1]) for (let i = 0; i < n; i += step) if (!seen.has(i)) { seen.add(i); o.push(i); }
+    this.order = o;
+    this.pre = 0; // entries allowed before the visitor interacts
+    seqs.push(this);
+  }
+  url(i) { return 'frames/' + this.path + '/' + String(i + 1).padStart(3, '0') + '.' + (this.opaque ? EXT : 'webp'); }
+}
+function isOn(s) {
+  if (!unlocked) return s.pre > 0;
+  const la = playing ? 3.6 : 2.2;
+  return tNow >= s.start - la && tNow <= s.end + la;
+}
+function limit(s) { return unlocked ? s.order.length : s.pre; }
+function pump() {
+  while (netBusy < 6) {
+    let best = null, bi = -1, bs = 1e9;
+    for (const s of seqs) {
+      if (!isOn(s)) continue;
+      let i = -1, score;
+      while (s.urgent.length && (s.blobs[s.urgent[0]] || s.req[s.urgent[0]])) s.urgent.shift();
+      if (s.urgent.length && unlocked) { i = s.urgent[0]; score = -1; }
+      else {
+        while (s.ptr < limit(s) && (s.blobs[s.order[s.ptr]] || s.req[s.order[s.ptr]])) s.ptr++;
+        if (s.ptr < limit(s)) i = s.order[s.ptr];
+        score = tNow >= s.start && tNow <= s.end ? 0 : s.start > tNow ? s.start - tNow : tNow - s.end + 1;
+        score += s.ptr / s.order.length * 0.4; // coarse passes of nearby chapters first
+      }
+      if (i >= 0 && score < bs) { bs = score; best = s; bi = i; }
+    }
+    if (!best) return;
+    fetchFrame(best, bi);
+  }
+}
+function fetchFrame(s, i) {
+  s.req[i] = 1; netBusy++;
+  fetch(s.url(i)).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+    .then(b => { s.blobs[i] = b; bytes += b.size; s.loaded++; })
+    .catch(() => { s.req[i] = 0; })
+    .finally(() => { netBusy--; pump(); requestDraw(); });
+}
+function toDrawable(blob) {
+  const viaImg = () => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = URL.createObjectURL(blob); });
+  return W.createImageBitmap ? createImageBitmap(blob).catch(viaImg) : viaImg();
+}
+function decode(s, i) {
+  if (s.dec.has(i) || s.bm.has(i) || !s.blobs[i] || decBusy >= 4) return;
+  s.dec.add(i); decBusy++;
+  toDrawable(s.blobs[i]).then(bm => { s.bm.set(i, bm); s.use.set(i, ++clock); trim(s); })
+    .catch(() => {}).finally(() => { s.dec.delete(i); decBusy--; requestDraw(); });
+}
+function trim(s) {
+  while (s.bm.size > s.cap) {
+    let k = -1, u = 1e15;
+    for (const [i, v] of s.use) if (v < u && s.bm.has(i)) { u = v; k = i; }
+    if (k < 0) break;
+    const b = s.bm.get(k); if (b && b.close) b.close();
+    s.bm.delete(k); s.use.delete(k);
+  }
+}
+// Keep a window of decoded frames around pos (direction-aware), ask the network for what is missing
+function need(s, pos) {
+  const a = Math.round(pos), ahead = 6, behind = 2;
+  const idx = [a];
+  for (let k = 1; k <= ahead; k++) { idx.push(a + k * dir); if (k <= behind) idx.push(a - k * dir); }
+  const urg = [];
+  for (const i of idx) {
+    if (i < 0 || i >= s.n) continue;
+    if (s.bm.has(i)) { s.use.set(i, ++clock); continue; }
+    if (s.blobs[i]) decode(s, i); else if (!s.req[i]) urg.push(i);
+  }
+  if (urg.length) s.urgent = urg.slice(0, 4);
+}
+function near(s, i) {
+  if (s.bm.has(i)) return i;
+  for (let k = 1; k < s.n; k++) { if (s.bm.has(i - k)) return i - k; if (s.bm.has(i + k)) return i + k; }
+  return -1;
+}
+// Draw pos (float) with a cross-fade to the next frame; returns a signature so unchanged frames are skipped
+function blend(ctx, s, pos, r) {
+  const a = Math.floor(pos), f = pos - a, i = near(s, a);
+  if (i < 0) return null;
+  ctx.globalAlpha = 1; ctx.drawImage(s.bm.get(i), r[0], r[1], r[2], r[3]);
+  let sig = i;
+  if (i === a && f > .03 && s.bm.has(a + 1)) { ctx.globalAlpha = f; ctx.drawImage(s.bm.get(a + 1), r[0], r[1], r[2], r[3]); ctx.globalAlpha = 1; sig += '+' + f.toFixed(2); }
+  return String(sig);
+}
+function sigOf(s, pos) {
+  const a = Math.floor(pos), f = pos - a, i = near(s, a);
+  return i < 0 ? null : (i === a && f > .03 && s.bm.has(a + 1)) ? i + '+' + f.toFixed(2) : String(i);
+}
+function cover(bw, bh, cw, ch, fx, fy, zoom) {
+  const sc = Math.max(cw / bw, ch / bh) * (zoom || 1), w = bw * sc, h = bh * sc;
+  const x = clamp(cw / 2 - fx * w, cw - w, 0), y = clamp(ch / 2 - fy * h, ch - h, 0);
+  return [x, y, w, h];
+}
+const DPR = () => Math.min(W.devicePixelRatio || 1, 1.5);
+function fit(c) {
+  const dpr = DPR(), w = Math.max(1, Math.round(c.clientWidth * dpr)), h = Math.max(1, Math.round(c.clientHeight * dpr));
+  if (c.width !== w || c.height !== h) { c.width = w; c.height = h; c._sig = null; return true; }
+  return false;
+}
+const off = (w, h) => { const c = d.createElement('canvas'); c.width = w; c.height = h; return c; };
+/* Layer ---------------------------------------------------------------- */
+const pourEl = $('#pour'), pourBg = $('#pourBg'), pourFg = $('#pourFg');
+const title = $('#pourTitle'), titleSpan = $('span', title);
+const caps = $$('.cap'), pourCopy = $('#pourCopy');
+let S = {};
+function buildSeqs() {
+  const P = portrait;
+  S.bg = new Seq(P ? 'pour/bg-540x960' : 'pour/bg-720x1280', 120, true, 0, END);
+  S.mask = new Seq(P ? 'pour/mask-540x960' : 'pour/mask-720x1280', 120, false, 0, END);
+  if (!motion) {
+    // Stills only: the finished cone
+    S.bg.order = [119]; S.mask.order = [119];
+    seqs.forEach(s => { s.pre = s.order.length; });
+    unlocked = true;
+  } else {
+    S.bg.pre = S.mask.pre = 1 + 15 + 15; // frame 1 plus every 4th before the first interaction
+  }
+}
+
+/* Layout -------------------------------------------------------------- */
+let vw = 0, vh = 0, unit = 1, filmTop = 0, pourRect = [0, 0, 1, 1];
+const titleFit = { fs: 100 };
+function layout() {
+  if (PQ.matches !== portrait) { portrait = PQ.matches; if (seqs.length) { seqs.length = 0; S = {}; buildSeqs(); } }
+  vw = stage.clientWidth; vh = stage.clientHeight;
+  unit = film.offsetHeight / UNITS;
+  filmTop = film.getBoundingClientRect().top + scrollY;
+  // Pour: portrait = cover; landscape = portrait frame 1.3 screens tall, centred, feathered into the painted sides
+  if (portrait) {
+    pourRect = cover(540, 960, vw, vh, .516, .5, 1);
+    for (const c of [pourBg, pourFg]) { c.style.cssText = ''; }
+  } else {
+    const h = vh * 1.3, w = h * .5625, x = (vw - w) / 2;
+    pourRect = [x, 0, w, h];
+    const m = (a, b) => `linear-gradient(90deg, transparent 0, #000 ${a}%, #000 ${b}%, transparent 100%)`;
+    for (const c of [pourBg, pourFg]) { c.style.left = x + 'px'; c.style.width = w + 'px'; c.style.height = h + 'px'; c.style.right = 'auto'; c.style.bottom = 'auto'; }
+    pourBg.style.webkitMaskImage = pourBg.style.maskImage = m(13, 87);
+    pourFg.style.webkitMaskImage = pourFg.style.maskImage = m(4, 96);
+  }
+  [pourBg, pourFg].forEach(fit);
+  fitTitle();
+  fitMark();
+  requestDraw(true);
+}
+// Phone HUD: a long typed name drops a size
+function fitMark() { const mark = $('.hud__mark'); mark.classList.toggle('is-long', mark.textContent.trim().length > 16); }
+function fitTitle() {
+  title.style.fontSize = '100px';
+  const w = titleSpan.getBoundingClientRect().width || 300;
+  const [rx, ry, rw, rh] = pourRect;
+  const crown = ry + rh * .222, topMin = portrait ? 64 : 70;
+  let fs = Math.min((portrait ? .9 : .8) * vw / w * 100, (crown - topMin) / (.7 * .71));
+  fs = Math.max(fs, 24);
+  const base = crown + .3 * .71 * fs;
+  title.style.fontSize = fs + 'px';
+  title.style.top = (base - .855 * fs) + 'px';
+  titleFit.fs = fs;
+}
+
+/* Drawing -------------------------------------------------------------- */
+let tmpA = null;
+const WAFER = [[0, 170], [215, 170], [262, 340], [232, 440], [190, 500], [140, 560], [0, 600]].map(([x, y]) => [x / 720, y / 1280]);
+function drawPour(pos) {
+  const cb = pourBg.getContext('2d'), cf = pourFg.getContext('2d');
+  const cw = pourBg.width, ch = pourBg.height, k = cw / (portrait ? vw : pourRect[2]);
+  const r = portrait ? pourRect.map(v => v * k) : [0, 0, cw, ch];
+  need(S.bg, pos); need(S.mask, pos);
+  // choose an index that has both the frame and its matte
+  const a = Math.floor(pos);
+  let i = -1;
+  for (let q = 0; q < 120 && i < 0; q++) { for (const j of [a - q, a + q]) if (j >= 0 && j < 120 && S.bg.bm.has(j) && S.mask.bm.has(j)) { i = j; break; } }
+  const bgOnly = near(S.bg, a);
+  const f = pos - a, useB = i === a && f > .03 && S.bg.bm.has(a + 1) && S.mask.bm.has(a + 1);
+  const sig = i + '|' + bgOnly + '|' + (useB ? f.toFixed(2) : '') + '|' + cw;
+  if (pourBg._sig === sig) return;
+  pourBg._sig = sig;
+  if (i < 0) { if (bgOnly >= 0) { cb.drawImage(S.bg.bm.get(bgOnly), r[0], r[1], r[2], r[3]); } cf.clearRect(0, 0, cw, ch); return; }
+  cb.globalAlpha = 1; cb.drawImage(S.bg.bm.get(i), r[0], r[1], r[2], r[3]);
+  if (useB) { cb.globalAlpha = f; cb.drawImage(S.bg.bm.get(a + 1), r[0], r[1], r[2], r[3]); cb.globalAlpha = 1; }
+  if (!tmpA || tmpA.width !== cw || tmpA.height !== ch) { tmpA = off(cw, ch); }
+  const matte = (j, alpha) => {
+    const t = tmpA.getContext('2d');
+    t.globalCompositeOperation = 'copy'; t.drawImage(S.bg.bm.get(j), r[0], r[1], r[2], r[3]);
+    t.globalCompositeOperation = 'destination-in'; t.drawImage(S.mask.bm.get(j), r[0], r[1], r[2], r[3]);
+    t.globalCompositeOperation = 'source-over';
+    cf.globalAlpha = alpha; cf.drawImage(tmpA, 0, 0); cf.globalAlpha = 1;
+  };
+  cf.clearRect(0, 0, cw, ch);
+  matte(i, 1);
+  firstPaint();
+  if (useB) matte(a + 1, f);
+  // The wafer sits behind the scoop: let the title pass in front of it
+  cf.globalCompositeOperation = 'destination-out';
+  cf.beginPath();
+  WAFER.forEach(([x, y], n) => { const px = r[0] + x * r[2], py = r[1] + y * r[3]; n ? cf.lineTo(px, py) : cf.moveTo(px, py); });
+  cf.closePath(); cf.fill();
+  cf.globalCompositeOperation = 'source-over';
+}
+/* Scene --------------------------------------------------------------- */
+function rv(el, p, y = 22) {
+  el.style.opacity = p.toFixed(3);
+  el.style.transform = p >= 1 ? '' : `translate3d(0, ${((1 - p) * y).toFixed(1)}px, 0)`;
+}
+function render(t) {
+  moving = playing || performance.now() - lastMove < 120;
+  const Q = q => moving ? q : Math.round(q);
+  const pos = motion ? map(t, T.pour[0], T.pour[1]) * 119 : 119;
+  drawPour(Q(pos));
+  // Captions follow the action: bare scoop, the chocolate, the sprinkles
+  const ranges = [[1, 19], [21, 94], [96, 400]];
+  caps.forEach((c, j) => { const [a, b] = ranges[j]; const p = Math.min(map(pos, a, a + 4), 1 - map(pos, b - 4, b)); rv(c, motion ? p : (j === 2 ? 1 : 0), 14); });
+  pourCopy.style.opacity = portrait ? (motion ? (1 - map(t, .04, .12)).toFixed(3) : '0') : '';
+  $('#hint').style.opacity = t < .03 && !playing ? '1' : '0';
+}
+
+/* Loop --------------------------------------------------------------- */
+let raf = 0;
+function requestDraw(force) { if (force) pourBg._sig = null; if (!raf) raf = requestAnimationFrame(frame); }
+function readT() { return clamp((scrollY - filmTop) / unit, 0, UNITS - 1); }
+function frame() {
+  raf = 0;
+  const t = readT();
+  if (t !== tNow) dir = t > tNow ? 1 : -1;
+  tNow = t;
+  render(t);
+  pump();
+  // strip offset for the HUD, and hide the HUD once the footer arrives
+  const sb = strip && strip.offsetParent ? Math.max(0, strip.getBoundingClientRect().bottom) : 0;
+  if (hud._sb !== sb) { hud._sb = sb; root.style.setProperty('--strip', sb + 'px'); }
+  const past = film.getBoundingClientRect().bottom < innerHeight - 8;
+  hud.classList.toggle('is-past', past);
+}
+
+/* Play live ------------------------------------------------------------ */
+const KP = [[0, 0], [1.2, .04], [14.5, T.pour[1]], [17.5, END]]; // ~13s of pour, then a hold on the finished cone
+const M = (() => { // monotone cubic (Fritsch-Carlson) slopes
+  const n = KP.length, dx = [], dy = [], m = [];
+  for (let i = 0; i < n - 1; i++) { dx[i] = KP[i + 1][0] - KP[i][0]; dy[i] = (KP[i + 1][1] - KP[i][1]) / dx[i]; }
+  m[0] = 0; m[n - 1] = 0;
+  for (let i = 1; i < n - 1; i++) m[i] = dy[i - 1] * dy[i] <= 0 ? 0 : 3 * (dx[i - 1] + dx[i]) / ((2 * dx[i] + dx[i - 1]) / dy[i - 1] + (dx[i] + 2 * dx[i - 1]) / dy[i]);
+  return m;
+})();
+const PLAY_LEN = KP[KP.length - 1][0];
+function P(time) {
+  if (time <= 0) return 0; if (time >= PLAY_LEN) return END;
+  let i = 0; while (KP[i + 1][0] < time) i++;
+  const [x0, y0] = KP[i], [x1, y1] = KP[i + 1], h = x1 - x0, s = (time - x0) / h;
+  const h00 = 2 * s ** 3 - 3 * s * s + 1, h10 = s ** 3 - 2 * s * s + s, h01 = -2 * s ** 3 + 3 * s * s, h11 = s ** 3 - s * s;
+  return h00 * y0 + h10 * h * M[i] + h01 * y1 + h11 * h * M[i + 1];
+}
+function timeOf(t) { let lo = 0, hi = PLAY_LEN; for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (P(mid) < t) lo = mid; else hi = mid; } return lo; }
+const btn = $('#play'), btnLabel = $('#playLabel');
+let pState = 'idle', elapsed = 0, lastTs = 0, pRaf = 0, stepTimer = 0, stepIdx = 0;
+function setState(s) {
+  pState = s; playing = s === 'playing';
+  btn.dataset.state = s;
+  btnLabel.textContent = s === 'playing' ? 'Pause' : s === 'paused' ? 'Resume' : s === 'ended' ? 'Replay' : 'Play live';
+  root.style.scrollBehavior = playing ? 'auto' : '';
+  requestDraw();
+}
+function jump(t) { root.style.scrollBehavior = 'auto'; W.scrollTo(0, Math.round(filmTop + t * unit)); if (!playing) root.style.scrollBehavior = ''; }
+function play() {
+  unlock();
+  if (pState === 'playing') return pause();
+  let t = readT();
+  if (pState === 'ended' || t >= END - .05) t = 0;
+  setState('playing');
+  if (!motion) { // step chapter by chapter
+    stepIdx = Math.max(0, RESTS.findIndex(r => r >= t - .01)); if (stepIdx < 0) stepIdx = 0;
+    const step = () => { if (pState !== 'playing') return; if (stepIdx >= RESTS.length) { jump(END); return setState('ended'); } jump(RESTS[stepIdx++]); stepTimer = setTimeout(step, 4500); };
+    step(); return;
+  }
+  elapsed = t <= 0 ? 0 : timeOf(t);
+  if (t <= 0) jump(0);
+  lastTs = 0;
+  cancelAnimationFrame(pRaf); pRaf = requestAnimationFrame(tick);
+}
+function tick(ts) {
+  if (pState !== 'playing') return;
+  if (lastTs) elapsed += Math.min(ts - lastTs, 60) / 1000;
+  lastTs = ts;
+  const t = P(elapsed);
+  W.scrollTo(0, filmTop + t * unit);
+  if (elapsed >= PLAY_LEN) { setState('ended'); return; }
+  pRaf = requestAnimationFrame(tick);
+}
+let autoPaused = false;
+function pause() { if (pState !== 'playing') return; autoPaused = false; clearTimeout(stepTimer); cancelAnimationFrame(pRaf); setState('paused'); }
+function autoPause() { if (pState === 'playing') { pause(); autoPaused = true; } }
+function autoResume() { if (autoPaused && pState === 'paused' && !d.hidden) { autoPaused = false; play(); } }
+btn.addEventListener('click', play);
+const interrupt = e => { if (pState === 'paused' && autoPaused) { autoPaused = false; return; } if (pState !== 'playing') return; if (e.type === 'pointerdown' && e.target && e.target.closest && e.target.closest('#play')) return; pause(); };
+['wheel', 'touchstart', 'pointerdown'].forEach(ev => W.addEventListener(ev, interrupt, { passive: true, capture: true }));
+W.addEventListener('keydown', e => { if (e.target instanceof Node && btn.contains(e.target) && (e.key === 'Enter' || e.key === ' ')) return; interrupt(e); }, true);
+d.addEventListener('visibilitychange', () => { if (d.hidden) autoPause(); else autoResume(); });
+// Framed in the King Media demo area: pause the film while the frame is scrolled out of view, carry on when it returns
+if (W.self !== W.top) {
+  let fe = null; try { fe = W.frameElement; } catch (e) {}
+  let shown = true;
+  const setVis = v => { if (v === shown) return; shown = v; if (v) autoResume(); else autoPause(); };
+  if (fe) setInterval(() => { try { const r = fe.getBoundingClientRect(), pw = W.parent; setVis(r.bottom > 0 && r.top < pw.innerHeight && r.right > 0 && r.left < pw.innerWidth); } catch (e) {} }, 400);
+  else if ('IntersectionObserver' in W) { const sn = d.createElement('div'); sn.setAttribute('aria-hidden', 'true'); sn.style.cssText = 'position:fixed;inset:0;pointer-events:none;visibility:hidden'; d.body.append(sn); new IntersectionObserver(es => setVis(es[es.length - 1].isIntersecting)).observe(sn); }
+}
+
+/* Boot ------------------------------------------------------------------ */
+function unlock() { if (unlocked) return; unlocked = true; pump(); }
+['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(ev => W.addEventListener(ev, unlock, { passive: true, once: true }));
+W.addEventListener('scroll', () => { if (Math.abs(scrollY) > 4) unlock(); lastMove = performance.now(); clearTimeout(snapT); snapT = setTimeout(() => requestDraw(), 140); requestDraw(); }, { passive: true });
+let rsT = 0;
+W.addEventListener('resize', () => { cancelAnimationFrame(rsT); rsT = requestAnimationFrame(layout); });
+// Name slot: refit the title
+new MutationObserver(() => { fitTitle(); fitMark(); requestDraw(true); }).observe(titleSpan, { childList: true, characterData: true, subtree: true });
+
+const avif = new Promise(res => { const im = new Image(); im.onload = () => res(im.width > 0); im.onerror = () => res(false);
+  im.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A='; });
+avif.then(ok => {
+  EXT = ok ? 'avif' : 'webp';
+  buildSeqs();
+  layout();
+  hud.classList.remove('is-off');
+  pump();
+  if (d.fonts && d.fonts.load) d.fonts.load('500 100px Geist').then(() => { fitTitle(); requestDraw(true); });
+  // ?play=1 starts the film once its first frame is on screen (or after 8 seconds on a very slow connection)
+  if (qs.get('play') === '1') {
+    const go = () => setTimeout(() => { if (pState === 'idle') play(); }, motion ? 700 : 300);
+    if (painted) go(); else { afterPaint = go; setTimeout(() => { if (afterPaint) { afterPaint = null; go(); } }, 8000); }
+  }
+});
+W.__velluto = { get bytes() { return bytes; }, get t() { return tNow; }, get state() { return pState; }, seqs, T, END, unit: () => unit, filmTop: () => filmTop, jump };
+})();
+
+</script>
+</body>
+</html>

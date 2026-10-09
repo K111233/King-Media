@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en-GB" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crumb &amp; Co.: a concept website by King Media</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Crumb &amp; Co. is a made-up artisan bakery: a concept website designed and built by King Media.">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#F6EBDD">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script>
+(function (d, w) { var r = d.documentElement; r.classList.replace('no-js', 'js'); var off = false;
+  try { off = localStorage.getItem('km-motion') === 'off'; } catch (e) {}
+  if (!off && !matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('motion-ok');
+  if (/[?&]embed=1(&|$)/.test(location.search) && w.self !== w.top) r.classList.add('is-embed');
+})(document, window);
+</script>
+<link rel="preload" href="../fonts/young-serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../concepts.css?v=1">
+<style>
+@font-face { font-family: "Young Serif"; src: url("../fonts/young-serif.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Young Serif Fallback"; src: local("Georgia"); size-adjust: 114.9%; ascent-override: 91%; descent-override: 31.9%; line-gap-override: 0%; }
+:root {
+  --cream: #F6EBDD;  /* page */
+  --flour: #FBF5EC;  /* cards */
+  --oat: #EAD8C1;    /* footer, cake panel */
+  --crust: #3B2418;  /* text: 12.29:1 on cream */
+  --muted: #6B4A38;  /* secondary text: 6.70:1 on cream, 5.67:1 on oat */
+  --terra: #B24731;  /* buttons (white text 5.47:1) and prices (4.65:1 on cream) */
+  --rule: rgba(59, 36, 24, .16);
+  --serif: "Young Serif", "Young Serif Fallback", Georgia, "Times New Roman", serif;
+  --pad: max(20px, env(safe-area-inset-left), env(safe-area-inset-right));
+  scroll-padding-top: 16px;
+}
+body { background: var(--cream); color: var(--crust); font-size: 1.0625rem; }
+.wrap { width: 100%; max-width: calc(1152px + 2 * var(--pad)); margin: 0 auto; padding-inline: var(--pad); }
+
+/* Buttons and links */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px; border-radius: 999px; font-weight: 600; font-size: 1rem; line-height: 1.2; text-decoration: none; white-space: nowrap; }
+.btn--solid { background: var(--terra); color: #fff; }
+.btn--line { border: 1.5px solid var(--crust); color: var(--crust); }
+.btn:active { opacity: .72; }
+.btn:focus-visible, .nav a:focus-visible, .logo:focus-visible, .foot__in a:focus-visible { outline: 2px solid var(--crust); outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+  .btn--solid:hover { background: var(--crust); }
+  .btn--line:hover { background: var(--crust); color: var(--cream); }
+  .nav a:hover, .foot__in a:hover { text-decoration-color: var(--terra); }
+}
+.motion-ok .btn { transition: background-color 160ms ease, color 160ms ease; }
+
+/* Header */
+.top { background: var(--cream); border-bottom: 1px solid var(--rule); }
+.top__in { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "logo call" "nav nav"; align-items: center; column-gap: 16px; padding-top: 10px; }
+.logo { grid-area: logo; font-family: var(--serif); font-size: 1.625rem; line-height: 1.1; text-decoration: none; padding: 6px 0; }
+.top .btn { grid-area: call; min-height: 44px; padding: 0 20px; }
+.nav { grid-area: nav; display: flex; gap: 28px; margin-top: 4px; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 500; text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+
+/* Hero */
+.hero { padding-block: 28px 56px; }
+.hero__in { display: grid; gap: 36px; }
+.kicker { font-size: 1rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--terra); }
+.hero h1 { margin-top: 14px; font-family: var(--serif); font-weight: 400; font-size: clamp(2.75rem, 1.9rem + 4.2vw, 5.25rem); line-height: 1.02; letter-spacing: -.01em; }
+.lede { margin-top: 18px; max-width: 34ch; font-size: 1.1875rem; line-height: 1.5; color: var(--muted); }
+.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.hours { display: flex; align-items: center; gap: 10px; margin-top: 22px; font-size: 1rem; }
+.hours strong { font-weight: 600; }
+.hours .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--terra); flex: none; }
+.hero__photo img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 50% 50% 20px 20px / 42% 42% 20px 20px; background: var(--oat); }
+
+/* Band */
+.band { background: var(--crust); color: var(--cream); font-family: var(--serif); font-size: 1.125rem; line-height: 1.3; text-align: center; padding: 18px var(--pad); }
+.band span { color: #E2B9A4; padding-inline: .35em; }
+
+/* Section heads */
+.section { padding-block: 64px; }
+.h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(2.125rem, 1.6rem + 2.2vw, 3.25rem); line-height: 1.05; letter-spacing: -.01em; }
+.sec-head p { margin-top: 10px; color: var(--muted); }
+
+/* Today's bakes */
+.cards { display: grid; gap: 14px; margin-top: 32px; }
+.card { display: grid; grid-template-columns: 112px 1fr; align-items: center; gap: 16px; padding: 12px; background: var(--flour); border-radius: 16px; }
+.card img { width: 112px; height: 112px; object-fit: cover; border-radius: 10px; background: var(--oat); }
+.card h3 { font-family: var(--serif); font-weight: 400; font-size: 1.375rem; line-height: 1.15; }
+.card p { margin-top: 4px; font-size: 1rem; line-height: 1.45; color: var(--muted); }
+.price { font-weight: 700; color: var(--terra); font-variant-numeric: tabular-nums lining-nums; }
+.card .price { margin-top: 6px; font-size: 1.125rem; color: var(--terra); }
+.counter { margin-top: 40px; }
+.counter h3 { font-family: var(--serif); font-weight: 400; font-size: 1.5rem; }
+.menu { margin-top: 12px; display: grid; column-gap: 48px; }
+.menu li { display: flex; align-items: baseline; gap: 10px; padding-block: 12px; border-bottom: 1px solid var(--rule); }
+.menu li::after { content: none; }
+.menu .lead { flex: 1; border-bottom: 2px dotted rgba(59, 36, 24, .35); transform: translateY(-4px); }
+.note { margin-top: 24px; font-size: 1rem; color: var(--muted); }
+
+/* Motto */
+.motto { padding-block: 72px; border-block: 1px solid var(--rule); text-align: center; }
+.motto p { max-width: 20ch; margin: 0 auto; font-family: var(--serif); font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem); line-height: 1.12; }
+.motto svg { margin: 0 auto 20px; color: var(--terra); }
+
+/* About and cakes */
+.duo { display: grid; gap: 48px; }
+.duo p { margin-top: 16px; max-width: 58ch; }
+.cakes { padding: 32px 24px; background: var(--oat); border-radius: 20px; }
+.ticks { margin-top: 18px; display: grid; gap: 10px; }
+.ticks li { display: flex; gap: 12px; align-items: baseline; }
+.ticks li::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--terra); transform: translateY(-2px); }
+.cakes .btn { margin-top: 24px; }
+
+/* Reviews placeholder */
+.reviews { padding-block: 0 64px; }
+.reviews .km-placeholder { color: var(--muted); background: var(--flour); }
+
+/* Visit */
+.visit { background: var(--flour); }
+.visit__in { display: grid; gap: 36px; }
+.visit p { margin-top: 16px; max-width: 46ch; }
+.hours-list { margin: 24px 0 28px; border-top: 1px solid var(--rule); }
+.hours-list div { display: flex; justify-content: space-between; gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--rule); }
+.hours-list dt { font-weight: 600; }
+.hours-list dd { margin: 0; text-align: right; }
+.map { min-height: 240px; align-content: center; color: var(--muted); }
+
+/* Footer */
+.foot { background: var(--oat); }
+.foot__in { display: grid; gap: 12px; padding-block: 40px; }
+.foot__name { font-family: var(--serif); font-size: 1.75rem; line-height: 1.1; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.foot__in a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+@media (min-width: 768px) {
+  :root { --pad: 40px; scroll-padding-top: 96px; }
+  .top { position: sticky; top: 0; z-index: 40; }
+  .top__in { grid-template-columns: auto 1fr auto; grid-template-areas: "logo nav call"; min-height: 76px; padding-block: 0; }
+  .logo { font-size: 1.875rem; }
+  .nav { justify-content: flex-end; gap: 36px; margin: 0 12px 0 0; }
+  .hero { padding-block: 48px 72px; }
+  .band { font-size: 1.375rem; }
+  .hero__in { grid-template-columns: 1.1fr 1fr; align-items: center; gap: 48px; }
+  .section { padding-block: 96px; }
+  .sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; }
+  .cards { grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+  .card { grid-template-columns: 1fr; align-items: start; gap: 0; padding: 0 0 22px; overflow: hidden; }
+  .card img { width: 100%; height: auto; aspect-ratio: 3 / 2; border-radius: 0; }
+  .card__body { padding: 20px 22px 0; }
+  .card h3 { font-size: 1.625rem; }
+  .menu { grid-template-columns: 1fr 1fr; }
+  .duo { grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  .cakes { padding: 40px; }
+  .visit__in { grid-template-columns: 1fr 1fr; gap: 64px; align-items: stretch; }
+  .foot__in { grid-template-columns: 1fr auto; align-items: center; }
+  .foot nav { grid-column: 2; grid-row: 1 / span 2; }
+}
+@media (min-width: 1280px) {
+  :root { --pad: 64px; }
+  .hero__in { gap: 80px; }
+  .band { font-size: 1.625rem; }
+}
+@media (forced-colors: active) {
+  .btn { border: 1px solid ButtonText; }
+  .hours .dot, .ticks li::before { background: CanvasText; }
+}
+
+/* The sign: a visitor’s name at hero size (King Media “See it with your name”; hidden until a name is applied) */
+.km-sign { font-family: var(--serif); font-weight: 400; color: var(--terra); }
+.km-map { --m-bg: var(--oat); --m-road: var(--flour); --m-ink: var(--crust); --m-park: #D9CFA8; --m-water: #D7DCD8; --m-pin: var(--terra); }
+/* Desktop: the hero and its band fill the first screen, so the page (and its poster) never ends on an empty strip */
+@media (min-width: 1024px) and (min-height: 700px) { .hero { display: flex; flex-direction: column; justify-content: center; min-height: calc(100svh - 147px); } .hero > * { width: 100%; } }
+</style>
+</head>
+<body>
+<a class="km-skip" href="#main">Skip to content</a>
+
+<aside class="km-strip" aria-label="About this concept">
+  <p><span class="km-strip__made">Concept website by King Media. Crumb &amp; Co. is a made-up business.</span><span class="km-strip__typed">A King Media concept design, showing a name a visitor typed in. Not a real business.</span></p>
+  <nav class="km-strip__links" aria-label="King Media">
+    <a href="/#concepts" data-km-back>Back to King Media</a>
+    <a class="km-strip__cta" href="/#contact">Get my demo</a>
+  </nav>
+</aside>
+
+<header class="top" id="top">
+  <div class="wrap top__in">
+    <a class="logo" href="#top"><span data-slot="name">Crumb &amp; Co.</span></a>
+    <nav class="nav" aria-label="Main">
+      <a href="#bakes">Bakes</a>
+      <a href="#cakes">Cakes</a>
+      <a href="#visit">Visit</a>
+    </nav>
+    <button type="button" class="btn btn--solid" data-toast="On a real site, this calls the bakery.">Call us</button>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero__in">
+      <div class="hero__copy">
+        <p class="km-sign"><span data-slot="name">Crumb &amp; Co.</span></p>
+        <p class="kicker">Baked fresh at dawn</p>
+        <h1 id="hero-title">Baked while you were sleeping.</h1>
+        <p class="lede">Sourdough, croissants and cinnamon knots, shaped by hand and baked overnight in small batches. When it’s gone, it’s gone.</p>
+        <div class="hero__actions">
+          <a class="btn btn--solid" href="#bakes">See today’s bakes</a>
+          <a class="btn btn--line" href="#cakes">Order a cake</a>
+        </div>
+        <p class="hours"><span class="dot" aria-hidden="true"></span><span><strong>Open Tue–Sun</strong> · 7am until sold out</span></p>
+      </div>
+      <div class="hero__photo">
+        <picture>
+          <source type="image/avif" srcset="img/hero-480.avif 480w, img/hero-760.avif 760w, img/hero-1080.avif 1080w" sizes="(min-width: 1280px) 520px, (min-width: 768px) 44vw, calc(100vw - 40px)">
+          <source type="image/webp" srcset="img/hero-480.webp 480w, img/hero-760.webp 760w, img/hero-1080.webp 1080w" sizes="(min-width: 1280px) 520px, (min-width: 768px) 44vw, calc(100vw - 40px)">
+          <img src="img/hero-760.webp" alt="Round seeded sourdough loaves and a baguette on a linen cloth, with yellow flowers behind" width="760" height="760" fetchpriority="high" decoding="async">
+        </picture>
+      </div>
+    </div>
+  </section>
+
+  <p class="band">Sourdough<span aria-hidden="true">·</span> Croissants<span aria-hidden="true">·</span> Cinnamon&nbsp;knots<span aria-hidden="true">·</span> Celebration&nbsp;cakes</p>
+
+  <section class="section" id="bakes" aria-labelledby="bakes-title">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 class="h2" id="bakes-title">Today’s bakes</h2>
+        <p>Out of the oven by 7am. Prices are per item.</p>
+      </div>
+      <ul class="cards" role="list">
+        <li class="card">
+          <picture>
+            <source type="image/avif" srcset="img/sourdough-400.avif 400w, img/sourdough-600.avif 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, 112px">
+            <source type="image/webp" srcset="img/sourdough-400.webp 400w, img/sourdough-600.webp 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, 112px">
+            <img src="img/sourdough-400.webp" alt="A round sourdough loaf with decorative leaf scoring" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+          <div class="card__body">
+            <h3>Country sourdough</h3>
+            <p>Long, slow ferment and a crackling crust.</p>
+            <p class="price">£4.50</p>
+          </div>
+        </li>
+        <li class="card">
+          <picture>
+            <source type="image/avif" srcset="img/croissant-400.avif 400w, img/croissant-600.avif 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, 112px">
+            <source type="image/webp" srcset="img/croissant-400.webp 400w, img/croissant-600.webp 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, 112px">
+            <img src="img/croissant-400.webp" alt="A butter croissant on a white plate beside a cup of coffee" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+          <div class="card__body">
+            <h3>Butter croissant</h3>
+            <p>All butter, laminated by hand, flaky to the last crumb.</p>
+            <p class="price">£2.20</p>
+          </div>
+        </li>
+        <li class="card">
+          <picture>
+            <source type="image/avif" srcset="img/cinnamon-400.avif 400w, img/cinnamon-600.avif 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, 112px">
+            <source type="image/webp" srcset="img/cinnamon-400.webp 400w, img/cinnamon-600.webp 600w" sizes="(min-width: 1280px) 360px, (min-width: 768px) 30vw, 112px">
+            <img src="img/cinnamon-400.webp" alt="A glazed cinnamon swirl on a grey plate" width="400" height="266" loading="lazy" decoding="async">
+          </picture>
+          <div class="card__body">
+            <h3>Cinnamon knot</h3>
+            <p>Cardamom dough, cinnamon sugar and a sticky glaze.</p>
+            <p class="price">£2.80</p>
+          </div>
+        </li>
+      </ul>
+      <div class="counter">
+        <h3>Also on the counter</h3>
+        <ul class="menu" role="list">
+          <li><span>Seeded rye loaf</span><span class="lead" aria-hidden="true"></span><span class="price">£4.80</span></li>
+          <li><span>Pain au chocolat</span><span class="lead" aria-hidden="true"></span><span class="price">£2.50</span></li>
+          <li><span>Almond croissant</span><span class="lead" aria-hidden="true"></span><span class="price">£2.90</span></li>
+          <li><span>Sausage roll</span><span class="lead" aria-hidden="true"></span><span class="price">£3.20</span></li>
+        </ul>
+      </div>
+      <p class="note">Allergies or intolerances? Ask at the counter and we’ll talk you through every bake.</p>
+    </div>
+  </section>
+
+  <div class="motto">
+    <div class="wrap">
+      <svg width="36" height="20" viewBox="0 0 36 20" aria-hidden="true"><path d="M2 18c4-9 10-14 16-14s12 5 16 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 12l2 3M18 10v4M24 12l-2 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <p>The kind of bakery you plan your Saturday around.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="wrap duo">
+      <section id="about" aria-labelledby="about-title">
+        <h2 class="h2" id="about-title">About <span data-slot="name">Crumb &amp; Co.</span></h2>
+        <p>A small neighbourhood bakery with one big oven. We start at 3am, bake in small batches and open the doors at 7. Everything is made here, by hand, from flour, water, salt and a lot of patience.</p>
+        <p>When the shelves are empty, we close for the day and start again tomorrow.</p>
+      </section>
+      <section class="cakes" id="cakes" aria-labelledby="cakes-title">
+        <h2 class="h2" id="cakes-title">Celebration cakes</h2>
+        <p>Birthdays, weddings and everything in between. Tell us the date, how many people and your favourite flavour, and we’ll do the rest.</p>
+        <ul class="ticks" role="list">
+          <li>Order at least 3 days ahead</li>
+          <li>Sponges, sourdough chocolate and fruit cakes</li>
+          <li>Collect from the shop on the day</li>
+        </ul>
+        <button type="button" class="btn btn--solid" data-toast="On a real site, this calls the bakery.">Call to order a cake</button>
+      </section>
+    </div>
+  </div>
+
+  <div class="reviews">
+    <div class="wrap">
+      <div class="km-placeholder">
+        <span class="km-placeholder__tag">Placeholder</span>
+        <p>Your Google reviews appear here.</p>
+        <small>On a real site, this space shows your latest reviews from Google.</small>
+      </div>
+    </div>
+  </div>
+
+  <section class="section visit" id="visit" aria-labelledby="visit-title">
+    <div class="wrap visit__in">
+      <div>
+        <h2 class="h2" id="visit-title">Visit us</h2>
+        <p>Come early for the best choice. Once the last loaf has gone, so have we.</p>
+        <dl class="hours-list">
+          <div><dt>Tuesday to Sunday</dt><dd>7am until sold out</dd></div>
+          <div><dt>Monday</dt><dd>Closed</dd></div>
+        </dl>
+        <button type="button" class="btn btn--line" data-toast="On a real site, this calls the bakery.">Call us</button>
+      </div>
+      <figure class="km-map map">
+        <svg viewBox="0 0 480 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><rect class="m-bg" width="480" height="300"/><path class="m-park" d="M318 16h134v82H318z"/><path class="m-water" d="M-10 244c62-16 108 8 160-6s98-42 152-32 98 30 188 16v90H-10z"/><path class="m-minor" d="M0 54h480M0 176h300M98 0v236M292 0v300M394 0v216M36 116l62-62M150 236l142-62M394 54l86 46"/><path class="m-road" d="M0 118h480M198 0v300M0 270l480-122"/><path class="m-pin" d="M198 124c-9-13-15-21-15-29a15 15 0 0 1 30 0c0 8-6 16-15 29z"/><circle class="m-dot" cx="198" cy="95" r="5.5"/></svg>
+        <figcaption><span class="km-placeholder__tag">Placeholder</span> Map appears here</figcaption>
+      </figure>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <p class="foot__name"><span data-slot="name">Crumb &amp; Co.</span></p>
+    <p>Open Tue–Sun · 7am until sold out</p>
+    <nav aria-label="Footer">
+      <a href="#bakes">Bakes</a>
+      <a href="#cakes">Cakes</a>
+      <a href="#visit">Visit</a>
+    </nav>
+  </div>
+  <div class="km-colophon">
+  <div class="km-colophon__in">
+    <p>A concept website designed and built by King Media. Crumb &amp; Co. is a made-up business: its bakes, prices and opening hours are examples. <a href="/#contact">Get my demo</a></p>
+    <details>
+      <summary>Photo credits</summary>
+      <ul>
+        <li>Loaves: <a href="https://commons.wikimedia.org/wiki/File:Bread_(Unsplash).jpg" target="_blank" rel="noopener">Kim Cruickshanks / Unsplash<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0<span class="visually-hidden"> (opens in a new tab)</span></a>, via Wikimedia Commons. Cropped and resized.</li>
+        <li>Sourdough: <a href="https://commons.wikimedia.org/wiki/File:Sourdough_bread_with_decorative_scores.jpg" target="_blank" rel="noopener">SueRostvold<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0<span class="visually-hidden"> (opens in a new tab)</span></a>, via Wikimedia Commons. Cropped and resized.</li>
+        <li>Croissant and cinnamon bun: <a href="https://commons.wikimedia.org/wiki/User:Onthewings" target="_blank" rel="noopener">Andy Li<span class="visually-hidden"> (opens in a new tab)</span></a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0 1.0<span class="visually-hidden"> (opens in a new tab)</span></a>, via Wikimedia Commons. Cropped and resized.</li>
+      </ul>
+    </details>
+    <p class="km-colophon__company">King Media is a trading name of KING WEB MEDIA LTD, a company registered in England and Wales, company number 17483413. Registered office: 124 City Road, London, EC1V 2NX.</p>
+  </div>
+  </div>
+</footer>
+
+<p class="km-toast" role="status"></p>
+<script src="../concepts.js?v=1" defer></script>
+</body>
+</html>

@@ -74,7 +74,7 @@ $chosen = $c['signed'] ? ($plans[$c['signed']['plan']] ?? null) : null;
 $posted = fn(string $k) => km_h((string) ($_POST[$k] ?? ''));
 $err = fn(string $k) => isset($errors[$k]) ? '<p class="field__error" id="' . $k . 'Err">' . km_h($errors[$k]) . '</p>' : '<p class="field__error" id="' . $k . 'Err"></p>';
 $bad = fn(string $k) => isset($errors[$k]) ? ' aria-invalid="true"' : '';
-$saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['monthly_pence']) * 59 : 0; // month 1 is in the build fee on both plans
+$saving = isset($plans['12m'], $plans['5y']) ? ($plans['12m']['monthly_pence'] - $plans['5y']['monthly_pence']) * 59 : 0; // month 1 is in the build fee on both plans
 ?><!doctype html>
 <html lang="en-GB">
 <head>
@@ -82,57 +82,61 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Your agreement | King Media</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#080806">
+<meta name="theme-color" content="#0B0A08">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/css/style.css?v=20260927a">
+<link rel="preload" href="/assets/fonts/mona-display.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/mona-text.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/style.css?v=20260928a">
 <style>
-  .sign__lede { margin-top: .75rem; font-size: var(--fs-lede); color: var(--bone-200); }
-  .sign__box { margin-top: 1.75rem; padding: clamp(1.1rem, 3vw, 1.6rem); border-radius: 20px; background: var(--ink-850); border: 1px solid var(--line); }
-  .sign__box h2 { margin-top: 0; }
-  .sign__notice { margin-top: 1.5rem; padding: 1rem 1.2rem; border-radius: 14px; border: 1px solid rgba(212, 175, 55, .45); background: rgba(212, 175, 55, .08); color: var(--bone-100); }
-  .sign__notice--err { border-color: #E5746A; background: rgba(229, 116, 106, .1); }
-  .plans { border: 0; padding: 0; margin: 0; display: grid; gap: .75rem; }
-  @media (min-width: 640px) { .plans { grid-template-columns: 1fr 1fr; } }
-  .plans legend { font-family: var(--f-display); font-weight: 700; font-size: 1.35rem; margin-bottom: .75rem; }
-  .plan { position: relative; display: grid; gap: .25rem; padding: 1rem 1.1rem 1.1rem 3rem; border-radius: 16px; border: 1px solid var(--line); background: var(--ink-900); cursor: pointer; }
-  .plan input { position: absolute; left: 1.1rem; top: 1.2rem; width: 1.15rem; height: 1.15rem; accent-color: var(--acc-500); }
-  .plan:has(input:checked) { border-color: var(--acc-500); box-shadow: 0 0 0 1px var(--acc-500); }
-  .plan__name { font-weight: 700; color: var(--bone-100); }
-  .plan__price { font-family: var(--f-display); font-weight: 700; font-size: 1.5rem; color: var(--acc-400); }
-  .plan__meta { font-size: .875rem; color: var(--bone-300); }
-  .pay-rows { display: grid; gap: .6rem; margin-top: 1rem; }
-  .pay-rows div { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: .6rem; border-bottom: 1px solid var(--line); }
-  .pay-rows dt { color: var(--bone-300); }
-  .pay-rows dd { margin: 0; text-align: right; font-weight: 700; color: var(--bone-100); }
-  .agreement { margin-top: 2rem; }
-  .agreement h2 { font-size: 1.15rem; margin-top: 1.75rem; }
-  .agreement h3 { color: var(--bone-100); }
-  .agreement p, .agreement li { font-size: .95rem; }
-  .agreement__table { overflow-x: auto; }
-  .agreement th { width: 38%; font-family: var(--f-body); font-size: .875rem; letter-spacing: 0; text-transform: none; color: var(--bone-300); font-weight: 600; }
-  .agreement td { color: var(--bone-100); }
-  .agreement__ref { font-family: var(--f-mono); font-size: .75rem; color: var(--muted); }
-  .sign-form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.1rem; }
+  .sign__lede { margin-top: 12px; max-width: 46ch; font-size: var(--fs-lede); line-height: 1.5; color: var(--fg-2); }
+  .sign__box { --field-bg: var(--bg); margin-top: 32px; padding: clamp(20px, 3vw, 32px); background: var(--bg-raised); border: 1px solid var(--line); }
+  .sign__box h2, .keypoints h2, .agreement > h2 { margin-top: 0; }
+  .sign__notice { margin-top: 24px; padding: 16px 20px; background: var(--bg-raised); border: 1px solid var(--gold-rule); color: var(--fg); }
+  .sign__notice--err { border-color: var(--err); border-left-width: 2px; }
+  .plans { border: 0; padding: 0; margin: 0; display: grid; gap: 12px; }
+  @media (min-width: 640px) { .plans { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); } }
+  .plans legend { margin-bottom: 16px; padding: 0; font-size: 1.375rem; font-weight: 600; line-height: 1.25; letter-spacing: -.01em; color: var(--fg); }
+  .plan { position: relative; display: grid; gap: 4px; padding: 16px 20px 20px 52px; border: 1px solid var(--line-ui); border-radius: var(--r-1); background: var(--bg); cursor: pointer; }
+  .plan input { position: absolute; left: 20px; top: 20px; width: 20px; height: 20px; margin: 0; accent-color: var(--gold); }
+  .plan:has(input:checked) { border-color: var(--gold); background: var(--bg-hover); }
+  .plan:has(input:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .plan__name { font-weight: 600; color: var(--fg); }
+  .plan__price { font-family: var(--f-display); font-weight: 760; font-size: 2rem; line-height: 1.1; letter-spacing: -.02em; color: var(--fg); font-variant-numeric: tabular-nums lining-nums; }
+  .plan__price small { font-family: var(--f-text); font-weight: 400; font-size: var(--fs-small); letter-spacing: 0; color: var(--fg-2); }
+  .plan__meta { font-size: var(--fs-small); color: var(--fg-2); }
+  .pay-rows { display: grid; margin-top: 24px; border-top: 1px solid var(--line); }
+  .pay-rows div { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .pay-rows dt { color: var(--fg-2); }
+  .pay-rows dd { margin: 0; text-align: right; font-weight: 600; color: var(--fg); font-variant-numeric: tabular-nums lining-nums; }
+  .agreement { margin-top: 48px; }
+  .agreement h3 { margin-top: 32px; font-size: 1.0625rem; color: var(--fg); }
+  .agreement h4 { font-size: 1rem; }
+  .agreement p, .agreement li { font-size: var(--fs-small); }
+  .agreement__table { overflow-x: auto; margin-block: 16px; }
+  .agreement th { width: 38%; font-size: var(--fs-small); letter-spacing: 0; text-transform: none; color: var(--fg-2); font-weight: 600; }
+  .agreement td { color: var(--fg); }
+  .agreement__ref { font-size: var(--fs-small); color: var(--fg-3); }
+  .sign-form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .sign-form > *, .plans > * { min-width: 0; }
   .agreement td, .agreement th, .pay-rows dd, .sign__lede { overflow-wrap: anywhere; }
-  .sign__errors { margin: 0 0 1rem; padding: .9rem 1.1rem; border-radius: 14px; border: 1px solid #E5746A; background: rgba(229, 116, 106, .1); color: var(--bone-100); }
-  .sign__errors ul { margin: .4rem 0 0; padding-left: 1.2rem; }
-  .sign__errors a { color: var(--acc-300); }
-  .sign-form .check { display: flex; gap: .7rem; align-items: flex-start; color: var(--bone-100); }
-  .sign-form .check input { margin-top: .25rem; width: 1.2rem; height: 1.2rem; flex-shrink: 0; accent-color: var(--acc-500); }
-  .sign-form .small { font-size: .875rem; color: var(--bone-300); }
+  .sign__errors { margin: 0 0 16px; padding: 16px 20px; background: var(--bg); border: 1px solid var(--err); border-left-width: 2px; color: var(--fg); }
+  .sign__errors ul { margin: 8px 0 0; padding-left: 20px; }
+  .legal .sign__errors a { color: var(--fg); text-decoration-color: var(--err); }
+  .sign-form .check { display: flex; gap: 12px; align-items: flex-start; color: var(--fg); }
+  .sign-form .check input { margin-top: 3px; width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--gold); }
+  .sign-form .small { font-size: var(--fs-small); color: var(--fg-2); }
   .sign-form .btn { justify-self: start; }
   .field__error:empty { display: none; }
-  .sign__sig { display: grid; gap: .1rem; margin-top: .6rem; padding: .4rem .2rem .5rem; border-bottom: 1px solid var(--bone-500); min-height: 4.2rem; }
-  .sign__sig-label { font-family: var(--f-mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-  .sign__sig-name { font-family: var(--f-serif); font-style: italic; font-size: clamp(1.8rem, 6vw, 2.4rem); line-height: 1.1; color: var(--acc-300); overflow-wrap: anywhere; }
+  .sign__sig { display: grid; gap: 4px; margin-top: 8px; padding: 8px 4px 10px; border-bottom: 1px solid var(--gold-rule); min-height: 4.2rem; }
+  .sign__sig-label { font-size: var(--fs-label); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--fg-3); }
+  .sign__sig-name { font-family: var(--f-serif); font-style: italic; font-weight: 400; font-size: clamp(1.8rem, 6vw, 2.4rem); line-height: 1.1; color: var(--fg); overflow-wrap: anywhere; }
   .no-js .sign__sig, .sign__sig:not(.is-on) { display: none; }
   [data-plan-show][hidden] { display: none !important; }
-  .keypoints { margin-top: 2rem; padding: clamp(1.1rem, 3vw, 1.6rem); border-radius: 20px; border: 1px solid rgba(212, 175, 55, .55); background: rgba(212, 175, 55, .07); }
-  .keypoints h2 { margin-top: 0; font-size: 1.35rem; }
-  .keypoints ul { display: grid; gap: .55rem; padding-left: 1.1rem; margin-top: .75rem; }
-  .keypoints li { color: var(--bone-100); font-size: .95rem; overflow-wrap: anywhere; }
+  .keypoints { margin-top: 48px; padding: clamp(20px, 3vw, 32px); background: var(--bg-raised); border: 1px solid var(--gold-rule); }
+  .keypoints h2 { font-size: 1.375rem; }
+  .keypoints ul { display: grid; gap: 8px; padding-left: 20px; margin-top: 12px; }
+  .keypoints li { color: var(--fg); font-size: var(--fs-small); overflow-wrap: anywhere; }
   .keypoints [data-plan-show] { display: block; }
 </style>
 </head>
@@ -160,7 +164,7 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
         <div><dt>Your plan</dt><dd><?= $h($chosen['name'] ?? '') ?></dd></div>
         <div><dt>Monthly payments</dt><dd><?= $h(km_money((int) ($chosen['monthly_pence'] ?? 0))) ?><?= $nextCharge ? ' from ' . $h($nextCharge) : ' a month' ?></dd></div>
       </dl>
-      <p class="small" style="margin-top:1rem"><?= $emailedCopy ? 'We’ve emailed you a copy of your signed agreement. You can also' : 'You can' ?> <a href="<?= $h($link) ?>&amp;copy=1" target="_blank" rel="noopener">open your signed copy<span class="visually-hidden"> (opens in a new tab)</span></a>.</p>
+      <p class="small" style="margin-top:16px"><?= $emailedCopy ? 'We’ve emailed you a copy of your signed agreement. You can also' : 'You can' ?> <a href="<?= $h($link) ?>&amp;copy=1" target="_blank" rel="noopener">open your signed copy<span class="visually-hidden"> (opens in a new tab)</span></a>.</p>
     </div>
 <?php elseif ($state === 'withdrawn' || $state === 'expired'): ?>
     <h1>This link has <em>expired</em></h1>
@@ -184,12 +188,12 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
         <div><dt>Then</dt><dd><?= $h(km_money((int) ($chosen['monthly_pence'] ?? 0))) ?> a month, starting a month after you pay</dd></div>
       </dl>
 <?php if (!(isset($_GET['paid']) && $checks < 6)): ?>
-      <form method="post" action="<?= $h($link) ?>" style="margin-top:1.25rem">
+      <form method="post" action="<?= $h($link) ?>" style="margin-top:24px">
         <input type="hidden" name="action" value="pay">
         <button type="submit" class="btn btn--primary"><span class="btn__label">Pay <?= $h($build) ?> securely</span></button>
       </form>
 <?php endif; ?>
-      <p class="small" style="margin-top:1rem"><?= $emailedCopy ? 'Your signed copy has been emailed to you. ' : '' ?><a href="<?= $h($link) ?>&amp;copy=1" target="_blank" rel="noopener">Open your signed copy<span class="visually-hidden"> (opens in a new tab)</span></a>. Your agreement starts once the build fee is paid.</p>
+      <p class="small" style="margin-top:16px"><?= $emailedCopy ? 'Your signed copy has been emailed to you. ' : '' ?><a href="<?= $h($link) ?>&amp;copy=1" target="_blank" rel="noopener">Open your signed copy<span class="visually-hidden"> (opens in a new tab)</span></a>. Your agreement starts once the build fee is paid.</p>
     </div>
 <?php else: ?>
     <h1>Sign &amp; <em>pay</em></h1>
@@ -203,8 +207,8 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
           <label class="plan">
             <input type="radio" name="plan" value="<?= $h($pk) ?>" data-price="<?= $h(km_money($pl['monthly_pence'])) ?>" data-term="<?= $h($pl['term']) ?>"<?= (($_POST['plan'] ?? '') === $pk) ? ' checked' : '' ?> required>
             <span class="plan__name"><?= $h($pl['name']) ?></span>
-            <span class="plan__price"><?= $h(km_money($pl['monthly_pence'])) ?> <small style="font-size:.9rem;color:var(--bone-300)">a month</small></span>
-            <span class="plan__meta"><?= $pk === '12m' ? '12-month minimum, then month to month' : '5-year minimum' . ($saving > 0 ? ', and you save ' . $h(km_money($saving)) . ' over the 5 years (your first month is in the build fee)' : '') ?></span>
+            <span class="plan__price"><?= $h(km_money($pl['monthly_pence'])) ?> <small>a month</small></span>
+            <span class="plan__meta"><?= $h(ucfirst(km_changes_text($pl))) ?> a month. <?= $pk === '5y' ? '5-year minimum' . ($saving > 0 ? ', and you save ' . $h(km_money($saving)) . ' over the 5 years (your first month is in the build fee)' : '') : '12-month minimum, then month to month' ?></span>
           </label>
 <?php endforeach; ?>
         </fieldset>
@@ -217,7 +221,7 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
       </div>
 
       <section class="agreement" aria-labelledby="agreementTitle">
-        <h2 id="agreementTitle" style="font-size:1.35rem">2. Read your agreement</h2>
+        <h2 id="agreementTitle">2. Read your agreement</h2>
         <p class="small">King Media Website Design, Hosting &amp; Maintenance Service Agreement, with your Order Form at the end. All prices include VAT. <a href="#keypoints">Jump to the key points</a></p>
         <?= km_agreement_body($o, [], 3) ?>
       </section>
@@ -226,11 +230,11 @@ $saving = count($plans) === 2 ? (reset($plans)['monthly_pence'] - end($plans)['m
         <h2 id="keyTitle">Key points: please read before you sign</h2>
         <p class="small">A plain-English summary. The full agreement above is what counts.</p>
         <?= km_agreement_keypoints($o) ?>
-        <p class="small" style="margin-top:.9rem">Anything you were promised on the phone should be in this agreement. If it isn’t, email us at enquiries@kingmedia.uk before you sign.</p>
+        <p class="small" style="margin-top:16px">Anything you were promised on the phone should be in this agreement. If it isn’t, email us at enquiries@kingmedia.uk before you sign.</p>
       </section>
 
       <div class="sign__box" id="sign">
-        <h2 style="font-size:1.35rem">3. Sign</h2>
+        <h2>3. Sign</h2>
 <?php if ($errors): $to = ['plan' => '#plans', 'sign_name' => '#signName', 'sign_role' => '#signRole', 'agree' => '#agree', 'agree_terms' => '#agreeTerms']; ?>
         <div class="sign__errors" role="alert"><strong>Please check:</strong><ul>
 <?php foreach ($errors as $ek => $em): ?>
