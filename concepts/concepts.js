@@ -1,4 +1,4 @@
-/* King Media concept pages: shared behaviour. See concepts/BUILDING.md. */
+/* KWM Systems concept pages: shared behaviour. See concepts/BUILDING.md. */
 (() => {
   'use strict';
   const d = document, root = d.documentElement;
@@ -6,7 +6,7 @@
   const $$ = (s, c = d) => [...c.querySelectorAll(s)];
   const still = () => !root.classList.contains('motion-ok');
 
-  // Motion follows the OS setting and King Media's Pause motion (km-motion)
+  // Motion follows the OS setting and KWM Systems’ Pause motion (km-motion)
   const rm = matchMedia('(prefers-reduced-motion: reduce)');
   const syncMotion = () => {
     let off = false;
@@ -52,11 +52,11 @@
     if (i && i.checked !== false) toast(i.dataset.toast.replace('{value}', i.value));
   });
 
-  // Back to King Media: return to the viewer where the visitor left off
+  // Back to our work: return to the viewer where the visitor left off
   $$('[data-km-back]').forEach(a => a.addEventListener('click', e => {
     let ref;
     try { ref = new URL(d.referrer); } catch (err) { return; }
-    if (ref.origin === location.origin && /^\/(index\.html)?$/.test(ref.pathname) && history.length > 1) { e.preventDefault(); history.back(); }
+    if (ref.origin === location.origin && !ref.pathname.startsWith('/concepts/') && history.length > 1) { e.preventDefault(); history.back(); }
   }));
 
   // Framed: # links scroll this frame only; other links open in the top window

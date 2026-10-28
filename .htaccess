@@ -2,17 +2,40 @@
 RewriteEngine On
 RewriteRule (^|/)\.git - [F,L]
 
+# One address for the new domain: www.kwmsystems.com goes to kwmsystems.com
+RewriteCond %{HTTP_HOST} ^www\.kwmsystems\.com$ [NC]
+RewriteRule ^ https://kwmsystems.com%{REQUEST_URI} [L,R=301]
+
+# Always use the secure address (https://), keeping the rest of the address the same
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 # No folder listings anywhere
 Options -Indexes
 
 # A friendly page for addresses that don't exist
 ErrorDocument 404 /404.html
 
+# The web app manifest (icons for phones' home screens)
+AddType application/manifest+json .webmanifest
+
+# Send text files compressed (much faster on phones)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml text/javascript application/javascript application/json application/xml application/manifest+json image/svg+xml
+</IfModule>
+
 <IfModule mod_headers.c>
   # Pages are always re-checked, so visitors get updates straight away.
   # (CSS and JS are linked with ?v=… version tags, so they can be kept.)
   <FilesMatch "\.html?$">
     Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  <FilesMatch "\.(woff2|avif|webp|png|jpe?g|svg|ico|mp4)$">
+    Header set Cache-Control "public, max-age=2592000"
   </FilesMatch>
 
   # Security basics: HTTPS only, no framing by other sites, no guessing file types,
