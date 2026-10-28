@@ -1,6 +1,6 @@
 <?php
 /*
- * King Media form handler: shared helpers for api/submit.php.
+ * KWM Systems form handler: shared helpers for api/submit.php.
  *
  * Turns a demo request (form answers + dropped files) into one email with
  * everything needed to build the demo, plus an optional AI-written brief.
@@ -44,6 +44,10 @@ function km_config(): array {
     // An older config line, dirname(__DIR__, 2) . '/km-private', points one level too high
     // once config.php is moved into km-private itself: use that folder instead.
     if (basename(dirname($file)) === 'km-private' && ($cfg['storage_dir'] ?? '') === dirname(dirname($file), 2) . '/km-private') $cfg['storage_dir'] = dirname($file);
+    // kingmedia.uk forwards to kwmsystems.com since 28 October 2026. A config.php written before then still
+    // names the old address and brand, so new links and emails use the new ones. Any other value is kept.
+    if (preg_match('~^https?://(www\.)?kingmedia\.uk/?$~i', (string) ($cfg['site_url'] ?? ''))) $cfg['site_url'] = 'https://kwmsystems.com';
+    if (($cfg['from_name'] ?? '') === 'King Media website') $cfg['from_name'] = 'KWM Systems website';
     return $cfg;
   }
   return [];
@@ -371,7 +375,7 @@ function km_brief_text(array $b): string {
    Optional AI brief (Anthropic Claude API). Off until an API key is added.
    --------------------------------------------------------------------------- */
 const KM_AI_SYSTEM = <<<'TXT'
-You help King Media, a UK web design business, prepare £4.99 demo websites for small businesses. You get one demo request: the customer's answers from the website form, plus any files they attached (logo, photos, menus, price lists).
+You help KWM Systems, a UK web design business, prepare £4.99 demo websites for small businesses. You get one demo request: the customer's answers from the website form, plus any files they attached (logo, photos, menus, price lists).
 
 Write a practical brief for building their demo, then record it with the demo_brief tool.
 
@@ -381,14 +385,14 @@ Rules:
 - Colours: if a logo or brand image is attached, give its main colours as hex codes from what you can see. If there is no logo, suggest a palette that suits the trade and say it is a suggestion.
 - Pages: if the customer chose a number of pages, plan exactly that many. If they are not sure, recommend 1, 2, 3 or 4+ pages and give the reason in one sentence.
 - Booking systems, taking payments and online shops are always quoted separately. List them under quote_items and never give prices for them.
-- The draft reply is an email from King Media to the customer: friendly, plain English, under 120 words, suggests a quick call to talk through their demo, signed "King Media". Don't mention AI and don't promise dates.
+- The draft reply is an email from KWM Systems to the customer: friendly, plain English, under 120 words, suggests a quick call to talk through their demo, signed "KWM Systems". Don't mention AI and don't promise dates.
 TXT;
 
 function km_ai_tool(): array {
   $list = fn(string $d) => ['type' => 'array', 'items' => ['type' => 'string'], 'description' => $d];
   return [
     'name' => 'demo_brief',
-    'description' => 'Record the demo brief for King Media.',
+    'description' => 'Record the demo brief for KWM Systems.',
     'input_schema' => [
       'type' => 'object',
       'properties' => [
@@ -562,7 +566,7 @@ function km_demo_email(array $cfg, array $b, ?array $ai, string $aiError, array 
   $h = '<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . km_h($subject) . '</title></head>'
     . '<body style="margin:0;padding:0;background:#F3EFE4"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3EFE4"><tr><td align="center" style="padding:24px 12px">'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#FFFFFF;border-radius:14px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;color:#1A1A1A">'
-    . '<tr><td style="background:#080806;padding:24px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">King Media · ' . ($paid ? 'Paid demo request' : 'New demo request') . '</p>'
+    . '<tr><td style="background:#080806;padding:24px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">KWM Systems · ' . ($paid ? 'Paid demo request' : 'New demo request') . '</p>'
     . '<h1 style="margin:0;font-size:26px;line-height:1.2;color:#F3EEE4">' . km_h($b['business']) . '</h1>'
     . '<p style="margin:6px 0 0;font-size:13px;color:#A9A294">' . km_h($b['received']) . ' · ' . km_h($b['id']) . '</p></td></tr>';
 
@@ -631,7 +635,7 @@ function km_demo_email(array $cfg, array $b, ?array $ai, string $aiError, array 
     if ($ai['checklist']) $h .= km_section('Build checklist', km_list($ai['checklist'], true), 'AI');
     if ($ai['draft_reply'] !== '') {
       $draft = $ai['draft_reply'];
-      $mailto = 'mailto:' . rawurlencode($b['email']) . '?subject=' . rawurlencode('Your King Media demo') . '&body=' . rawurlencode($draft);
+      $mailto = 'mailto:' . rawurlencode($b['email']) . '?subject=' . rawurlencode('Your KWM Systems demo') . '&body=' . rawurlencode($draft);
       $btn = strlen($mailto) < 1900 ? '<p style="margin:12px 0 0"><a href="' . km_h($mailto) . '" style="display:inline-block;padding:10px 18px;border-radius:99px;background:#080806;color:#F3EEE4;text-decoration:none;font-size:14px;font-weight:600">Reply to ' . km_h($first) . ' with this draft</a></p>' : '';
       $h .= km_section('Draft reply', km_quote($ai['draft_reply']) . $btn, 'AI');
     }
@@ -672,7 +676,7 @@ function km_question_email(array $q): array {
   $h = '<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>' . km_h($subject) . '</title></head><body style="margin:0;padding:0;background:#F3EFE4">'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3EFE4"><tr><td align="center" style="padding:24px 12px">'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#FFFFFF;border-radius:14px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;color:#1A1A1A">'
-    . '<tr><td style="background:#080806;padding:22px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">King Media · New question</p>'
+    . '<tr><td style="background:#080806;padding:22px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">KWM Systems · New question</p>'
     . '<h1 style="margin:0;font-size:22px;color:#F3EEE4">' . km_h($q['name']) . '</h1><p style="margin:6px 0 0;font-size:13px;color:#A9A294">' . km_h($q['received']) . '</p></td></tr>'
     . km_section('Their question', km_quote($q['text']))
     . km_section('Reply to', '<a href="mailto:' . km_h($q['email']) . '" style="color:#7A5C0E;font-size:15px">' . km_h($q['email']) . '</a>')
@@ -762,7 +766,7 @@ function km_send(array $cfg, string $subject, string $html, string $text, array 
   $mixed = 'km-mixed-' . bin2hex(random_bytes(8));
   $alt = 'km-alt-' . bin2hex(random_bytes(8));
   $headers = [
-    'From: ' . km_addr($from, (string) ($cfg['from_name'] ?? 'King Media website')),
+    'From: ' . km_addr($from, (string) ($cfg['from_name'] ?? 'KWM Systems website')),
     'Reply-To: ' . km_addr($replyTo, $replyName),
     'Date: ' . date('r'),
     'Message-ID: <' . bin2hex(random_bytes(12)) . '@' . (explode('@', $from)[1] ?? 'localhost') . '>',
@@ -862,7 +866,7 @@ function km_handle_question(array $cfg): void {
   if ($e) km_fail(422, 'invalid', 'Please fix the highlighted fields.', $e);
   [$subject, $html, $text] = km_question_email($q);
   if (!km_send($cfg, $subject, $html, $text, [], $q['email'], $q['name'], 'question')) {
-    error_log('[King Media] question email failed to send');
+    error_log('[KWM Systems] question email failed to send');
     km_fail(502, 'send', 'Sorry, your question didn’t send.');
   }
   km_respond(200, ['ok' => true]);
@@ -1032,7 +1036,7 @@ function km_checkout_session(array $cfg, array $brief): array {
       'price_data' => [
         'currency' => 'gbp',
         'unit_amount' => KM_DEMO_FEE_PENCE,
-        'product_data' => ['name' => 'Demo website', 'description' => 'A working demo of your new website, designed for your business by King Media.'],
+        'product_data' => ['name' => 'Demo website', 'description' => 'A working demo of your new website, designed for your business by KWM Systems.'],
       ],
     ]],
     'client_reference_id' => $brief['id'],
@@ -1184,7 +1188,7 @@ function km_send_paid_notice(array $cfg, array $job, bool $second = false): bool
   $html = '<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>' . km_h($subject) . '</title></head><body style="margin:0;padding:0;background:#F3EFE4">'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3EFE4"><tr><td align="center" style="padding:24px 12px">'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#FFFFFF;border-radius:14px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;color:#1A1A1A">'
-    . '<tr><td style="background:#080806;padding:22px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">King Media · Demo fee paid</p>'
+    . '<tr><td style="background:#080806;padding:22px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">KWM Systems · Demo fee paid</p>'
     . '<h1 style="margin:0;font-size:22px;color:#F3EEE4">' . km_h($business) . '</h1><p style="margin:6px 0 0;font-size:13px;color:#A9A294">' . km_h($paid['paid_at']) . '</p></td></tr>'
     . km_section('Payment', km_rows($rows))
     . '<tr><td style="padding:22px 28px 26px;font-size:13px;color:#6E675C">' . ($second ? 'Refund one of the two payments in Stripe.' : 'Check the payment in Stripe, then reply to them to arrange their demo.') . '</td></tr></table></td></tr></table></body></html>';
@@ -1199,12 +1203,12 @@ function km_send_paid_notice(array $cfg, array $job, bool $second = false): bool
    On Stripe that's two lines: the build (fee minus one month) + the monthly plan.
    Links are made on the password-protected page api/contracts.php.
    --------------------------------------------------------------------------- */
-// Who the agreement is with: the limited company (incorporated 27 September 2026), trading as King Media.
+// Who the agreement is with: the limited company (incorporated 27 September 2026), trading as KWM Systems.
 // Checked on Companies House. config.php can override any of these with 'company' => [...].
-const KM_COMPANY = ['type' => 'company', 'name' => 'KING WEB MEDIA LTD', 'trading_as' => 'King Media', 'owner' => '', 'address' => '124 City Road, London, EC1V 2NX',
+const KM_COMPANY = ['type' => 'company', 'name' => 'KING WEB MEDIA LTD', 'trading_as' => 'KWM Systems', 'owner' => '', 'address' => '124 City Road, London, EC1V 2NX',
   'number' => '17483413', 'registered_in' => 'England and Wales', 'office' => '124 City Road, London, EC1V 2NX'];
 // The line every client-facing page and email must carry for a limited company
-const KM_DISCLOSURE = 'King Media is a trading name of KING WEB MEDIA LTD, a company registered in England and Wales, company number 17483413. Registered office: 124 City Road, London, EC1V 2NX.';
+const KM_DISCLOSURE = 'KWM Systems is a trading name of KING WEB MEDIA LTD, a company registered in England and Wales, company number 17483413. Registered office: 124 City Road, London, EC1V 2NX.';
 const KM_BUILD_PENCE = ['1' => 49499, '2' => 89999, '3' => 119999, '4+' => 144999];
 const KM_PAGE_LABELS = ['1' => '1 page', '2' => '2 pages', '3' => '3 pages', '4+' => '4 to 6 pages'];
 const KM_PLANS = [
@@ -1367,7 +1371,7 @@ function km_contract_sign(array $cfg, array $c, array $in): array {
   if ($e) return [false, $e];
 
   $lock = km_lock($c['dir']);
-  if ($lock === null) return [false, ['form' => 'We couldn’t save your signature just now. Please try again, or email enquiries@kingmedia.uk.']];
+  if ($lock === null) return [false, ['form' => 'We couldn’t save your signature just now. Please try again, or email info@kwmsystems.com.']];
   if ($lock === false || is_file($c['dir'] . '/signed.json')) { km_unlock($lock ?: null); return [true, []]; } // signed already (double click)
   $now = time();
   $signed = [
@@ -1383,7 +1387,7 @@ function km_contract_sign(array $cfg, array $c, array $in): array {
   if (!$saved) {
     @unlink($c['dir'] . '/signed.json');
     km_log($cfg, $offer['id'] . ' | signature could NOT be saved (storage not writable?)');
-    return [false, ['form' => 'We couldn’t save your signature just now. Please try again, or email enquiries@kingmedia.uk.']];
+    return [false, ['form' => 'We couldn’t save your signature just now. Please try again, or email info@kwmsystems.com.']];
   }
   km_log($cfg, $offer['id'] . ' | signed by ' . $name . ' (' . KM_PLANS[$plan]['name'] . ')');
   km_contract_send_emails($cfg, km_contract_load($cfg, $offer['id']));
@@ -1396,11 +1400,11 @@ function km_contract_send_emails(array $cfg, array $c): void {
   $offer = $c['offer'];
   $signed = $c['signed'];
   $sent = (array) ($signed['emails'] ?? []);
-  $file = ['path' => $c['dir'] . '/agreement-signed.html', 'mime' => 'text/html', 'name' => 'King Media agreement - ' . km_slug($offer['business'], 60) . ' - signed ' . date('Y-m-d', (int) $signed['at']) . '.html'];
+  $file = ['path' => $c['dir'] . '/agreement-signed.html', 'mime' => 'text/html', 'name' => 'KWM Systems agreement - ' . km_slug($offer['business'], 60) . ' - signed ' . date('Y-m-d', (int) $signed['at']) . '.html'];
   $link = km_contract_url($cfg, $offer['id']);
   if (empty($sent['client'])) {
     [$subject, $html, $text] = km_contract_email($offer, $signed, 'client', [], $link);
-    $sent['client'] = km_send($cfg, $subject, $html, $text, [$file], (string) $cfg['to_email'], 'King Media', $offer['id'] . ' client copy', $offer['email']);
+    $sent['client'] = km_send($cfg, $subject, $html, $text, [$file], (string) $cfg['to_email'], 'KWM Systems', $offer['id'] . ' client copy', $offer['email']);
   }
   if (empty($sent['signed'])) {
     [$subject, $html, $text] = km_contract_email($offer, $signed, 'signed', [], $link);
@@ -1439,7 +1443,7 @@ function km_contract_checkout(array $cfg, array $c): array {
       ['quantity' => 1, 'price_data' => ['currency' => 'gbp', 'unit_amount' => (int) $plan['monthly_pence'], 'recurring' => ['interval' => 'month'],
         'product_data' => ['name' => 'Website management: ' . $plan['name'], 'description' => 'Hosting, domain, security, backups and ' . km_changes_text($plan) . ' a month. First month today, then monthly. Minimum term ' . $plan['term'] . '.']]],
     ],
-    'subscription_data' => ['description' => mb_substr('King Media website: ' . $offer['business'], 0, 400), 'metadata' => $meta],
+    'subscription_data' => ['description' => mb_substr('KWM Systems website: ' . $offer['business'], 0, 400), 'metadata' => $meta],
     'client_reference_id' => $offer['id'],
     'customer_email' => $offer['email'],
     'metadata' => $meta,
@@ -1493,9 +1497,9 @@ function km_contract_paid(array $cfg, array $s): bool {
 function km_contract_welcome(array $cfg, array $c, array $paid): bool {
   $offer = $c['offer'];
   $files = is_file($c['dir'] . '/agreement-signed.html') ? [['path' => $c['dir'] . '/agreement-signed.html', 'mime' => 'text/html',
-    'name' => 'King Media agreement - ' . km_slug($offer['business'], 60) . ' - signed ' . date('Y-m-d', (int) ($c['signed']['at'] ?? time())) . '.html']] : [];
+    'name' => 'KWM Systems agreement - ' . km_slug($offer['business'], 60) . ' - signed ' . date('Y-m-d', (int) ($c['signed']['at'] ?? time())) . '.html']] : [];
   [$subject, $html, $text] = km_contract_email($offer, $c['signed'], 'welcome', $paid);
-  return km_send($cfg, $subject, $html, $text, $files, (string) $cfg['to_email'], 'King Media', $offer['id'] . ' client payment confirmation', $offer['email']);
+  return km_send($cfg, $subject, $html, $text, $files, (string) $cfg['to_email'], 'KWM Systems', $offer['id'] . ' client payment confirmation', $offer['email']);
 }
 
 /** Contract emails that didn't go (mailbox down): try again when the site is next used, for up to a week. */
@@ -1550,7 +1554,7 @@ function km_contract_email(array $offer, array $signed, string $kind, array $pai
   ];
   $button = '';
   if ($kind === 'client') {
-    $subject = 'Your King Media agreement is signed';
+    $subject = 'Your KWM Systems agreement is signed';
     $head = 'Thanks, ' . explode(' ', (string) ($signed['name'] ?? ''))[0] . '. Your agreement is signed.';
     $intro = 'Your signed copy of the agreement is attached: open it in any web browser, or print it. If you haven’t paid yet, pay the build fee on Stripe’s secure page to get your website live. Your agreement starts once it’s paid.';
     $foot = 'Questions? Just reply to this email. Agreement fingerprint (SHA-256): ' . (string) ($signed['sha256'] ?? '') . ' · ' . KM_DISCLOSURE;
@@ -1561,7 +1565,7 @@ function km_contract_email(array $offer, array $signed, string $kind, array $pai
     $intro = 'They’re being taken to Stripe to pay ' . $today . '. You’ll get another email when it’s paid. Their signed copy is attached.';
     $foot = 'Contract ' . $offer['id'] . ' · signed from IP ' . ($signed['ip'] ?? '') . ' · fingerprint (SHA-256) ' . (string) ($signed['sha256'] ?? '');
   } elseif ($kind === 'welcome') {
-    $subject = 'Payment received: your King Media website is on its way';
+    $subject = 'Payment received: your KWM Systems website is on its way';
     $head = 'Thank you, ' . explode(' ', (string) ($signed['name'] ?? ''))[0] . '. You’re all set.';
     $intro = 'We’ve received your payment of ' . ($paid['amount'] ?? $today) . '. Your website goes live tomorrow, and we’ll let you know when it’s live. Your monthly payments of ' . $monthly
       . (!empty($paid['next_charge']) ? ' start on ' . date('j F Y', (int) $paid['next_charge']) . ', then on the same day each month.' : ' start one month after today, then on the same day each month.')
@@ -1584,7 +1588,7 @@ function km_contract_email(array $offer, array $signed, string $kind, array $pai
   $html = '<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>' . km_h($subject) . '</title></head><body style="margin:0;padding:0;background:#F3EFE4">'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F3EFE4"><tr><td align="center" style="padding:24px 12px">'
     . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#FFFFFF;border-radius:14px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;color:#1A1A1A">'
-    . '<tr><td style="background:#080806;padding:22px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">King Media · Website agreement</p>'
+    . '<tr><td style="background:#080806;padding:22px 28px"><p style="margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#D4AF37;font-weight:700">KWM Systems · Website agreement</p>'
     . '<h1 style="margin:0;font-size:22px;color:#F3EEE4">' . km_h($head) . '</h1></td></tr>'
     . '<tr><td style="padding:22px 28px 0;font-size:15px;line-height:1.55">' . km_h($intro) . '</td></tr>' . $button
     . km_section('Summary', km_rows($rows))

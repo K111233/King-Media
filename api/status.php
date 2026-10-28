@@ -1,7 +1,7 @@
 <?php
 /*
- * King Media: a quick health check for the forms, with no personal data.
- * Open https://kingmedia.uk/api/status.php to see whether everything is switched on.
+ * KWM Systems: a quick health check for the forms, with no personal data.
+ * Open https://kwmsystems.com/api/status.php to see whether everything is switched on.
  */
 define('KM_API', true);
 require __DIR__ . '/lib.php';
@@ -23,6 +23,7 @@ echo json_encode([
   'form'                => (!empty($cfg['to_email']) && !empty($cfg['from_email'])) ? 'on' : 'off',
   'secret_set'          => km_secret_ok($cfg),
   'payments'            => km_stripe_on($cfg) ? 'on' : (km_stripe_configured($cfg) ? 'key set, but secret or site_url missing' : 'off'),
+  'links_use'           => (string) (parse_url((string) ($cfg['site_url'] ?? ''), PHP_URL_HOST) ?: 'not set'),
   'webhook_secret_set'  => !empty($cfg['stripe']['webhook_secret']),
   'ai_brief'            => (!empty($cfg['ai']['enabled']) && !empty($cfg['ai']['api_key'])) ? 'on' : 'off',
   'mail_transport'      => (string) ($cfg['mail_transport'] ?? 'mail'),

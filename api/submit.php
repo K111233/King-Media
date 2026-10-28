@@ -1,6 +1,6 @@
 <?php
 /*
- * King Media: receives the demo request and question forms and emails them to you.
+ * KWM Systems: receives the demo request and question forms and emails them to you.
  * Settings live in config.php (copy config.sample.php and fill it in).
  */
 define('KM_API', true);

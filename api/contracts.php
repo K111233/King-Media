@@ -1,7 +1,7 @@
 <?php
 /*
- * King Media: your private page for making "sign and pay" links.
- * Open https://kingmedia.uk/api/contracts.php and log in with the admin_password from config.php.
+ * KWM Systems: your private page for making "sign and pay" links.
+ * Open https://kwmsystems.com/api/contracts.php and log in with the admin_password from config.php.
  */
 define('KM_API', true);
 require __DIR__ . '/lib.php';
@@ -74,7 +74,7 @@ $labels = ['open' => 'Sent, not signed yet', 'signed' => 'Signed, not paid yet',
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Contract links | King Media</title>
+<title>Contract links | KWM Systems</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <meta name="theme-color" content="#0B0A08">
