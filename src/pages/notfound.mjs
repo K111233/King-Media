@@ -24,7 +24,7 @@ export default [{
   <div class="container nf__inner">
     <p class="nf__code" aria-hidden="true">404</p>
     <h1 class="phero__title" id="pageTitle">That page isn’t here.</h1>
-    <p class="phero__lede">The address may have changed, or there may be a typo in the link. King Media is now KWM Systems, so some old addresses have moved. These might help:</p>
+    <p class="phero__lede">The address may have changed, or there may be a typo in the link. These might help:</p>
     <div class="phero__actions">${btn('/', 'Go to the home page', { variant: 'gold', size: 'lg' })}${btn('/contact/', 'Contact us', { variant: 'ghost', size: 'lg', ic: '' })}</div>
   </div>
 </section>

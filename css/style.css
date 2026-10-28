@@ -1,4 +1,4 @@
-/* KING MEDIA · style.css · the shared base ("Gilded Fascia"); index.html adds css/home.css */
+/* KWM Systems · style.css · base styles for the agreement and contract-link pages (api/sign.php, api/contracts.php) */
 
 /* ===== 01 FONTS ===== */
 /* Self-hosted, SIL OFL 1.1 (assets/fonts/OFL-*.txt) */
@@ -93,7 +93,7 @@ main:focus, [tabindex="-1"]:focus:not(:focus-visible) { outline: none; }
 .tnum { font-variant-numeric: tabular-nums lining-nums; }
 
 /* ===== 05 BRAND ===== */
-/* Lockup: caret-K mark + "KING MEDIA" set in Mona Text 650 caps. Word = 0.8 × mark height. */
+/* Lockup: caret-K mark + the wordmark set in Mona Text 650. Word = 0.8 × mark height. */
 .brand { --mark: 24px; display: inline-flex; align-items: center; gap: calc(var(--mark) * .5); min-height: 44px; color: var(--fg); text-decoration: none; }
 .brand__mark { flex: none; width: var(--mark); height: var(--mark); }
 .brand__word { font-weight: 650; font-size: calc(var(--mark) * .8); line-height: 1; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }

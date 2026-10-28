@@ -7,7 +7,6 @@
 
 export const SITE = {
   name: 'KWM Systems',
-  formerName: 'King Media',                  // used only where it helps people (About, payment note)
   domain: 'kwmsystems.com',                  // main domain since 2026-10-28 (kingmedia.uk forwards here)
   origin: 'https://kwmsystems.com',
   email: 'info@kwmsystems.com',              // public contact address, confirmed by the owner on 2026-10-28
@@ -41,7 +40,7 @@ export const OWNER_TODO = [
   'Local Business Refresh is shown as "quoted after a free look": confirm what the quote-preparation guide contains, and whether you want a fixed price.',
   'Confirm the policies the site states: monthly rolling for the AI receptionist, enquiry setup and social media, 30 days\' notice, setup refund if a service can\'t be made to work, top-ups only with approval.',
   'Check info@kwmsystems.com receives mail before going live (the site shows it everywhere; form messages still arrive at the King Media inbox).',
-  'Stripe receipts and statements may still say King Media: the demo form says so. Rename the Stripe account when you\'re ready.',
+  'Stripe receipts and card statements may still say King Media, and the website no longer mentions that name: change the Stripe account\'s public business name and statement descriptor to KWM Systems.',
   'Legal review of terms.html and privacy.html, and the items in launch-pack/09.',
   'Before selling the AI receptionist, enquiry setup or social management: pass the launch checks in launch-pack/05 and 10.',
 ];

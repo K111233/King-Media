@@ -22,13 +22,13 @@ const PRICE_FAQS = [
 
 export default [{
   path: '/pricing/',
-  title: 'Prices: websites, services, social media and Business OS',
-  description: `Every ${SITE.name} price in one place. Websites from ${money(WEB.tiers[0].build)} to build, the AI receptionist ${money(PRICES.receptionist.monthly)} a month, social media from ${money(SOCIAL.diy.monthly)}, and KWM Business OS from ${money(OS.setupFrom)} setup. ${VAT_NOTE}`,
+  title: 'Prices: websites, services and Business OS',
+  description: `Every ${SITE.name} price in one place: websites from ${money(WEB.tiers[0].build)} to build, the AI receptionist, social media from ${money(SOCIAL.diy.monthly)} and Business OS.`,
   bodyClass: 'is-pricing',
   body: pageHero({
     crumbs: [{ href: '/', label: 'Home' }, { label: 'Pricing' }],
     eyebrow: 'Pricing',
-    title: 'Every price, <em class="serif">published.</em>',
+    title: 'Every standard price, <em class="serif">published.</em>',
     lede: `No “call us for a price”. Websites have a one-off build price and a monthly plan. Automated services have a setup fee and a small monthly price. Social media is priced by how much we do. Anything tailored is quoted in writing before it starts. ${VAT_NOTE}`,
     cls: 'phero--compact',
   }) + `
@@ -65,7 +65,7 @@ export default [{
         </tr>`; }).join('')}
       </tbody>
     </table></div>
-    <p class="fineprint">The AI receptionist has no minute limit: if you regularly get more than about 100 out-of-hours calls a month, we’ll talk to you first. Top-ups are only ever bought if you say yes. Unused allowances don’t carry over. Call forwarding uses your own phone plan: check what your network charges for forwarded calls.</p>
+    <p class="fineprint">The AI receptionist has no minute limit: if it regularly takes more than about 100 calls a month, we’ll talk to you first. Top-ups are only ever bought if you say yes. Unused allowances don’t carry over. Call forwarding uses your own phone plan: check what your network charges for forwarded calls.</p>
     <div class="care care--quote">
       <div class="care__copy"><p class="eyebrow">One-off project</p><h3 class="care__title">${esc(byId.refresh.name)}. <span>Quoted after a free look.</span></h3><p>${esc(byId.refresh.oneLiner)}</p></div>
       ${btn(pathOf(byId.refresh), 'About the refresh', { variant: 'outline' })}
@@ -77,7 +77,7 @@ export default [{
   <div class="container">
     ${sectionHead({ eyebrow: 'Social media', title: 'Do it yourself, or _have it done for you_.', lede: `Post your own with AI drafts from the ${SOCIAL.diy.name}, or pick a managed plan. Managed plans are run by a person, so they’re priced by activity: more posts, more channels and more frequent checks take more of our time. ${money(SOCIAL.setup)} setup on every managed plan.`, id: 'socialTitle' })}
     ${diyCard()}
-    <div class="plans-head"><h3 class="plans-head__title">Managed for you</h3><p>A person checks every post, schedules it and keeps an eye on your pages.</p></div>
+    <div class="plans-head"><h3 class="plans-head__title">Managed for you</h3><p>A person checks every post and schedules it. On Regular and Fully managed, we also check your comments and messages.</p></div>
     <div class="tiers">${SOCIAL.tiers.map(socialTierCard).join('')}</div>
     ${socialQuote()}
     <div class="extras-row">${SOCIAL.extras.map((e) => `<p>${icon('plus', { cls: 'icon icon--sm' })}<span>${esc(e.label)}</span><strong>${e.price ? money(e.price) : esc(e.note)}</strong></p>`).join('')}</div>
@@ -105,7 +105,7 @@ export default [{
         <h3 class="rules__title">${icon('monitor', { cls: 'icon' })}Websites</h3>
         <ul class="rules__list" role="list">
           <li><strong>Demo:</strong> ${money(WEB.demo.price)}, paid online, separate from your build price. ${esc(WEB.demo.free)}.</li>
-          <li><strong>Build:</strong> paid by card when you sign your agreement. It includes your first month, and your site goes live the next day.</li>
+          <li><strong>Build:</strong> paid by card when you sign your agreement. It includes your first month, and we aim to have your site live the next day.</li>
           <li><strong>Plans:</strong> 12-month minimum on the 12-month and Care plans; 5 years on the 5-year plan, in return for a lower price. Then month by month.</li>
           <li><strong>Changes:</strong> up to 5 a month (1 on the Care plan). Unused changes don’t carry over.</li>
         </ul>

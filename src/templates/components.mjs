@@ -37,7 +37,7 @@ function picture(c, kind, { eager = false, sizes = '', alt = '' } = {}) {
 }
 
 export const browser = (c, { eager = false, sizes = '', cls = '', alt = '' } = {}) =>
-  `<div class="browser${cls ? ' ' + cls : ''}"><div class="browser__bar" aria-hidden="true"><span class="browser__dots"><i></i><i></i><i></i></span><span class="browser__url">${icon('lock', { cls: 'browser__lock' })}${esc(c.slug.replace(/-/g, ''))}.co.uk</span></div><div class="browser__screen">${picture(c, 'desk', { eager, sizes, alt })}</div></div>`;
+  `<div class="browser${cls ? ' ' + cls : ''}"><div class="browser__bar" aria-hidden="true"><span class="browser__dots"><i></i><i></i><i></i></span><span class="browser__url">${icon('lock', { cls: 'browser__lock' })}<span class="browser__addr">kwmsystems.com/concepts/${esc(c.slug)}</span></span></div><div class="browser__screen">${picture(c, 'desk', { eager, sizes, alt })}</div></div>`;
 
 export const phone = (c, { eager = false, sizes = '', cls = '', alt = '' } = {}) =>
   `<div class="handset${cls ? ' ' + cls : ''}"><div class="handset__screen">${picture(c, 'phone', { eager, sizes, alt })}</div></div>`;
@@ -271,7 +271,7 @@ export function demoForm({ id = 'demo' } = {}) {
       </fieldset>
       <fieldset class="field" data-show="shop">
         <legend>Roughly how many products?</legend>
-        <div class="choices">${['1–20', '21–100', '100+', 'Not sure'].map((v) => choice('radio', 'products', v, v)).join('')}</div>
+        <div class="choices">${['1–20', '21–100', 'More than 100', 'Not sure'].map((v) => choice('radio', 'products', v, v)).join('')}</div>
       </fieldset>
       <div class="field">
         <label for="${id}-quoteNeeds">Tell us what you need so we can quote <span class="req" aria-hidden="true">*</span></label>
@@ -306,7 +306,7 @@ export function demoForm({ id = 'demo' } = {}) {
   </div>
   <div class="form__foot">
     <button type="submit" class="btn btn--primary btn--lg"><span>Continue to pay £4.99</span>${icon('lock', { cls: 'btn__icon' })}</button>
-    <p class="fineprint">You’ll pay securely with Stripe (card, Apple Pay or Google Pay). Your bank statement may show King Media, our former trading name. Our services are for businesses. See our <a href="/privacy.html">privacy notice</a> and <a href="/terms.html">terms</a>.</p>
+    <p class="fineprint">You’ll pay securely with Stripe (card, Apple Pay or Google Pay). Our services are for businesses. See our <a href="/privacy.html">privacy notice</a> and <a href="/terms.html">terms</a>.</p>
   </div>
   <p class="form__status" id="${id}-status" role="status" aria-live="polite"></p>
 </form>
@@ -331,7 +331,7 @@ export function solutionCard(s) {
   <p class="solcard__tag">${esc(s.tagline)}</p>
   <h3 class="solcard__title"><a class="stretched" href="${pathOf(s)}">${esc(s.name)}</a></h3>
   <p class="solcard__text">${esc(s.oneLiner)}</p>
-  ${tickList(s.youGet.slice(0, 3), 'yes', 'solcard__list')}
+  ${tickList((s.cardPoints || s.youGet).slice(0, 3), 'yes', 'solcard__list')}
   <div class="solcard__foot"><p class="solcard__price"><strong>${fromPrice(s)}</strong><span>${setupText(s)}</span></p><span class="solcard__more" aria-hidden="true">How it works ${icon('arrow', { cls: 'icon icon--sm' })}</span></div>
 </article>`;
 }
@@ -409,7 +409,7 @@ export function osTeaser({ id = 'osTeaser' } = {}) {
     <div class="ostease__copy">
       <p class="eyebrow eyebrow--gold">Premium · KWM Business OS</p>
       <h2 class="shead__title" id="${id}Title">One connected system, <em class="serif">built around how you work.</em></h2>
-      <p class="shead__lede">For businesses ready for more than a website: we connect selected software, AI tools and workflows so enquiries are captured, routine admin keeps moving and you get a clear view of the work. Important decisions stay with you.</p>
+      <p class="shead__lede">For businesses ready for more than a website: we connect selected software, AI tools and workflows so enquiries can be captured, routine admin can keep moving and you can get a clear view of the work. Important decisions stay with you.</p>
       <p class="ostease__price"><span><small>Setup from</small><strong>${money(OS.setupFrom)}</strong></span><span><small>Then from</small><strong>${money(OS.monthlyFrom)}</strong><small>a month</small></span></p>
       <div class="split__actions">${btn('/business-os/', 'Explore Business OS', { variant: 'gold' })}${btn('/contact/?interest=business-os#quote', 'Discuss your Business OS', { variant: 'ghost', ic: '' })}</div>
     </div>

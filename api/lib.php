@@ -4,7 +4,7 @@
  *
  * Turns a demo request (form answers + dropped files) into one email with
  * everything needed to build the demo, plus an optional AI-written brief.
- * Prices here must match TIERS in js/main.js.
+ * Prices here must match WEB.tiers in src/content/pricing.mjs.
  */
 if (!defined('KM_API')) { http_response_code(404); exit; }
 
@@ -24,7 +24,7 @@ const KM_CHOICES = [
   'products' => ['1–20', '21–100', '100+', 'Not sure'],
 ];
 
-// Files: same limits as the drop box in js/main.js
+// Files: same limits as the drop box on the website demo form (js/kwm.js)
 const KM_MAX_FILES = 10;
 const KM_MAX_FILE_BYTES = 10 * 1024 * 1024;
 const KM_MAX_TOTAL_BYTES = 25 * 1024 * 1024;

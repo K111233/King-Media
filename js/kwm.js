@@ -1,5 +1,5 @@
 /* KWM Systems · kwm.js · menus, tabs, the two forms, payment notices and the Business OS calculator. No dependencies.
- * Forms post to the existing api/submit.php (form=question | form=demo), exactly as the King Media
+ * Forms post to the existing api/submit.php (form=question | form=demo), exactly as the previous
  * site did: the demo request goes on to Stripe through the pay_url it returns. On a local preview
  * (no PHP), nothing is sent and the form says so.
  */
@@ -202,7 +202,7 @@
     nameTry.addEventListener('submit', (e) => {
       e.preventDefault();
       const name = $('#nameTryName').value.trim().slice(0, 32);
-      const url = `/concepts/${encodeURIComponent($('#nameTryConcept').value)}/${name ? `?name=${encodeURIComponent(name)}` : ''}`;
+      const url = `/concepts/${encodeURIComponent($('#nameTryConcept').value)}/${name ? `#name=${encodeURIComponent(name)}` : ''}`;
       window.open(url, '_blank', 'noopener');
     });
   }

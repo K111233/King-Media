@@ -29,7 +29,7 @@ const privacySections = [
 const privacy = {
   path: '/privacy.html',
   title: 'Privacy & cookies',
-  description: `How ${SITE.name} (${SITE.legalName}, formerly King Media) uses personal information: enquiries, demo requests, customers, the callers and customers of the businesses we work for, and cookies.`,
+  description: `How ${SITE.name} uses personal information: enquiries, demo requests, customers, the callers and customers of the businesses we work for, and cookies.`,
   bodyClass: 'is-legal',
   body: legalHero('Privacy & cookies', 'How we use personal information, in plain English. If anything isn’t clear, email us and we’ll explain.') + `
 <section class="section section--legal">
@@ -37,7 +37,7 @@ const privacy = {
     ${toc(privacySections)}
     <div class="prose">
     <h2 id="who">1. Who we are</h2>
-    <p>${SITE.name} is a trading name of ${SITE.legalName}, a company registered in ${SITE.registeredIn} (company number ${SITE.companyNumber}), whose registered office is at ${SITE.office}. We used to trade as ${SITE.formerName}.</p>
+    <p>${SITE.name} is a trading name of ${SITE.legalName}, a company registered in ${SITE.registeredIn} (company number ${SITE.companyNumber}), whose registered office is at ${SITE.office}.</p>
     <p>For the information we collect about our own enquiries, customers and business contacts, we decide how it’s used, which makes us the <strong>controller</strong> under UK data protection law. When we run a website or a service for a business, such as hosting its website or answering its calls, we handle its customers’ information on that business’s behalf, which makes us its <strong>processor</strong> (see section 5).</p>
     <p>Contact us about anything on this page at ${mail}.</p>
 
@@ -50,19 +50,19 @@ const privacy = {
     <p>We use this to reply to you, build your demo, send you quotes and talk through whether our services would suit your business. Our forms briefly keep a scrambled (hashed) version of your IP address to stop spam.</p>
 
     <h2 id="paying">3. Payments and agreements</h2>
-    <p>Payments are handled by Stripe, a secure payment provider. We see that you’ve paid, but we never see or store your full card details. Receipts and card statements may show our former name, ${SITE.formerName}.</p>
+    <p>Payments are handled by Stripe, a secure payment provider. We see that you’ve paid, but we never see or store your full card details.</p>
     <p>If you sign an agreement online, we keep the name and position you type to sign, the plan you choose, the date and time, your IP address and browser, and a copy of exactly what you signed, as a record of the contract.</p>
 
     <h2 id="customers">4. When you’re our customer</h2>
     <p>We keep your contact and business details, the emails and messages we exchange, the content you ask us to put on your website or social media, your service settings (such as your working hours, approved wording and where summaries should go), records of what we’ve set up and changed, and usage figures.</p>
 
     <h2 id="clients">5. If you contacted one of our clients</h2>
-    <p>We host websites and run services for small businesses: an AI receptionist for out-of-hours calls, website enquiry forms, social media management and, for some, a tailored Business OS. If you visited one of those websites, contacted one of those businesses, or bought from them, we may handle your information on their behalf. That business is the controller of your information, and its own privacy notice explains how it uses it. We act only on its instructions.</p>
+    <p>We host websites and run services for small businesses: an AI receptionist for calls the business can’t take, website enquiry forms, social media management and, for some, a tailored Business OS. If you visited one of those websites, contacted one of those businesses, or bought from them, we may handle your information on their behalf. That business is the controller of your information, and its own privacy notice explains how it uses it. We act only on its instructions.</p>
     <p>Depending on the service, this can include:</p>
     <ul>
       <li>what you enter in a form on a website we host for them;</li>
       <li>your name, phone number, the area or postcode of the job, what the job is, how urgent you said it was, and when you’d like a call back (AI receptionist);</li>
-      <li>comments and messages you send to the business’s Facebook, Instagram or Google Business Profile pages, which we may read and, on some plans, reply to using wording the business has approved (social media management);</li>
+      <li>comments and messages you send to the business’s Facebook or Instagram pages, which we may read and, on some plans, reply to using wording the business has approved (social media management);</li>
       <li>photos of work the business has done, which might show a property;</li>
       <li>for a business with a KWM Business OS, the details you give that business (for example in an enquiry, a call or a booking) as they pass through the tools we set up and run for it.</li>
     </ul>
@@ -81,7 +81,7 @@ const privacy = {
     <p>We never sell your information or use it for anything you wouldn’t expect. We don’t use our clients’ customers’ information to train AI, and we choose supplier settings that stop our suppliers doing so.</p>
 
     <h2 id="share">8. Who we share it with</h2>
-    <p>We only share information with services we need to run the business: our website hosting, our email (Microsoft 365) and our payment provider (Stripe). To run our services for clients, we also use telephone, text message, email, automation and AI providers, and we post to social media platforms (Meta and Google) on our clients’ behalf, where their own terms apply. Our providers may only use the information to provide their service to us. Before our AI receptionist, enquiry setup and social media services go live, we’ll list these providers on this page, with what each one does and where it processes information. People who make sales calls for us see only the contact details they need. We don’t share information with anyone else unless the law requires it.</p>
+    <p>We only share information with services we need to run the business: our website hosting, our email (Microsoft 365) and our payment provider (Stripe). To run our services for clients, we also use telephone, text message, email, automation and AI providers, and we post to social media platforms (Meta and Google) on our clients’ behalf, where their own terms apply. Our providers may only use the information to provide their service to us. We’ll list the providers our AI receptionist, enquiry setup and social media services use on this page, with what each one does and where it processes information, before any client’s service starts. For a Business OS, they’re named in your proposal. People who make sales calls for us see only the contact details they need. We don’t share information with anyone else unless the law requires it.</p>
 
     <h2 id="abroad">9. Information sent outside the UK</h2>
     <p>Some of our providers are based in, or process information in, other countries, including the United States. Where that happens, we rely on the safeguards UK law requires, such as the UK–US “data bridge” for providers certified under it, or UK-approved data transfer contracts.</p>
@@ -92,6 +92,7 @@ const privacy = {
       <li><strong>Enquiries:</strong> if we don’t end up working together, we delete your enquiry and any files from our email within 12 months.</li>
       <li><strong>Signed agreements:</strong> if you sign but don’t pay, we delete the signed copy and its signing record after 12 months.</li>
       <li><strong>Our clients’ customers:</strong> callback summaries, enquiries and message records are kept only as long as the client needs them. Our default is to delete them from our systems 90 days after they’re sent to the client, and message logs after 12 months. Photos sent to us for social media posts are deleted from our storage within 30 days of being posted, unless the client asks us to keep them for future posts.</li>
+      <li><strong>Social Content Machine:</strong> the photos you upload are deleted from our storage after 30 days.</li>
       <li><strong>Customers:</strong> for as long as we work together, then for 6 years after our agreement ends, for accounting and legal reasons. Then we delete it.</li>
     </ul>
 
@@ -111,12 +112,9 @@ const privacy = {
       <tbody>
         <tr><th scope="row">kwm-notice</th><td data-label="What it does">Remembers that you’ve seen our note about visit counting, so it isn’t shown again</td><td data-label="Type">Essential</td><td data-label="How long">Until you clear it</td></tr>
         <tr><th scope="row">kwm-stats</th><td data-label="What it does">Remembers that you switched visit counting off. Only set if you do.</td><td data-label="Type">Essential</td><td data-label="How long">Until you clear it</td></tr>
-        <tr><th scope="row">km-consent</th><td data-label="What it does">Remembers your cookie choice, so we don’t keep asking</td><td data-label="Type">Essential</td><td data-label="How long">Until you clear it</td></tr>
-        <tr><th scope="row">km-motion</th><td data-label="What it does">Remembers if you pressed “Pause motion”. Only set if you use it.</td><td data-label="Type">Essential</td><td data-label="How long">Until you clear it</td></tr>
-        <tr><th scope="row">km-star</th><td data-label="What it does">Remembers the business name you tried in “See it with your name”. Only set if you choose “Accept all”.</td><td data-label="Type">Optional</td><td data-label="How long">Until you close the tab</td></tr>
       </tbody>
     </table></div>
-    <p>The last three items are only used by some older pages, such as our concept websites. Like every website, our hosting provider keeps standard server logs (such as IP address, browser type and the pages requested) to keep the site secure; these are deleted automatically after a short period set by our host. If you choose to pay online, you’ll go to Stripe’s secure payment page, which has its own privacy notice. If we ever add advertising measurement, we’ll update this notice first and ask for your consent before it starts.</p>
+    <p>Like every website, our hosting provider keeps standard server logs (such as IP address, browser type and the pages requested) to keep the site secure; these are deleted automatically after a short period set by our host. If you choose to pay online, you’ll go to Stripe’s secure payment page, which has its own privacy notice. If we ever add advertising measurement, we’ll update this notice first and ask for your consent before it starts.</p>
 
     <h2 id="safe">13. Keeping it safe</h2>
     <p>Our website is served over a secure connection (the padlock in your browser). We only keep the information we need, limit who can see it, and use strong passwords and two-step sign-in on the accounts that hold it. We never ask for, or keep, our clients’ social media passwords.</p>
@@ -141,7 +139,7 @@ const termsSections = [
 const terms = {
   path: '/terms.html',
   title: 'Terms & conditions',
-  description: `The terms for using the ${SITE.name} website and our services for businesses: website demos, plans and payment, our monthly services, social media management, Business OS proposals, allowances, AI, cancelling and more.`,
+  description: `The terms for the ${SITE.name} website and our services: website demos, plans and payment, monthly services, social media, Business OS, AI and cancelling.`,
   bodyClass: 'is-legal',
   body: legalHero('Terms & conditions', 'These terms cover using this website and the main points of how our services work. For websites, your signed Service Agreement sets out the full terms of your plan. For our other services, we agree a written order with you first, and for a Business OS, a written proposal. If anything here differs from your Service Agreement or written order, that document applies.') + `
 <section class="section section--legal">
@@ -149,7 +147,7 @@ const terms = {
     ${toc(termsSections)}
     <div class="prose">
     <h2 id="about">1. About us</h2>
-    <p>This website is run by ${SITE.legalName}, trading as ${SITE.name} (and previously as ${SITE.formerName}), a company registered in ${SITE.registeredIn} (company number ${SITE.companyNumber}), whose registered office is at ${SITE.office}. You can contact us at ${mail}.</p>
+    <p>This website is run by ${SITE.legalName}, trading as ${SITE.name}, a company registered in ${SITE.registeredIn} (company number ${SITE.companyNumber}), whose registered office is at ${SITE.office}. You can contact us at ${mail}.</p>
 
     <h2 id="business">2. Our services are for businesses</h2>
     <p>Our services are for sole traders, partnerships and companies acting for their business. By asking us for a demo or a proposal, or buying our services, you confirm you’re acting for your business, not as a consumer.</p>
@@ -158,7 +156,7 @@ const terms = {
     <p>You’re welcome to browse this website and use its forms to contact us. Please don’t misuse it, try to break it, or copy its design or content without our permission. The concept websites shown on this site are examples we designed ourselves for made-up businesses. The examples of our services and social media posts, including names, phone numbers and messages, are made up to show how they work. They aren’t real customers or real results.</p>
 
     <h2 id="services">4. What we provide</h2>
-    <p>We design, build, host and look after websites. We also set up and run an AI receptionist for out-of-hours calls and website enquiry setup, carry out one-off Local Business Refresh projects, provide the Social Content Machine, manage social media, and design, build and maintain tailored KWM Business OS systems. Each service is described on its page on this website, including what it does and what it won’t do.</p>
+    <p>We design, build, host and look after websites. We also set up and run an AI receptionist for calls our clients can’t take, and website enquiry setup, carry out one-off Local Business Refresh projects, provide the Social Content Machine, manage social media, and design, build and maintain tailored KWM Business OS systems. Each service is described on its page on this website, including what it does and what it won’t do.</p>
     <p>In particular: our AI receptionist takes messages and doesn’t quote, book work or handle emergencies; the Social Content Machine writes drafts for you to check and post, and doesn’t post for you; for managed social media, a person checks every post before it’s scheduled, and we never buy followers, likes or reviews; and a Business OS is scoped in a written proposal, which sets out what’s included, the fees and any third-party costs before work starts.</p>
 
     <h2 id="web-prices">5. Website prices</h2>
@@ -175,7 +173,7 @@ const terms = {
     <p>We’ll keep making changes to your demo until you’re happy with it. The demo is for you to review. Please don’t publish it or pass it off as your own website until you’ve paid for your build.</p>
 
     <h2 id="web-pay">7. Paying for your website</h2>
-    <p>Once you approve your demo, we’ll send you a private link to your Service Agreement. You choose your plan, sign online and pay your build price by card through Stripe, which also sets up your monthly payments. Your build price includes your first month. Your website goes live the day after you pay.</p>
+    <p>Once you approve your demo, we’ll send you a private link to your Service Agreement. You choose your plan, sign online and pay your build price by card through Stripe, which also sets up your monthly payments. Your build price includes your first month. We aim to put your website live the day after you pay.</p>
 
     <h2 id="web-plans">8. Website monthly plans</h2>
     <p>Your plan and its minimum term start on the day you pay your build price, and your monthly payments start one month later, paid monthly in advance. A “website change” is any single change you ask us to make, big or small, such as new prices, photos, opening hours, offers, or a new section on an existing page. You can ask for up to 5 changes each month, or 1 on the Care plan. New pages are quoted separately. Unused changes don’t carry over to the next month.</p>
@@ -194,7 +192,7 @@ const terms = {
     </ul>
 
     <h2 id="usage">11. Allowances and top-ups</h2>
-    <p>The AI receptionist has no minute limit. It’s covered by fair use: if a business regularly receives more than about 100 out-of-hours calls a month, we’ll agree the next step with them before anything changes, and we’ll never cut callers off. Our other monthly services have allowances or limits, shown on the pricing page. For a Business OS, any usage limits and usage-based costs are set out in your proposal. We tell you when you’ve used ${POLICY.warnAt}% of an allowance. We never charge for extra use without your agreement: if you’re going to run out, you choose whether to buy a top-up or extra posts for the rest of that month, or to wait until your allowance resets. Unused allowances don’t carry over.</p>
+    <p>The AI receptionist has no minute limit. It’s covered by fair use: if a business’s receptionist regularly takes more than about 100 calls a month, we’ll agree the next step with them before anything changes, and we’ll never cut callers off. Our other monthly services have allowances or limits, shown on the pricing page. For a Business OS, any usage limits and usage-based costs are set out in your proposal. We tell you when you’ve used ${POLICY.warnAt}% of an allowance. We never charge for extra use without your agreement: if you’re going to run out, you choose whether to buy a top-up or extra posts for the rest of that month, or to wait until your allowance resets. Unused allowances don’t carry over.</p>
 
     <h2 id="social">12. Social media management</h2>
     <ul>

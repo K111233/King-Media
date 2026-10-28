@@ -38,10 +38,10 @@ export const PRICES = {
   receptionist: {
     monthly: 59.99, setup: 99, involvement: 'checked',
     // No minute limit (the owner's decision, 27 Oct 2026). Each call is short because it only takes a
-    // message; fair use covers the rare business with far more out-of-hours calls (launch-pack/03).
-    allowance: { short: 'Unlimited out-of-hours calls (fair use)' },
+    // message; fair use covers the rare business with far more calls (launch-pack/03).
+    allowance: { short: 'Unlimited calls (fair use)' },
     topUp: null,
-    fairUse: 'No minute limit. Calls stay short because it only takes a message. If you regularly get more than about 100 out-of-hours calls a month, we’ll talk to you first. We never cut callers off.',
+    fairUse: 'No minute limit. Calls stay short because it only takes a message. If your receptionist regularly takes more than about 100 calls a month, we’ll talk to you first. We never cut callers off.',
   },
   enquiry: {
     monthly: 19.99, setup: 79, involvement: 'automated',

@@ -30,7 +30,7 @@ export { pageHero };
 const websites = {
   path: '/websites/',
   title: 'Website design for local businesses',
-  description: 'Websites designed, built, hosted and looked after for local businesses. See a working demo within 2 working days. From £494.99 to build, then from £19.99 a month. Prices include any VAT that applies.',
+  description: 'Websites designed, built and looked after for local businesses. See a working demo within 2 working days. From £494.99 to build, then from £19.99 a month.',
   bodyClass: 'is-websites',
   jsonld: {
     '@context': 'https://schema.org', '@type': 'Service', name: 'Website design, build and care', serviceType: 'Website design',
@@ -109,7 +109,7 @@ ${ctaBand({ title: 'See your new website _before you pay for it_.', text: `Reque
 const work = {
   path: '/work/',
   title: 'Our work: concept websites',
-  description: 'Seven concept websites we designed and built for made-up local businesses, from a roofer and a gardener to a bakery, a barber and a physio clinic. Open them live and try them on your phone.',
+  description: 'Seven concept websites we designed and built for made-up local businesses, from a roofer to a bakery and a barber. Open them live and try them on your phone.',
   bodyClass: 'is-work',
   body: pageHero({
     crumbs: [{ href: '/', label: 'Home' }, { label: 'Our work' }],

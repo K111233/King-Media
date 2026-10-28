@@ -5,7 +5,7 @@ import { mark, icon, FAVICON_DATA_URI } from './icons.mjs';
 import { esc, fromPrice, involvementKey } from './components.mjs';
 import { INVOLVEMENT, WEB, OS, money } from '../content/pricing.mjs';
 
-export const VERSION = '20261028b'; // bump on every release: CSS and JS are cached by version
+export const VERSION = '20261028c'; // bump on every release: CSS and JS are cached by version
 
 const brand = (cls = '', tile = '#13264F') => `<a class="brand${cls ? ' ' + cls : ''}" href="/" aria-label="${SITE.name}, home">${mark(38, 'brand__mark', { tile })}<span class="brand__word" aria-hidden="true"><b>KWM</b> Systems</span></a>`;
 
@@ -15,7 +15,7 @@ function solutionsMenu(path) {
     <div class="mega__inner">
       <div class="mega__intro">
         <p class="eyebrow eyebrow--gold">Services</p>
-        <p class="mega__lead">The systems around your website: out-of-hours calls answered, enquiries organised, social media handled and your local presence tidied up.</p>
+        <p class="mega__lead">The systems around your website: missed calls answered, enquiries organised, social media handled and your local presence tidied up.</p>
         <a class="btn btn--gold btn--sm" href="/solutions/"><span>See all services</span>${icon('arrow', { cls: 'btn__icon' })}</a>
         <a class="mega__sub" href="/websites/">${icon('monitor', { cls: 'icon icon--sm' })}Websites, from ${money(WEB.tiers[0].build)}</a>
         <a class="mega__sub" href="/business-os/">${icon('layers', { cls: 'icon icon--sm' })}Business OS, setup from ${money(OS.setupFrom)}</a>
@@ -82,7 +82,7 @@ function footer() {
       </nav>
     </div>
     <div class="site-footer__legal">
-      <p>© ${new Date().getFullYear()} ${SITE.name}. Formerly ${SITE.formerName}.</p>
+      <p>© ${new Date().getFullYear()} ${SITE.name}.</p>
       <p>${esc(DISCLOSURE)}</p>
     </div>
   </div>
@@ -111,7 +111,7 @@ ${noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta name="theme-co
 <meta property="og:title" content="${esc(ogTitle || t)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${SITE.origin}${ogImage}">
+<meta property="og:image" content="${SITE.origin}${ogImage}?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/png">
@@ -120,7 +120,7 @@ ${noindex ? '<meta name="robots" content="noindex">\n' : ''}<meta name="theme-co
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(ogTitle || t)}">
 <meta name="twitter:description" content="${esc(description)}">
-<meta name="twitter:image" content="${SITE.origin}${ogImage}">
+<meta name="twitter:image" content="${SITE.origin}${ogImage}?v=2">
 <meta name="twitter:image:alt" content="${esc(ogAlt)}">
 <meta name="application-name" content="${SITE.name}">
 <meta name="apple-mobile-web-app-title" content="${SITE.name}">

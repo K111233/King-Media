@@ -15,7 +15,7 @@ const C = Object.fromEntries(CONCEPTS.map((c) => [c.slug, c]));
 const PAGES = [
   {
     path: '/websites-for-barbers/', crumb: 'Barbers and salons', eyebrow: 'Websites for barbers and salons',
-    lead: 'A barber’s website', accent: 'that gets the chair booked.',
+    lead: 'A barber’s website', accent: 'built to get the chair booked.',
     lede: 'Your prices, your cuts and a way to book, on a website that’s yours.',
     concept: 'northside-barbers', tools: ['social', 'receptionist', 'enquiry'],
     pitch: 'We design it, build it and look after it. You see a real, working demo of your shop’s website before you decide anything.',
@@ -59,7 +59,7 @@ const PAGES = [
   },
   {
     path: '/websites-for-tradespeople/', crumb: 'Tradespeople', eyebrow: 'Websites for roofers, builders, plumbers and electricians',
-    lead: 'A trades website', accent: 'that wins you the quote.',
+    lead: 'A trades website', accent: 'built to win you the quote.',
     lede: 'Show your work, the areas you cover and a number to call.',
     concept: 'ironclad-roofing', tools: ['receptionist', 'enquiry', 'social'],
     pitch: 'You’re on the tools, so we do the lot: design, build, hosting and updates. You see a real, working demo of your website before you decide anything.',
@@ -74,7 +74,7 @@ const PAGES = [
     lede: 'We build yours first. You decide after.',
     concept: 'crumb-and-co', tools: ['receptionist', 'enquiry', 'social'],
     pitch: 'We design it, build it and look after it: hosting, web address, security and changes. You see a real, working demo of your website before you decide anything.',
-    get: ['Designed for your business, not a template', 'Usually live the day after you pay for your build', 'Changes by text, WhatsApp or email, whenever you need them'],
+    get: ['Designed for your business, not a template', 'Usually live the day after you pay for your build', 'Up to 5 changes a month (1 on the Care plan), by text, WhatsApp or email'],
     faq: { q: 'What kinds of business do you build for?', a: 'Local businesses of all kinds: shops, cafés, barbers and salons, trades, gardeners, clinics and more. On our work page you can open seven concept websites we designed for different trades.' },
     title: 'Small business websites, built for you',
     description: 'Websites for UK small businesses, designed, built and looked after for you. From £494.99 to build. See a demo of yours before you decide.',
@@ -83,7 +83,7 @@ const PAGES = [
 
 const t = WEB.tiers;
 const SHARED_FAQS = [
-  { q: 'What will it cost?', a: `Your build price is ${money(t[0].build)} for 1 page, ${money(t[1].build)} for 2, ${money(t[2].build)} for 3, or ${money(t[3].build)} for 4 to 6, and it includes your first month. After that, the monthly fee is ${money(t[0].m12)} for 1 or 2 pages on the 12-month plan (${money(t[2].m12)} for 3 or more), with a lower price on the 5-year plan. Or choose the Care plan at ${money(WEB.care.monthly)} a month for any size of site, with 1 change a month instead of 5. ${VAT_NOTE}` },
+  { q: 'What will it cost?', a: `Your build price is ${money(t[0].build)} for 1 page, ${money(t[1].build)} for 2, ${money(t[2].build)} for 3, or ${money(t[3].build)} for 4 to 6, and it includes your first month. After that, the monthly fee is ${money(t[0].m12)} for 1 or 2 pages on the 12-month plan (${money(t[2].m12)} for 3 to 6), with a lower price on the 5-year plan. Or choose the Care plan at ${money(WEB.care.monthly)} a month for any size of site, with 1 change a month instead of 5. ${VAT_NOTE}` },
   { q: 'Is the demo really free?', a: `Yes, when we arrange it with you on a call after you send this form. If you’d rather skip the call and request a demo straight through our website, there’s a ${money(WEB.demo.price)} fee. Either way, there’s no obligation to go ahead.` },
   null, // the page's own question goes here
   { q: 'I don’t have a logo or professional photos. Is that a problem?', a: 'No. Send whatever you have. With your permission, we can also start from the photos and reviews already on your Google or Facebook page.' },
@@ -125,7 +125,7 @@ function landing(p) {
       eyebrow: p.eyebrow,
       title: `${esc(p.lead)} <em class="serif">${esc(p.accent)}</em>`,
       lede: esc(p.lede),
-      price: `<strong>From ${money(t[0].build)}</strong> to build <span>· then from ${money(t[0].m12)} a month, or ${money(WEB.care.monthly)} on the Care plan · ${VAT_NOTE}</span>`,
+      price: `<strong>From ${money(t[0].build)}</strong> to build <span>· then from ${money(t[0].m12)} a month on a 12-month plan, or ${money(WEB.care.monthly)} on the Care plan · ${VAT_NOTE}</span>`,
       actions: `${btn('#start', 'Get my free demo', { variant: 'gold', size: 'lg' })}${btn(`/concepts/${c.slug}/`, 'See a concept live', { variant: 'ghost', size: 'lg', ic: 'arrow-up-right', attrs: `target="_blank" rel="noopener" aria-label="See the ${esc(c.name)} concept live (opens in a new tab)"` })}`,
       aside: `<div class="phero__devices">${browser(c, { eager: true, sizes: '(min-width: 1100px) 520px, 90vw', alt: `${c.name} concept website, desktop view` })}${phone(c, { cls: 'phero__phone', sizes: '150px', alt: `${c.name} concept website, phone view` })}</div><p class="stage__caption">Concept: ${esc(c.name)}, a working website we designed and built for a made-up business. Not a real business.</p>`,
     }) + `
@@ -135,7 +135,7 @@ function landing(p) {
     <div class="formwrap__side">
       <div class="card side">
         <p class="eyebrow">Your real one</p>
-        <h2 class="side__title">Yours, designed from scratch in two working days.</h2>
+        <h2 class="side__title">Yours, designed from scratch in 2 working days.</h2>
         <p class="side__text">${esc(p.pitch)}</p>
         ${tickList(p.get)}
       </div>
@@ -200,7 +200,7 @@ function landing(p) {
 
 <section class="section" aria-labelledby="moreTitle">
   <div class="container">
-    ${sectionHead({ eyebrow: 'More than a website', title: 'Services that _work while you work_.', lede: 'When your website’s live, we can also answer your out-of-hours calls with an AI receptionist, organise your website enquiries and help with your social media. Every one is optional, and priced on its own.', id: 'moreTitle' })}
+    ${sectionHead({ eyebrow: 'More than a website', title: 'Services that _work while you work_.', lede: 'When your website’s live, we can also answer the calls you can’t take with an AI receptionist, organise your website enquiries and help with your social media. Every one is optional, and priced on its own.', id: 'moreTitle' })}
     <div class="cards">${p.tools.map((id) => serviceCard(byId[id])).join('')}</div>
   </div>
 </section>
