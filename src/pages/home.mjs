@@ -17,7 +17,7 @@ const hero = `
     <div class="hero__copy">
       <p class="eyebrow eyebrow--gold">Websites and business systems</p>
       <h1 class="hero__title" id="heroTitle">Your website, <em class="serif">and the systems behind it.</em></h1>
-      <p class="hero__lede">KWM Systems designs, builds and looks after websites for local businesses across the UK, then sets up what sits around them: an AI receptionist for out-of-hours calls, organised website enquiries and help with your social media. Ready for more? KWM Business OS connects your tools and workflows around the way you work.</p>
+      <p class="hero__lede">KWM Systems designs, builds and looks after websites for local businesses across the UK, then sets up what sits around them: an AI receptionist for the calls you can’t take, organised website enquiries and help with your social media. Ready for more? KWM Business OS connects your tools and workflows around the way you work.</p>
       <p class="hero__for">${icon('building', { cls: 'icon icon--sm' })}<span>For trades, salons, clinics, cafés, shops and other owner-run local businesses.</span></p>
       <div class="hero__actions">
         ${btn(CTA.href, CTA.label, { variant: 'gold', size: 'lg' })}
@@ -84,7 +84,7 @@ const services = `
 const calls = `
 <section class="section section--muted" aria-labelledby="callsTitle">
   <div class="container">
-    ${sectionHead({ eyebrow: 'When the phone rings', title: 'Closed for the day? _You still get the details._', lede: 'During your working hours, your phone rings as normal. Outside them, calls you don’t answer go to an AI receptionist that takes the caller’s details and the reason for the call, then sends you a summary so you can call back when you’re free. Website enquiries arrive as a tidy summary, whenever they’re sent.', id: 'callsTitle' })}
+    ${sectionHead({ eyebrow: 'When the phone rings', title: 'Closed for the day? _You still get the details._', lede: 'Your phone rings as normal. When you’re on a job or closed for the day, calls you don’t answer go to an AI receptionist that takes the caller’s details and the reason for the call, then sends you a summary, so you can call back and quote when you’re free. Website enquiries arrive as a tidy summary, whenever they’re sent.', id: 'callsTitle' })}
     ${dayStrip()}
     <p class="section__after">${btn(pathOf(byId.receptionist), 'The AI receptionist', { variant: 'outline' })}${btn(pathOf(byId.enquiry), 'Website enquiry setup', { variant: 'outline' })}</p>
   </div>
@@ -144,7 +144,7 @@ const priceTabs = `
         <div class="table-wrap"><table class="ptable"><thead><tr><th scope="col">Website size</th><th scope="col">Build (one-off)</th><th scope="col">12-month plan</th><th scope="col">5-year plan</th></tr></thead><tbody>
           ${WEB.tiers.map((t) => `<tr><th scope="row">${esc(t.label)}</th><td data-label="Build"><strong>${money(t.build)}</strong></td><td data-label="12-month plan">${money(t.m12)}/month</td><td data-label="5-year plan">${money(t.m5)}/month</td></tr>`).join('')}
         </tbody></table></div>
-        <p class="fineprint">Or the Care plan: ${money(WEB.care.monthly)} a month for any size of site. ${WEB.care.detail} Website demo ${money(WEB.demo.price)}, free if we arrange it on a call.</p>
+        <p class="fineprint">Or the Care plan: ${money(WEB.care.monthly)} a month. ${WEB.care.detail} Website demo ${money(WEB.demo.price)}, free if we arrange it on a call.</p>
       </div>
       <div class="tabs__panel" role="tabpanel" id="pp-svc" aria-labelledby="pt-svc" tabindex="0">
         <div class="table-wrap"><table class="ptable"><thead><tr><th scope="col">Service</th><th scope="col">Price</th><th scope="col">Setup</th><th scope="col">Included</th></tr></thead><tbody>
@@ -183,20 +183,19 @@ export default [{
   path: '/',
   fullTitle: 'KWM Systems | Websites and business systems for local businesses',
   ogTitle: 'KWM Systems: websites and business systems for local businesses',
-  description: `Websites designed, built and looked after for UK local businesses, from ${money(WEB.tiers[0].build)}. Plus an AI receptionist, website enquiry setup, social media management and KWM Business OS.`,
+  description: `Websites designed, built and looked after for UK local businesses from ${money(WEB.tiers[0].build)}, plus an AI receptionist, enquiry setup, social media and Business OS.`,
   ogAlt: 'KWM Systems. Websites and business systems for local businesses.',
   bodyClass: 'is-home',
   jsonld: {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
     name: SITE.name,
-    alternateName: SITE.formerName,
     legalName: SITE.legalName,
     identifier: `Company number ${SITE.companyNumber} (${SITE.registeredIn})`,
     url: SITE.origin + '/',
     logo: SITE.origin + '/assets/kwm/icons/icon-512.png',
     image: SITE.origin + '/assets/kwm/share/og-kwm.png',
-    description: 'Websites and business systems for UK local businesses: website design, build, hosting and care plans, an AI receptionist for out-of-hours calls, website enquiry setup, a Local Business Refresh, social media management and KWM Business OS.',
+    description: 'Websites and business systems for UK local businesses: website design, build, hosting and care plans, an AI receptionist for the calls you can’t take, website enquiry setup, a Local Business Refresh, social media management and KWM Business OS.',
     email: SITE.email,
     address: { '@type': 'PostalAddress', streetAddress: '124 City Road', addressLocality: 'London', postalCode: 'EC1V 2NX', addressCountry: 'GB' },
     areaServed: { '@type': 'Country', name: 'United Kingdom' },

@@ -31,8 +31,9 @@
     d.title = name && original ? baseTitle.replace(original, name) : baseTitle;
     return name;
   }
-  const q = new URLSearchParams(location.search);
-  if (q.has('name')) setName(q.get('name'));
+  // The name arrives after # (never sent to the server); ?name= from older links still works
+  const q = new URLSearchParams(location.search), h = new URLSearchParams(location.hash.slice(1));
+  if (h.has('name')) setName(h.get('name')); else if (q.has('name')) setName(q.get('name'));
 
   // Demo toast: role=status, never focused, gone after 4s
   let tEl = $('.km-toast'), tA = 0, tB = 0;

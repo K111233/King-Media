@@ -17,7 +17,7 @@ export const EXAMPLE_POSTS = [
   },
   {
     biz: 'Northside Barbers', initials: 'NB', tone: 'dark', type: 'Job photo', channel: 'Instagram', when: 'Thu, 6:00pm',
-    text: 'Skin fade with a sharp part, finished with a hot towel. Walk in or book a chair online, Tuesday to Saturday.',
+    text: 'Skin fade with a sharp part, finished with a hot towel. Walk in or book a chair online, Monday to Saturday.',
     images: [{ ...IMG('northside-barbers/img/fade-640'), alt: 'A barber trimming the side of a man’s hair into a short fade.' }],
   },
   {

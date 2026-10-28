@@ -256,6 +256,7 @@ main:focus { outline: none; }
 .browser__dots { display: flex; gap: 6px; }
 .browser__dots i { width: 9px; height: 9px; border-radius: 50%; background: #C9D1DD; }
 .browser__url { display: flex; align-items: center; gap: 6px; flex: 0 1 260px; margin-inline: auto; padding: 3px 10px; overflow: hidden; border-radius: 7px; background: #fff; color: #5E6A82; font-size: .75rem; white-space: nowrap; transform: translateX(-24px); }
+.browser__addr { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .browser__lock { width: 11px; height: 11px; flex: none; }
 .browser__screen { background: #F2F4F8; }
 .browser__screen img { width: 100%; aspect-ratio: 1280 / 800; object-fit: cover; object-position: top; }
@@ -425,6 +426,12 @@ main:focus { outline: none; }
 .tabs__tab[aria-selected="true"] { background: #fff; color: var(--fg); box-shadow: var(--sh-1), 0 0 0 1px var(--line); }
 .tabs__panel:focus-visible { outline-offset: 6px; }
 .tabs__time { margin-right: 4px; color: var(--accent); font-weight: 750; font-variant-numeric: tabular-nums; }
+@media (max-width: 639px) {
+  /* Phones: every tab stays in view, two to a row, instead of hiding off the edge */
+  .tabs__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; overflow: visible; }
+  .tabs__tab { padding: 6px 10px; white-space: normal; line-height: 1.25; }
+  .tabs__time { display: block; margin-right: 0; }
+}
 .scen { margin-top: 48px; }
 .scen__grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(28px, 4vw, 56px); align-items: start; padding: clamp(24px, 3vw, 36px); border: 1px solid var(--line); border-radius: var(--r-xl); background: #fff; box-shadow: var(--sh-1); }
 .scen__kicker { margin: 0 0 8px; color: var(--fg-3); font-size: .9rem; }
@@ -1322,4 +1329,9 @@ main:focus { outline: none; }
   .site-header, .menu, .band, .jump, .skip-link, .site-footer__nav { display: none !important; }
   .hero, .phero, .section--dark { background: #fff !important; color: #000; }
   body { font-size: 11pt; }
+}
+
+/* Phones: form buttons run the full width, so their labels stay on one line */
+@media (max-width: 479px) {
+  form .btn[type="submit"] { width: 100%; padding-inline: 16px; }
 }

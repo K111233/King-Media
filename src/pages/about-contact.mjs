@@ -13,7 +13,7 @@ const companyCard = `
 <div class="card company">
   <p class="eyebrow">Company details</p>
   <dl class="company__list">
-    <div><dt>Trading name</dt><dd>${SITE.name} (formerly ${SITE.formerName})</dd></div>
+    <div><dt>Trading name</dt><dd>${SITE.name}</dd></div>
     <div><dt>Company</dt><dd>${SITE.legalName}</dd></div>
     <div><dt>Company number</dt><dd><a href="${COMPANIES_HOUSE}" rel="noopener">${SITE.companyNumber}</a>, registered in ${SITE.registeredIn}</dd></div>
     <div><dt>Registered office</dt><dd>${SITE.office}</dd></div>
@@ -32,38 +32,17 @@ const PRINCIPLES = [
 
 const about = {
   path: '/about/',
-  title: 'About us: formerly King Media',
-  description: `${SITE.name} is the new name for King Media: websites and business systems for local businesses. A trading name of ${SITE.legalName}, company number ${SITE.companyNumber}.`,
+  title: 'About us',
+  description: `${SITE.name} designs, builds and looks after websites for UK local businesses, and sets up the systems around them. A trading name of ${SITE.legalName}.`,
   bodyClass: 'is-about',
-  jsonld: { '@context': 'https://schema.org', '@type': 'AboutPage', name: `About ${SITE.name}`, url: SITE.origin + '/about/', mainEntity: { '@type': 'Organization', name: SITE.name, alternateName: SITE.formerName, legalName: SITE.legalName, email: SITE.email, url: SITE.origin + '/' } },
+  jsonld: { '@context': 'https://schema.org', '@type': 'AboutPage', name: `About ${SITE.name}`, url: SITE.origin + '/about/', mainEntity: { '@type': 'Organization', name: SITE.name, legalName: SITE.legalName, email: SITE.email, url: SITE.origin + '/' } },
   body: pageHero({
     crumbs: [{ href: '/', label: 'Home' }, { label: 'About' }],
     eyebrow: 'About us',
-    title: `King Media is now <em class="serif">${SITE.name}.</em>`,
-    lede: 'We started out designing and building websites for local businesses, and we still do. Now we also set up the systems around the website: an AI receptionist for out-of-hours calls, organised website enquiries and help with social media. For businesses ready for more, KWM Business OS connects their tools and workflows.',
+    title: `Websites, and the systems <em class="serif">behind them.</em>`,
+    lede: 'We design, build and look after websites for local businesses across the UK, then set up the systems around them: an AI receptionist for the calls you can’t take, organised website enquiries and help with social media. For businesses ready for more, KWM Business OS connects their tools and workflows.',
     aside: companyCard,
   }) + `
-<section class="section" aria-labelledby="changeTitle">
-  <div class="container">
-    ${sectionHead({ eyebrow: 'The new name', title: 'What’s changed, and _what hasn’t_.', id: 'changeTitle' })}
-    <div class="duo">
-      <div class="card duo__col">
-        <h3 class="duo__title">${icon('check-circle', { cls: 'icon duo__icon duo__icon--yes' })}The same</h3>
-        <ul class="ticks ticks--yes" role="list">
-          ${['The same company: ' + SITE.legalName + ', company number ' + SITE.companyNumber, 'The same website prices, demos and agreements', 'If you already have a website with us, your plan carries on exactly as it is', 'The same way of working: a real demo first, clear prices, and changes by text, WhatsApp or email'].map((t) => `<li>${icon('check', { cls: 'ticks__icon' })}<span>${esc(t)}</span></li>`).join('')}
-        </ul>
-      </div>
-      <div class="card duo__col">
-        <h3 class="duo__title">${icon('sparkle', { cls: 'icon duo__icon duo__icon--new' })}New</h3>
-        <ul class="ticks ticks--new" role="list">
-          ${[`A new name, ${SITE.name}, because we now do more than websites`, `A new email address: ${SITE.email}`, 'An AI receptionist for out-of-hours calls, and website enquiry setup', 'Social media: AI drafts you post yourself, or plans we run for you', 'A one-off Local Business Refresh, and KWM Business OS for a connected system'].map((t) => `<li>${icon('plus', { cls: 'ticks__icon' })}<span>${esc(t)}</span></li>`).join('')}
-        </ul>
-      </div>
-    </div>
-    <p class="fineprint">Paying online? Card statements and receipts may still show ${SITE.formerName} for a while. It’s the same company.</p>
-  </div>
-</section>
-
 <section class="section section--muted" aria-labelledby="doTitle">
   <div class="container">
     ${sectionHead({ eyebrow: 'What we do', title: 'Websites first. _Then everything around them._', id: 'doTitle' })}
@@ -87,7 +66,7 @@ ${ctaBand({ title: 'Let’s talk about _your business_.', text: 'Tell us what yo
 const contact = {
   path: '/contact/',
   title: 'Contact us: free quotes and website demos',
-  description: `Get a free quote for a website, an AI receptionist, social media or KWM Business OS, or request a ${money(WEB.demo.price)} website demo. Email ${SITE.email}. We reply ${SITE.replyTime}.`,
+  description: `Get a free quote for a website, an AI receptionist, social media or Business OS, or request a ${money(WEB.demo.price)} website demo. We reply ${SITE.replyTime}.`,
   bodyClass: 'is-contact',
   jsonld: { '@context': 'https://schema.org', '@type': 'ContactPage', name: `Contact ${SITE.name}`, url: SITE.origin + '/contact/', mainEntity: { '@type': 'Organization', name: SITE.name, email: SITE.email, url: SITE.origin + '/' } },
   body: pageHero({

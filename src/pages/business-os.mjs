@@ -62,7 +62,7 @@ export default [{
   ogTitle: 'KWM Business OS: your tools and workflows, connected',
   ogImage: '/assets/kwm/share/og-business-os.png',
   ogAlt: `KWM Business OS by KWM Systems. A connected system built around how your business works. Setup from ${money(OS.setupFrom)}, then from ${money(OS.monthlyFrom)} a month.`,
-  description: `KWM Business OS connects selected software, AI tools and workflows around how your business works. Setup from ${money(OS.setupFrom)}, then from ${money(OS.monthlyFrom)} a month, scoped after an initial review.`,
+  description: `KWM Business OS connects selected software, AI tools and workflows around how your business works. Setup from ${money(OS.setupFrom)}, then from ${money(OS.monthlyFrom)} a month.`,
   bodyClass: 'is-os',
   jsonld: {
     '@context': 'https://schema.org', '@type': 'Service', name: 'KWM Business OS', serviceType: 'Business systems and workflow automation',
@@ -79,7 +79,7 @@ export default [{
     chips: badge('Premium', 'gold') + badge('Tailored to your business', 'dark'),
     eyebrow: 'KWM Business OS',
     title: 'Your business, connected. <em class="serif">Built around how you work.</em>',
-    lede: 'A tailored operating system for your business: selected software, AI tools and workflows, connected around the way you already work. Enquiries are captured, routine admin keeps moving and you get a clear view of the work, while the important decisions stay with you.',
+    lede: 'A tailored operating system for your business: selected software, AI tools and workflows, connected around the way you already work. It can capture enquiries, keep routine admin moving and give you a clear view of the work, while the important decisions stay with you.',
     price: priceTag,
     actions: `${btn(DISCUSS, 'Discuss your Business OS', { variant: 'gold', size: 'lg' })}${btn('#capabilities', 'See what it can do', { variant: 'ghost', size: 'lg', ic: 'chev-down' })}`,
     aside: osMap({ id: 'heroMap' }),

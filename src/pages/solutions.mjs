@@ -36,6 +36,23 @@ const priceBox = (s) => {
 </div>`;
 };
 
+// A short section on the use a service suits best (the receptionist: contractors on a job)
+const highlight = (h) => `
+<section class="section section--muted" aria-labelledby="bestTitle">
+  <div class="container how">
+    <div class="how__steps">
+      ${sectionHead({ eyebrow: h.eyebrow, title: h.title, lede: h.text, id: 'bestTitle' })}
+      ${tickList(h.points, 'yes')}
+    </div>
+    <div class="how__example card" role="group" aria-labelledby="bestExTitle">
+      <p class="eyebrow">Example</p>
+      <h3 class="how__ex-title" id="bestExTitle">${esc(h.example.title)}</h3>
+      ${timeline(h.example.events)}
+      <p class="fineprint">${esc(EXAMPLE_NOTE)}</p>
+    </div>
+  </div>
+</section>`;
+
 function toolPage(s) {
   const p = PRICES[s.id];
   const hero = pageHero({
@@ -55,7 +72,7 @@ function toolPage(s) {
     description: s.description,
     bodyClass: `is-service is-${s.id}`,
     jsonld: serviceJsonLd(s, p.monthly),
-    body: hero + `
+    body: hero + (s.highlight ? highlight(s.highlight) : '') + `
 <section class="section" aria-labelledby="howTitle">
   <div class="container how">
     <div class="how__steps">
@@ -291,18 +308,18 @@ const HUB_FAQS = [
 
 const hub = {
   path: '/solutions/',
-  title: 'Services: AI receptionist, enquiries, refresh and social media',
-  description: `The services around your website: an AI receptionist for out-of-hours calls (${money(PRICES.receptionist.monthly)} a month), website enquiry setup (${money(PRICES.enquiry.monthly)}), a Local Business Refresh, and social media from ${money(SOCIAL.diy.monthly)} a month.`,
+  title: 'Services: AI receptionist, enquiries and social media',
+  description: `An AI receptionist (${money(PRICES.receptionist.monthly)} a month), website enquiry setup (${money(PRICES.enquiry.monthly)} a month), a Local Business Refresh and social media from ${money(SOCIAL.diy.monthly)} a month.`,
   bodyClass: 'is-hub',
   body: pageHero({
     crumbs: [{ href: '/', label: 'Home' }, { label: 'Services' }],
     eyebrow: 'Services',
     title: 'The services around <em class="serif">your website.</em>',
-    lede: 'An AI receptionist for out-of-hours calls, organised website enquiries, a one-off Local Business Refresh and help with your social media. Each one does a clear job, uses wording you approve, and is set up and tested with you.',
+    lede: 'An AI receptionist for the calls you can’t take, organised website enquiries, a one-off Local Business Refresh and help with your social media. Each one does a clear job, uses wording you approve, and is set up and tested with you.',
     actions: `${btn('#all', 'See the services', { variant: 'gold', size: 'lg', ic: 'chev-down' })}${btn('/contact/', 'Get a free quote', { variant: 'ghost', size: 'lg', ic: '' })}`,
     aside: `<div class="lock">
       <div class="lock__screen">
-        <p class="lock__date" aria-hidden="true">Tuesday 14 October</p>
+        <p class="lock__date" aria-hidden="true">Tuesday 13 October</p>
         <p class="lock__time" aria-hidden="true">19:52</p>
         <ul class="lock__notes" role="list" aria-label="Example notifications from one day">
           ${noteCard({ ic: 'moon', title: 'Out-of-hours message', meta: '19:52 · Sarah, call back Wed 8–9am', cls: 'n1' })}
@@ -341,7 +358,7 @@ const hub = {
 
 <section class="section section--muted" aria-labelledby="callsTitle">
   <div class="container">
-    ${sectionHead({ eyebrow: 'When the phone rings', title: 'Closed for the day? _You still get the details._', lede: 'During your working hours, your phone rings as normal. Outside them, calls you don’t answer go to the AI receptionist, which takes the caller’s details and the reason for the call and sends you a summary. Website enquiries arrive as a tidy summary, whenever they’re sent.', id: 'callsTitle' })}
+    ${sectionHead({ eyebrow: 'When the phone rings', title: 'Closed for the day? _You still get the details._', lede: 'Your phone rings as normal. When you’re on a job or closed for the day, calls you don’t answer go to the AI receptionist, which takes the caller’s details and the reason for the call and sends you a summary. Website enquiries arrive as a tidy summary, whenever they’re sent.', id: 'callsTitle' })}
     ${dayStrip()}
     <div class="scen" data-tabs>
       <div class="tabs__list" role="tablist" aria-label="Example enquiries from one day">
