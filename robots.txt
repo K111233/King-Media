@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://kingmedia.uk/sitemap.xml
+Sitemap: https://kwmsystems.com/sitemap.xml

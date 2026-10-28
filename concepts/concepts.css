@@ -1,6 +1,6 @@
 /* ==========================================================================
-   KING MEDIA concept pages: shared shell (concepts/concepts.css)
-   Reset, King Media strip and colophon, embed mode, name caret, demo toast,
+   KWM SOLUTIONS concept pages: shared shell (concepts/concepts.css)
+   Reset, KWM Systems strip and colophon, embed mode, name caret, demo toast,
    placeholder blocks, before/after slider and demo basket.
    Each concept page styles its own brand in an inline <style>, using the
    hooks below. All motion lives under html.motion-ok (set in <head>).
@@ -28,7 +28,7 @@ a { color: inherit; }
 .km-skip { position: absolute; left: 12px; top: 12px; z-index: 90; padding: 12px 16px; border-radius: 4px; background: #0B0A08; color: #EDE6D8; font-weight: 600; text-decoration: none; transform: translateY(-200%); }
 .km-skip:focus { transform: none; outline: 2px solid #DDBE7A; outline-offset: 2px; }
 
-/* 02 King Media strip (top) and colophon (bottom) -------------------------- */
+/* 02 KWM Systems strip (top) and colophon (bottom) -------------------------- */
 .km-strip, .km-colophon { background: #0B0A08; color: #EDE6D8; font: 400 .9375rem/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; letter-spacing: .005em; }
 .km-strip { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 24px; padding: 8px max(20px, env(safe-area-inset-right)) 8px max(20px, env(safe-area-inset-left)); border-bottom: 1px solid rgba(201, 164, 90, .55); }
 .km-strip p { margin: 0; padding: 6px 0; }
@@ -132,7 +132,7 @@ html.is-embed::-webkit-scrollbar { display: none; }
   .is-typing [data-slot="name"]::after, .ba__handle::before, .ba__handle i { background: CanvasText; }
 }
 
-/* The sign (King Media “See it with your name”): the visitor’s name at hero size, only once a name is applied */
+/* The sign (KWM Systems “See it with your name”): the visitor’s name at hero size, only once a name is applied */
 .km-sign { display: none; margin: 0 0 10px; font-size: clamp(2rem, 1.5rem + 2.4vw, 3.25rem); line-height: 1.02; letter-spacing: -.01em; overflow-wrap: anywhere; }
 .has-name .km-sign { display: block; }
 
