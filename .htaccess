@@ -6,6 +6,14 @@ RewriteRule (^|/)\.git - [F,L]
 RewriteCond %{HTTP_HOST} ^www\.kwmsystems\.com$ [NC]
 RewriteRule ^ https://kwmsystems.com%{REQUEST_URI} [L,R=301]
 
+# kingmedia.uk is now kwmsystems.com: page views go to the same address there. Only GET and HEAD
+# move, so Stripe's webhook and anything else posted to kingmedia.uk/api/ keeps working, and
+# /.well-known/ stays put so kingmedia.uk's SSL certificate can still renew.
+RewriteCond %{HTTP_HOST} ^(www\.)?kingmedia\.uk$ [NC]
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
+RewriteCond %{REQUEST_URI} !^/\.well-known/
+RewriteRule ^ https://kwmsystems.com%{REQUEST_URI} [L,R=301]
+
 # Always use the secure address (https://), keeping the rest of the address the same
 RewriteCond %{HTTPS} !=on
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https

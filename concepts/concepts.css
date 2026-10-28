@@ -60,7 +60,7 @@ a { color: inherit; }
 html.is-embed { scrollbar-width: none; }
 html.is-embed::-webkit-scrollbar { display: none; }
 
-/* 04 Name slot: the gold caret while a visitor types on kingmedia.uk ---------- */
+/* 04 Name slot: the gold caret while a visitor types on kwmsystems.com ---------- */
 [data-slot="name"] { overflow-wrap: anywhere; }
 .is-typing [data-slot="name"]::after { content: ""; display: inline-block; width: .08em; height: .72em; margin-left: .06em; background: #C9A45A; vertical-align: baseline; }
 

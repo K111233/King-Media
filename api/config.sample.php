@@ -1,6 +1,6 @@
 <?php
 /*
- * King Media form + payments settings.
+ * KWM Systems form + payments settings.
  * Copy this file to config.php and fill it in. Never share config.php.
  *
  * WHERE TO PUT config.php: in the km-private folder, one level ABOVE public_html
@@ -12,15 +12,15 @@ if (!defined('KM_API')) { http_response_code(404); exit; }
 
 return [
   // Your website address, with no slash at the end
-  'site_url' => 'https://kingmedia.uk',
-  'site_origins' => ['https://kingmedia.uk', 'https://www.kingmedia.uk'],
+  'site_url' => 'https://kwmsystems.com',
+  'site_origins' => ['https://kwmsystems.com', 'https://www.kwmsystems.com'],
 
   // Where requests go (your inbox), and the address they're sent from. Use a mailbox
   // created in Hostinger (hPanel > Emails) as the "from" address, and make it different
   // from to_email: Hostinger won't send from an address that isn't one of its mailboxes.
   'to_email' => 'enquiries@kingmedia.uk',
   'from_email' => 'website@kingmedia.uk',
-  'from_name' => 'King Media website',
+  'from_name' => 'KWM Systems website',
 
   // How emails are sent. 'smtp' logs in to the mailbox below (most reliable).
   // 'mail' uses PHP mail(). 'file' saves .eml files in storage_dir/outbox (testing only).
@@ -51,7 +51,7 @@ return [
     'model' => 'claude-sonnet-5',
   ],
 
-  // Your password for the private contracts page (https://kingmedia.uk/api/contracts.php),
+  // Your password for the private contracts page (https://kwmsystems.com/api/contracts.php),
   // where you make "sign and pay" links for clients. 12 characters or more.
   'admin_password' => '',
 

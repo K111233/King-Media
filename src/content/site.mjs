@@ -1,13 +1,14 @@
 // KWM Systems · site.mjs · verified business details, used on every page.
 // KWM Systems is the new name for King Media (never "KWM Solutions"). The site lives on kwmsystems.com, parked
-// on the kingmedia.uk website in hPanel, so both addresses show it. Payment and agreement links still use kingmedia.uk (site_url).
+// on the kingmedia.uk website in hPanel. kingmedia.uk page views forward here (root .htaccess); payment and agreement
+// links use kwmsystems.com too (api/lib.php km_config). The King Media mailboxes still send and receive the form emails.
 // The public email is info@kwmsystems.com. Payments, form delivery and the mailboxes behind them
 // still run through King Media's accounts (api/config.php) and are never shown on the site.
 
 export const SITE = {
   name: 'KWM Systems',
   formerName: 'King Media',                  // used only where it helps people (About, payment note)
-  domain: 'kwmsystems.com',                  // main domain since 2026-10-28 (kingmedia.uk shows the same site)
+  domain: 'kwmsystems.com',                  // main domain since 2026-10-28 (kingmedia.uk forwards here)
   origin: 'https://kwmsystems.com',
   email: 'info@kwmsystems.com',              // public contact address, confirmed by the owner on 2026-10-28
   replyTime: 'within 24 hours',              // reply promise already published by King Media

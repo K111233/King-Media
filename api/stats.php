@@ -1,8 +1,8 @@
 <?php
 /*
  * KWM Systems: your private website statistics (from api/hit.php).
- * Log in on https://kingmedia.uk/api/contracts.php with the admin_password from config.php,
- * then open https://kingmedia.uk/api/stats.php. Add ?days=7 or ?days=90 to change the period.
+ * Log in on https://kwmsystems.com/api/contracts.php with the admin_password from config.php,
+ * then open https://kwmsystems.com/api/stats.php. Add ?days=7 or ?days=90 to change the period.
  */
 define('KM_API', true);
 require __DIR__ . '/lib.php';

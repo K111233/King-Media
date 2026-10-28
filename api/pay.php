@@ -1,6 +1,6 @@
 <?php
 /*
- * King Media: sends a customer to Stripe Checkout to pay their £4.99 demo fee.
+ * KWM Systems: sends a customer to Stripe Checkout to pay their £4.99 demo fee.
  * Link format (made by the form handler): /api/pay.php?r=KM-260924-4F7A&k=<key>
  */
 define('KM_API', true);

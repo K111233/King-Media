@@ -1,6 +1,6 @@
 <?php
 /*
- * King Media: the private page where a client signs their agreement and pays.
+ * KWM Systems: the private page where a client signs their agreement and pays.
  * Only opens from a link made on api/contracts.php (…/api/sign.php?c=KMC-…&k=…).
  * Anyone without a valid link sees the normal "page not found".
  */
@@ -26,7 +26,7 @@ $link = km_contract_url($cfg, $id);
 // Their signed copy, to save or print
 if (isset($_GET['copy']) && is_file($c['dir'] . '/agreement-signed.html')) {
   header('Content-Type: text/html; charset=utf-8');
-  header('Content-Disposition: inline; filename="King Media agreement - ' . km_slug($c['offer']['business'], 60) . '.html"');
+  header('Content-Disposition: inline; filename="KWM Systems agreement - ' . km_slug($c['offer']['business'], 60) . '.html"');
   readfile($c['dir'] . '/agreement-signed.html');
   exit;
 }
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($err === 'paid') { $c = km_contract_load($cfg, $id); $state = km_contract_state($c); }
     else {
       km_log($cfg, $id . ' | contract Checkout FAILED: ' . km_hide_keys($err));
-      $errors['form'] = 'We couldn’t open the payment page just now. Please try again, or email enquiries@kingmedia.uk.';
+      $errors['form'] = 'We couldn’t open the payment page just now. Please try again, or email info@kwmsystems.com.';
     }
   }
 }
@@ -80,7 +80,7 @@ $saving = isset($plans['12m'], $plans['5y']) ? ($plans['12m']['monthly_pence'] -
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Your agreement | King Media</title>
+<title>Your agreement | KWM Systems</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0B0A08">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
@@ -144,9 +144,9 @@ $saving = isset($plans['12m'], $plans['5y']) ? ($plans['12m']['monthly_pence'] -
 <a class="skip-link" href="#main">Skip to main content</a>
 <header class="legal-bar">
   <div class="container">
-    <span class="brand" aria-label="King Media">
+    <span class="brand" aria-label="KWM Systems">
       <svg class="brand__mark" viewBox="0 0 48 48" width="34" height="34" aria-hidden="true"><path class="mark-caret" d="M5 6H12V42H5Z"/><path class="mark-bracket" d="M33 6H43L25 24L43 42H33L15 24Z"/></svg>
-      <span class="brand__word" aria-hidden="true">King <em>Media</em></span>
+      <span class="brand__word" aria-hidden="true">KWM <em>Systems</em></span>
     </span>
   </div>
 </header>
@@ -168,7 +168,7 @@ $saving = isset($plans['12m'], $plans['5y']) ? ($plans['12m']['monthly_pence'] -
     </div>
 <?php elseif ($state === 'withdrawn' || $state === 'expired'): ?>
     <h1>This link has <em>expired</em></h1>
-    <p class="sign__lede">This agreement link is no longer active. Please email <a href="mailto:enquiries@kingmedia.uk">enquiries@kingmedia.uk</a> and we’ll send you a new one.</p>
+    <p class="sign__lede">This agreement link is no longer active. Please email <a href="mailto:info@kwmsystems.com">info@kwmsystems.com</a> and we’ll send you a new one.</p>
 <?php elseif ($state === 'signed'): ?>
     <h1>One step <em>left</em></h1>
     <p class="sign__lede">You’ve signed your agreement, <?= $h(explode(' ', (string) $c['signed']['name'])[0]) ?>. Now pay the build fee on Stripe’s secure page to get your website live.</p>
@@ -222,7 +222,7 @@ $saving = isset($plans['12m'], $plans['5y']) ? ($plans['12m']['monthly_pence'] -
 
       <section class="agreement" aria-labelledby="agreementTitle">
         <h2 id="agreementTitle">2. Read your agreement</h2>
-        <p class="small">King Media Website Design, Hosting &amp; Maintenance Service Agreement, with your Order Form at the end. All prices include VAT. <a href="#keypoints">Jump to the key points</a></p>
+        <p class="small">KWM Systems Website Design, Hosting &amp; Maintenance Service Agreement, with your Order Form at the end. All prices include VAT. <a href="#keypoints">Jump to the key points</a></p>
         <?= km_agreement_body($o, [], 3) ?>
       </section>
 
@@ -230,7 +230,7 @@ $saving = isset($plans['12m'], $plans['5y']) ? ($plans['12m']['monthly_pence'] -
         <h2 id="keyTitle">Key points: please read before you sign</h2>
         <p class="small">A plain-English summary. The full agreement above is what counts.</p>
         <?= km_agreement_keypoints($o) ?>
-        <p class="small" style="margin-top:16px">Anything you were promised on the phone should be in this agreement. If it isn’t, email us at enquiries@kingmedia.uk before you sign.</p>
+        <p class="small" style="margin-top:16px">Anything you were promised on the phone should be in this agreement. If it isn’t, email us at info@kwmsystems.com before you sign.</p>
       </section>
 
       <div class="sign__box" id="sign">
@@ -270,9 +270,9 @@ $saving = isset($plans['12m'], $plans['5y']) ? ($plans['12m']['monthly_pence'] -
 
 <footer class="legal-foot">
   <div class="container">
-    <p>© <?= date('Y') ?> King Media</p>
+    <p>© <?= date('Y') ?> KWM Systems</p>
     <p class="legal-foot__company"><?= km_h(KM_DISCLOSURE) ?></p>
-    <p><a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy &amp; cookies</a> · <a href="mailto:enquiries@kingmedia.uk">enquiries@kingmedia.uk</a></p>
+    <p><a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy &amp; cookies</a> · <a href="mailto:info@kwmsystems.com">info@kwmsystems.com</a></p>
   </div>
 </footer>
 <script>

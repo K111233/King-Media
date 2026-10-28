@@ -1,6 +1,6 @@
 <?php
 /*
- * King Media: Stripe calls this when a demo fee has been paid. That's when the
+ * KWM Systems: Stripe calls this when a demo fee has been paid. That's when the
  * full demo request (with files and AI brief) is emailed to you.
  * Signed contracts (api/sign.php) are recorded here too, and you're emailed when they're paid.
  * Add it in Stripe (Developers > Webhooks) with the events checkout.session.completed

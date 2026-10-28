@@ -1,6 +1,6 @@
 <?php
 /*
- * One-off Stripe setup for King Media. Creates the products and prices, so build
+ * One-off Stripe setup for KWM Systems. Creates the products and prices, so build
  * invoices (Stripe Invoicing) and monthly plans (Stripe Billing) can be made from
  * the Dashboard in a few clicks.
  * Safe to run again: anything that already exists is left alone.

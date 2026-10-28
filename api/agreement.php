@@ -1,6 +1,6 @@
 <?php
 /*
- * King Media: the Service Agreement a client signs online (api/sign.php).
+ * KWM Systems: the Service Agreement a client signs online (api/sign.php).
  * When the terms change, change them here and bump KM_AGREEMENT_VERSION:
  * every signed copy records the version and a fingerprint, and keeps the wording it was signed on.
  */
@@ -8,7 +8,7 @@ if (!defined('KM_API')) { http_response_code(404); exit; }
 
 const KM_AGREEMENT_VERSION = 'KM-SA-2026-10-09';
 
-/** How the domain is held: 'provider' (new, owned by King Media), 'existing' (the client already owns it) or 'client' (registered in the client's name). */
+/** How the domain is held: 'provider' (new, owned by KWM Systems), 'existing' (the client already owns it) or 'client' (registered in the client's name). */
 function km_domain_status(array $offer): string {
   $s = (string) ($offer['domain_status'] ?? '');
   if (in_array($s, ['provider', 'existing', 'client'], true)) return $s;
@@ -71,7 +71,7 @@ function km_agreement_body(array $offer, array $signed = [], int $level = 2): st
     . $c('3.1', 'Subject to payment of the Fees, the Provider shall provide: (a) design and build of the Website; (b) management of the domain name stated on the Order Form and, where the Provider registers it, its registration and on-time renewal (see Clause 8.5); (c) hosting of the Website with an SSL certificate (the padlock); and (d) Maintenance Services.')
     . $c('3.2', '“Maintenance Services” means security and software updates, fixing faults under Clause 3.5, daily backups under Clause 3.6, and Website Changes up to the Change Allowance each month under Clause 3.3. Maintenance Services do not include new pages, new functionality (including taking online payments, online booking systems, and e-commerce, online shop or catalogue work) or major redesigns. The Provider will provide a separate written quote for any such work under Clause 4.4, which will proceed only once the Client has accepted that quote.')
     . $c('3.3', 'Website Changes. In each month of the Plan (running from the monthly payment date in Clause 4.3), the Client may ask for Website Changes up to the Change Allowance, big or small. A Website Change is one request about one thing on an existing page, for example new prices or a new price list, new opening hours, swapping the photos in a gallery, or adding or changing one section. Unused Website Changes do not carry over. A “major redesign” means changing the overall look or layout of a whole page or of the whole Website (such as new colours, fonts or page structure). If a request is really a new page, new functionality or a major redesign, or counts as more than one Website Change, the Provider will say so before starting. Requests beyond the Change Allowance in a month will be done the next month, or quoted if the Client wants them sooner.')
-    . $c('3.4', 'How to ask. The Client can ask for Website Changes by text or WhatsApp to the business number the Provider gives the Client, or by email to enquiries@kingmedia.uk. Requests sent anywhere else, including to a salesperson’s own phone, count only once they reach one of these. The Provider will use reasonable efforts to make each Website Change within five (5) Business Days of receiving everything it needs, and will tell the Client when it is live. The Client should check each change, especially prices, allergen and other legal information.')
+    . $c('3.4', 'How to ask. The Client can ask for Website Changes by text or WhatsApp to the business number the Provider gives the Client, or by email to info@kwmsystems.com. Requests sent anywhere else, including to a salesperson’s own phone, count only once they reach one of these. The Provider will use reasonable efforts to make each Website Change within five (5) Business Days of receiving everything it needs, and will tell the Client when it is live. The Client should check each change, especially prices, allergen and other legal information.')
     . $c('3.5', 'Faults. If the Website is offline or not working properly, the Client should tell the Provider by text, WhatsApp or email. The Provider will start work on it within one Business Day and fix faults within its control as soon as reasonably possible. Fixing a fault does not count as a Website Change. The Provider deals with requests on Business Days, and will give at least 7 days’ notice of any absence longer than 5 Business Days, during which it will still deal with faults that take the Website offline.')
     . $c('3.6', 'Backups. The Provider backs up the Website at least once a day, keeps backups for at least 7 days, and stores them separately from the live Website. If the Website is lost or damaged, the Provider will restore it from the most recent backup at no charge.')
     . $c('3.7', 'Not included. The Fees do not include: (a) email accounts: if the Client wants email on the domain name, the Provider will connect the Client’s own email service (such as Microsoft 365 or Google Workspace), which the Client pays for directly; (b) premium domain names, or domain endings other than .co.uk, .uk or .com, which are charged at cost; (c) third-party services the Client chooses, such as booking, shop or payment platforms, which the Client signs up to and pays for directly; or (d) paid images, fonts or tools the Client asks for. The Provider will get the Client’s agreement before any such cost is incurred. Hosting is for a normal small-business website: videos should be hosted on a video platform (such as YouTube) and embedded as set out in Clause 12.3.')
@@ -152,7 +152,7 @@ function km_agreement_body(array $offer, array $signed = [], int $level = 2): st
     . $c('15.3', 'Variation. Other than routine renewal under Clause 5, changes to the Monthly Fee agreed by accepting a quote under Clause 4.4, VAT changes under Clause 4.5 and updates under Clause 15.12, no variation is effective unless agreed in writing by both Parties.')
     . $c('15.4', 'Severability. If any provision of this Agreement is found unenforceable, the remaining provisions continue in full force.')
     . $c('15.5', 'No partnership. Nothing in this Agreement creates a partnership, agency or employment relationship between the Parties.')
-    . $c('15.6', 'Notices. Notices under this Agreement, including notice to end it or about a breach, must be in writing and sent by email: to the Provider at enquiries@kingmedia.uk, and to the Client at the contact email on the Order Form, or to any new address a Party gives by notice. An email notice is treated as received on the next Business Day after it is sent, unless the sender receives a message that it was not delivered. Texts and WhatsApp messages can be used for Website Change requests, quotes and day-to-day contact, but not for notices. Each Party will keep its email address up to date. “Writing” and “written” include email.')
+    . $c('15.6', 'Notices. Notices under this Agreement, including notice to end it or about a breach, must be in writing and sent by email: to the Provider at info@kwmsystems.com, and to the Client at the contact email on the Order Form, or to any new address a Party gives by notice. An email notice is treated as received on the next Business Day after it is sent, unless the sender receives a message that it was not delivered. Texts and WhatsApp messages can be used for Website Change requests, quotes and day-to-day contact, but not for notices. Each Party will keep its email address up to date. “Writing” and “written” include email.')
     . $c('15.7', 'Electronic signature. The Parties agree that this Agreement may be signed electronically, and that the Client typing their name and confirming their agreement online is as valid as a handwritten signature. The Provider keeps a record of the signing: the name and position typed, the plan chosen, the date and time, the IP address and browser used, and a SHA-256 fingerprint of the signed document. A copy of the signed document is emailed to both Parties. The Parties agree that this record may be used as evidence of this Agreement.')
     . $c('15.8', 'Third parties. No one other than the Parties (and anyone this Agreement is transferred to under Clause 15.1) has any right to enforce it under the Contracts (Rights of Third Parties) Act 1999.')
     . $c('15.9', 'Waiver. If a Party delays in enforcing, or does not enforce, a right, it can still enforce it later.')
@@ -191,7 +191,7 @@ function km_agreement_body(array $offer, array $signed = [], int $level = 2): st
     . $row('Monthly Fee', $chosen ? '<strong>' . $h($monthlyText) . '</strong>' : $h($monthlyText))
     . ($twelve ? $row('12-Month Plan Monthly Fee for this Website (used in Clause 6.3)', $h(km_money($twelve))) : '')
     . $row('Monthly payments', 'One month after the Build Fee is paid, then on or about the same day each month, by card')
-    . $row('Change requests', 'Text or WhatsApp the business number we give you, or email enquiries@kingmedia.uk (Clause 3.4)')
+    . $row('Change requests', 'Text or WhatsApp the business number we give you, or email info@kwmsystems.com (Clause 3.4)')
     . $row('Anything else agreed', ($offer['agreed'] ?? '') !== '' ? nl2br($h($offer['agreed'])) : 'Nothing')
     . '</table></div>';
 
@@ -244,7 +244,7 @@ function km_agreement_keypoints(array $offer): string {
   $domain = ['provider' => 'we register it, renew it and own it (clause 8.5). If you leave and everything’s paid, you can take it with you for no more than our cost.',
     'existing' => 'you already own it, and it stays yours (clause 8.5).', 'client' => 'it’s registered in your name and it’s yours (clause 8.5).'][km_domain_status($offer)];
   $items = [
-    '<strong>Who you’re dealing with:</strong> ' . km_provider_text($co) . '. enquiries@kingmedia.uk',
+    '<strong>Who you’re dealing with:</strong> ' . km_provider_text($co) . '. info@kwmsystems.com',
     '<strong>Today:</strong> ' . km_money($build) . ' for your website build, including your first month.',
     '<strong>Then:</strong> ' . $both(fn($p) => '<em>' . $p['name'] . ':</em> ' . km_money($p['monthly_pence']) . ' a month by card, starting a month after you pay, for at least ' . ($p['months'] - 1) . ' more payments. Minimum total ' . km_money($build + ($p['months'] - 1) * $p['monthly_pence']) . '.'),
     '<strong>Changes:</strong> ' . $both(fn($p) => '<em>' . $p['name'] . ':</em> ' . km_changes_text($p) . ' a month.') . ' Fixing a fault never counts as a change.',

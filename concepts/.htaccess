@@ -1,4 +1,4 @@
-# Concept pages are shown live inside kingmedia.uk's own frames (the hero and the
+# Concept pages are shown live inside the main site's own frames (the hero and the
 # Work viewer), so this folder allows same-site framing only. Everywhere else the
 # root .htaccess keeps X-Frame-Options DENY. These use "always", like the root,
 # so Apache replaces the root value instead of sending both.
